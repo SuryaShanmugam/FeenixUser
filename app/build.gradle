@@ -41,6 +41,10 @@ dependencies {
     implementation 'com.google.android.material:material:1.1.0'
     //recyclerview
     implementation 'com.android.support:recyclerview-v7:29.0.0'
+    //Loader
+    implementation 'com.tuyenmonkey:mkloader:1.4.0'
+
+
 
     //lifecycle
     implementation "android.arch.lifecycle:extensions:$lifecycle_version"

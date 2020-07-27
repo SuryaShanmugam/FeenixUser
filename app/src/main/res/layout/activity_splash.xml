@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
 
     android:background="@color/white"
-    tools:context=".SplashActivity">
+    tools:context=".view.activities.SplashActivity">
 
     <FrameLayout
         android:layout_width="match_parent"
