@@ -28,6 +28,7 @@
         tools:ignore="AllowBackup">
         <activity
             android:name=".view.activities.SplashActivity"
+            android:exported="true"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
