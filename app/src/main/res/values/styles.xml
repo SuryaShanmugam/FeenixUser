@@ -22,4 +22,17 @@
     </style>
 
 
+    <style name="AppThemeButton" parent="Widget.MaterialComponents.Button">
+        <item name="materialThemeOverlay">@style/YellowButton</item>
+    </style>
+
+    <style name="YellowButton">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerRadius">4dp</item>
+        <item name="fontFamily">sans-serif</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:backgroundTint">@color/primary</item>
+        <item name="android:textColor">@color/text_color</item>
+    </style>
+
 </resources>

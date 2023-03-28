@@ -1,9 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#ffffff</color>
-    <color name="primaryDark">#ffffff</color>
-    <color name="accent">#FFCC00</color>
-    <color name="black">#000000</color>
+    <color name="primary">#ffbd00</color>
+    <color name="primaryDark">#c7970c</color>
+    <color name="accent">#ffbd00</color>
     <color name="white">#ffffff</color>
-
+    <color name="black">#000000</color>
+    <color name="editTextColor">#888888</color>
+    <color name="grey">#9E9E9E</color>
+    <color name="lite_color">#bebebe</color>
+    <color name="lightgrey">#409E9E9E</color>
+    <color name="facebook_color">#3B5999</color>
+    <color name="google_color">#DD4C39</color>
+    <color name="orange">#f19234</color>
+    <color name="background_grey">#f2f2f2</color>
+    <color name="dark_text_grey">#4b4b4b</color>
+    <color name="dark_grey">#484848</color>
+    <color name="greyish">#3C3C3C</color>
+    <color name="text_color">#484b4d</color>
+    <color name="acceptGreen">#4CAF50</color>
+    <color name="acceptRed">#F44336</color>
+    <color name="bg_color">#F2F2F2</color>
+    <color name="transperent">#99000000</color>
+    <color name="transperent_one">#89000000</color>
+    <color name="bpBlue">#3F51B5</color>
+    <color name="default_divider_color_light">#409E9E9E</color>
+    <color name="bpDark_gray">#888888</color>
 </resources>

@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">FeenixUser</string>
+
+    <!--Permission Messages-->
+    <string name="permission_title">Allow permissions?</string>
+    <string name="allow_label">Allow</string>
+    <string name="dont_allow_label">Don\'t Allow</string>
+
+    <string name="location_permission_msg">You have not given Feenix access to the location on your device. Change it in the settings.</string>
+    <string name="bg_location_permission_msg">You have not given Feenix access to the location on your device. \nAllow us to access your location <b>all the time</b>. Change it in the settings.</string>
+    <string name="push_notification_permission_msg">You have not given Feenix access to the push notifications on your device. Change it in the settings.</string>
+    <string name="call_permission_msg">You have not given Feenix access to make calls on your device. Change it in settings.</string>
+
+
+    <string name="no_internet_connection">Please check your internet connection and try again</string>
+    <string name="internet_available">Back Online</string>
+    <string name="internet_lost">Internet Connection Lost</string>
+    <string name="internet_connection_status_good">Good</string>
+    <string name="internet_connection_status_moderate">Moderate</string>
+    <string name="internet_connection_status_poor">Poor</string>
+    <string name="internet_connection_status_none">None</string>
 </resources>

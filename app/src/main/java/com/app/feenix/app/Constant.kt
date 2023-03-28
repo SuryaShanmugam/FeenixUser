@@ -2,6 +2,7 @@ package com.app.feenix.app
 
 
 object Constant {
-    const val EMAIL = ""
-    const val PASSWORD = ""
+    const val INTERNET_CONNECTION_STATUS = "internetConnectionStatus"
+    const val IS_SERVICE_START = "isServiceStart"
+    const val ACTIVITY_STARTED_SERVICE = "activityStartedService"
 }

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.app.feenix.feature.internet.InternetConnectionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:animateLayoutChanges="true">
+
+    <TextView
+        android:id="@+id/inflater_internet_connection_info_layout_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/acceptRed"
+        android:gravity="center_horizontal"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:textColor="@color/white"
+        android:textSize="14sp" />
+
+</com.app.feenix.feature.internet.InternetConnectionLayout>
