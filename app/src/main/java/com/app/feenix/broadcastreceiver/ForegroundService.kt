@@ -5,6 +5,8 @@ import android.content.Intent
 import android.os.IBinder
 import com.app.feenix.app.Constant
 import com.app.feenix.feature.internet.InternetConnectionServiceHandler
+import com.app.feenix.notification.AlarmNotificationFactory
+import com.app.feenix.notification.NotificationConstants
 import com.app.feenix.utils.Log
 import kotlinx.coroutines.*
 
@@ -22,6 +24,9 @@ class ForegroundService : Service() {
     }
 
     private fun createForegroundService() {
+        val notification =
+            AlarmNotificationFactory(this).executeForegroundFactory()
+        startForeground(NotificationConstants.FOREGROUND_NOTIFICATION_ID, notification)
         Log.debug("fgdgdgd", "createForegroundService() called for ForegroundService")
     }
 
@@ -58,10 +63,12 @@ class ForegroundService : Service() {
         Log.debug("launchTimer", "createForegroundService() called for ForegroundService")
         job = scope.launch {
             while (isActive) {
+                Log.foregroundLog("PeriodicTimer timer task called for ForegroundService")
+
                 startInternetConnectionProcess()
 
             }
-            delay(30000)
+            delay(60000)
         }
     }
 
@@ -74,6 +81,17 @@ class ForegroundService : Service() {
         InternetConnectionServiceHandler.getInstance().initProcess(this@ForegroundService)
     }
 
+    override fun onDestroy() {
+        Log.foregroundLog("onDestroy() called for ForegroundService")
+        try {
+            job?.cancel()
+            job = null
+            scope.cancel()
+        } catch (ex: Exception) {
+            Log.foregroundLog("job & scope cancelled exception = ${ex.message}")
+        }
+        super.onDestroy()
+    }
 
 }
 

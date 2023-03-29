@@ -6,6 +6,7 @@ import android.content.ContextWrapper
 import com.app.feenix.R
 import com.app.feenix.feature.internet.ConnectivityTriggerHandler
 import com.app.feenix.feature.internet.InternetConnectionManager
+import com.app.feenix.notification.NotificationSystemManager
 import com.app.feenix.utils.LocaleContextWrapper
 import io.github.inflationx.calligraphy3.CalligraphyConfig
 import io.github.inflationx.calligraphy3.CalligraphyInterceptor
@@ -36,8 +37,9 @@ class AppController : Application() {
                 .build()
         )
         InternetConnectionManager.initiate(this)
+        NotificationSystemManager.initiate(this)
         ConnectivityTriggerHandler.initiate()
-
+        ConnectivityTriggerHandler.getInstance().initTrigger(this)
 
         updateAppLocaleContext()
     }

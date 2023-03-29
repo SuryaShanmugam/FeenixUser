@@ -7,13 +7,9 @@ import android.os.Build
 import android.os.Bundle
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
-import com.app.feenix.R
 import com.app.feenix.app.Constant
 import com.app.feenix.broadcastreceiver.ServicesBroadcastManager
 import com.app.feenix.databinding.ActivitySplashBinding
-import com.app.feenix.feature.internet.ConnectivityTriggerHandler
-import com.app.feenix.feature.internet.InternetConnectionLayout
-import com.app.feenix.feature.internet.InternetConnectionManager
 import com.app.feenix.utils.CodeSnippet
 import com.app.feenix.utils.Log
 import com.app.feenix.utils.PermissionHandler
@@ -21,23 +17,20 @@ import com.app.feenix.view.base.BaseActivity
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 
 @SuppressLint("CustomSplashScreen")
-class SplashActivity : BaseActivity(), InternetConnectionManager.InternetConnectionListener {
+class SplashActivity : BaseActivity() {
 
 
     private val notificationPermissionReqCode = 87
     private var isPermissionCheckCompleted = false
     private var alertDialog: AlertDialog? = null
-    private lateinit var internetConnectionLayout: InternetConnectionLayout
     private lateinit var binding: ActivitySplashBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySplashBinding.inflate(layoutInflater)
-        setContentView(R.layout.activity_splash)
-        internetConnectionLayout = binding.activitySettingsInternetConnectionLayout.root
-        internetConnectionLayout.init(this)
-        ConnectivityTriggerHandler.getInstance().initTrigger(this)
+        setContentView(binding.root)
         startAppForegroundService()
+
     }
 
     private fun startAppForegroundService() {
@@ -54,16 +47,8 @@ class SplashActivity : BaseActivity(), InternetConnectionManager.InternetConnect
     override fun onResume() {
         super.onResume()
         checkHasLocationPermission()
-        internetConnectionLayout.apply {
-            onResume()
-            registerInternetConnectionListener("SplashActivity", this@SplashActivity)
-        }
 
-    }
 
-    override fun onPause() {
-        super.onPause()
-        internetConnectionLayout.unregisterInternetConnectionListener()
     }
 
 
@@ -128,13 +113,5 @@ class SplashActivity : BaseActivity(), InternetConnectionManager.InternetConnect
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun getPushNotificationPermission() = arrayOf(Manifest.permission.POST_NOTIFICATIONS)
-    override fun onInternetAvailable() {
 
-        internetConnectionLayout.onInternetAvailable()
-
-    }
-
-    override fun onInternetLost() {
-        internetConnectionLayout.onInternetLost()
-    }
 }

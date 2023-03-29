@@ -17,7 +17,6 @@
 
     <style name="SplashTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowActionBarOverlay">true</item>
 
     </style>
 
