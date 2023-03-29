@@ -7,6 +7,7 @@ object Log {
 
     private const val LOCAL_LOG = 0
     private const val AUTH_LOG = 1
+    private const val FOREGROUND_SERVICE_LOG = 2
 
     private fun getDateTag() = DateTimeUtils.getNowDateString()
 
@@ -14,6 +15,10 @@ object Log {
         Log.d(tag, message)
     }
 
+    fun foregroundLog(message: String) {
+        d("ForeService", message)
+        appendLog("${getDateTag()} ---- $message", FOREGROUND_SERVICE_LOG)
+    }
 
     fun debug(tag: String, message: String) {
         Log.d(tag, message)

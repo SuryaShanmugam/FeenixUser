@@ -2,11 +2,9 @@ package com.app.feenix.feature.internet
 
 import android.content.Context
 import android.os.Bundle
-import com.app.feenix.R
 import com.app.feenix.app.AppController
 import com.app.feenix.app.Constant
 import com.app.feenix.broadcastreceiver.ServicesBroadcastManager
-import com.app.feenix.utils.LocaleContextWrapper
 
 
 class InternetConnectionServiceHandler {
@@ -36,11 +34,6 @@ class InternetConnectionServiceHandler {
 
     private fun saveAndUpdate(networkAvailable: Boolean) {
 
-        getCurrentMobileInternetStatus(
-            InternetConnectionManager.getInstance().getCurrentSignalStrength()
-        )
-
-
         processConnectionStatus(
             InternetConnectionManager.getInstance().getCurrentSignalStrength(),
             networkAvailable
@@ -57,17 +50,6 @@ class InternetConnectionServiceHandler {
         sendConnectionStatusBroadcast(connectionStatus)
     }
 
-
-    private fun getCurrentMobileInternetStatus(connectionStatus: Int): String {
-        return when (connectionStatus) {
-            InternetConnectionConstants.GOOD_CONNECTION -> LocaleContextWrapper.getLocaleString(R.string.internet_connection_status_good)
-            InternetConnectionConstants.MODERATE_CONNECTION -> LocaleContextWrapper.getLocaleString(
-                R.string.internet_connection_status_moderate
-            )
-            InternetConnectionConstants.POOR_CONNECTION -> LocaleContextWrapper.getLocaleString(R.string.internet_connection_status_poor)
-            else -> LocaleContextWrapper.getLocaleString(R.string.internet_connection_status_good)
-        }
-    }
 
     private fun sendConnectionStatusBroadcast(connectionStatus: Int) {
         val bundle = Bundle()

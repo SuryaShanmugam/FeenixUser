@@ -59,7 +59,7 @@ class ServicesBroadcastManager(private val context: Context) {
 
     fun stopAllServices() {
         stopForegroundService()
-
+        WorkManager.getInstance(context).cancelAllWork()
     }
 
     fun startInternetConnectivityService() {

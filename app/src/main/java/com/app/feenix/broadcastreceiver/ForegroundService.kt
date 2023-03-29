@@ -15,6 +15,8 @@ class ForegroundService : Service() {
 
     override fun onCreate() {
         super.onCreate()
+        Log.foregroundLog("on create ForegroundService")
+
         createForegroundService()
 
     }
@@ -27,7 +29,6 @@ class ForegroundService : Service() {
         return null
     }
 
-
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.debug("onStartCommand()", " called for ForegroundService")
         var isServiceStart = false
@@ -35,6 +36,7 @@ class ForegroundService : Service() {
         intent?.extras?.let {
             isActivityStartedService = it.getBoolean(Constant.ACTIVITY_STARTED_SERVICE)
             isServiceStart = it.getBoolean(Constant.IS_SERVICE_START)
+            Log.foregroundLog("isActivityStartedService = $isActivityStartedService; isServiceStart = $isServiceStart")
         }
         startPeriodicTimer()
         return START_STICKY
