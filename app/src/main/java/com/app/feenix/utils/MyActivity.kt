@@ -17,6 +17,11 @@ object MyActivity {
         context.startActivity(intent)
     }
 
+    fun launchwithAnim(context: Context, cls: Class<*>) {
+        val intent = Intent(context, cls)
+        context.startActivity(intent)
+    }
+
     fun launchWithBundle(context: Context, cls: Class<*>, bundle: Bundle) {
         val intent = Intent(context, cls)
         intent.putExtras(bundle)

@@ -12,6 +12,7 @@
     <string name="call_permission_msg">You have not given Feenix access to make calls on your device. Change it in settings.</string>
 
 
+    <!--     Internt Message-->
     <string name="no_internet_connection">Please check your internet connection and try again</string>
     <string name="internet_available">Back Online</string>
     <string name="internet_lost">Internet Connection Lost</string>
@@ -19,4 +20,10 @@
     <string name="internet_connection_status_moderate">Moderate</string>
     <string name="internet_connection_status_poor">Poor</string>
     <string name="internet_connection_status_none">None</string>
+    <string name="no_internet">No Internet</string>
+    <string name="intercom_try_again">Dismiss</string>
+    <string name="please_check_your_internet_n_connection">Please check your internet\n connection</string>
+    <string name="get_started">Get Started</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

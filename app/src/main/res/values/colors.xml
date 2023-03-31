@@ -25,4 +25,7 @@
     <color name="bpBlue">#3F51B5</color>
     <color name="default_divider_color_light">#409E9E9E</color>
     <color name="bpDark_gray">#888888</color>
+
+
+    <color name="divider">#DBDFEA</color>
 </resources>

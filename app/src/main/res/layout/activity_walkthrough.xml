@@ -4,17 +4,87 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.activities.WalkthroughActivity">
+    tools:context=".view.activities.Walkthrough.WalkthroughActivity">
 
-    <include
-        android:id="@+id/activity_walkthrough_internet_connection_layout"
-        layout="@layout/inflater_internet_connection_info_layout"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="match_parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:background="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/bottom">
+
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/pager_intro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <com.rd.PageIndicatorView
+                android:id="@+id/indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="@dimen/primary"
+                android:layout_marginBottom="@dimen/secondary"
+                android:padding="@dimen/lite"
+                app:piv_animationType="thinWorm"
+                app:piv_radius="@dimen/lite"
+                app:piv_selectedColor="@color/accent"
+                app:piv_unselectedColor="@color/divider"
+                app:piv_viewPager="@id/pager_intro" />
+
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_signin"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/primary"
+                android:layout_weight="2"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="0.0px"
+                app:cardBackgroundColor="@color/accent"
+                app:cardCornerRadius="@dimen/duplex"
+                app:cardElevation="@dimen/extra_large"
+                app:cardPreventCornerOverlap="false"
+                app:cardUseCompatPadding="false"
+                app:contentPadding="@dimen/mini">
+
+                <TextView
+                    fontPath="fonts/CircularStd-Medium.ttf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/primary"
+                    android:text="@string/get_started"
+                    android:textAllCaps="true"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/primary_txt"
+                    tools:ignore="MissingPrefix,RtlHardcoded" />
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -30,6 +30,7 @@ open class BaseActivity : AppCompatActivity(),
         super.attachBaseContext(newBase?.let { LocaleContextWrapper.wrapContext(it) })
     }
 
+
     override fun showMessage(message: String?) {
         message?.let { AppToast.showToast(this, it) }
     }

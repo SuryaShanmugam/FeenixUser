@@ -32,8 +32,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup">
+
         <activity
-            android:name=".view.activities.WalkthroughActivity"
+            android:name=".view.activities.Walkthrough.WalkthroughActivity"
             android:exported="false"
             android:screenOrientation="fullSensor" />
         <activity
@@ -47,6 +48,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".view.activities.SignInMobileActivity"
+            android:exported="false"
+            android:screenOrientation="fullSensor" />
 
         <service
             android:name=".broadcastreceiver.ForegroundService"
