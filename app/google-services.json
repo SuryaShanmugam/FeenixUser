@@ -15,43 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "468501719921-21hnn0u3l98b86pqor6plj69b2di5llq.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.app.feenix",
-            "certificate_hash": "9217a14c7e79bdf12ef8330685dd16a89515ecfc"
-          }
-        },
-        {
-          "client_id": "468501719921-m74gaqshcsb990dfeflkpj850ljbo71c.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.app.feenix",
-            "certificate_hash": "8842081500fe919c962a998f6151257b045b97e9"
-          }
-        },
-        {
-          "client_id": "468501719921-kldv0p16uropvice1m63grka4orpdpme.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.app.feenix",
-            "certificate_hash": "4fad538e30f62c842e54f40089b324e09409f483"
-          }
-        },
-        {
           "client_id": "468501719921-2e15hrj19eo1ah0s73mgci6a40pjvam8.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.app.feenix",
             "certificate_hash": "5be5bb732b0f0d9112e3e9b5f74c1da1ff48dec7"
-          }
-        },
-        {
-          "client_id": "468501719921-nf3ddn0lq3bnjf2ibn8qnvh4s1bd3p0v.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.app.feenix",
-            "certificate_hash": "888992871bf96f80d73107ad85665930b0e2367a"
           }
         },
         {
@@ -63,11 +31,11 @@
           }
         },
         {
-          "client_id": "468501719921-m6ck2o33aaiuoh6to3hk3qj2khapqqoc.apps.googleusercontent.com",
+          "client_id": "468501719921-6dp14omuo9a4mc4p4sk27nsltiiunbe6.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.app.feenix",
-            "certificate_hash": "7df528fb0b433f2354c6921c75a247b9839edc69"
+            "certificate_hash": "b390c6346f1df16b70bc01726b416dddc4d40d23"
           }
         },
         {
@@ -76,6 +44,38 @@
           "android_info": {
             "package_name": "com.app.feenix",
             "certificate_hash": "d078b5d3a599c1aacd95985cc3a67e9e10d9daef"
+          }
+        },
+        {
+          "client_id": "468501719921-llu6eiahcln0dek9esk11ccqo78h3g7h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.feenix",
+            "certificate_hash": "8842081500fe919c962a998f6151257b045b97e9"
+          }
+        },
+        {
+          "client_id": "468501719921-m6ck2o33aaiuoh6to3hk3qj2khapqqoc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.feenix",
+            "certificate_hash": "7df528fb0b433f2354c6921c75a247b9839edc69"
+          }
+        },
+        {
+          "client_id": "468501719921-nf3ddn0lq3bnjf2ibn8qnvh4s1bd3p0v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.feenix",
+            "certificate_hash": "888992871bf96f80d73107ad85665930b0e2367a"
+          }
+        },
+        {
+          "client_id": "468501719921-prg8l487sbclrvec7nnd36jirrg98m1a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.feenix",
+            "certificate_hash": "2de1fe802c81ede4d95e12abf7a5db0267aae34e"
           }
         },
         {
@@ -95,37 +95,13 @@
           }
         },
         {
-          "client_id": "468501719921-v7o5jtssevv891qjani53pq8pin6sh25.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.app.feenix",
-            "certificate_hash": "85b32b2c60493710d8a73ae1e24193483e1b3d59"
-          }
-        },
-        {
-          "client_id": "468501719921-hrai2883lgb7g77851ap8v9tpih98i2i.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.app.feenix",
-            "certificate_hash": "c73f5e8efe9aa29d2c39bf3388ffd80f7dba43f4"
-          }
-        },
-        {
-          "client_id": "468501719921-fml8dqotehhacm038je85a2r28rf3a04.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.app.feenix",
-            "certificate_hash": "7dea75df02166f5cc796c4710d20280e458369d0"
-          }
-        },
-        {
           "client_id": "468501719921-mm3urmonp47esptjbf2dm9ps7ukqtm3n.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCGUECkIbHGqroMXKqWRBfeo0nULfzbYK4"
+          "current_key": "AIzaSyClZPgIBwL8DLElIki8iewb5GaMbrKnM2E"
         }
       ],
       "services": {

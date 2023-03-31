@@ -34,4 +34,13 @@
         <item name="android:textColor">@color/text_color</item>
     </style>
 
+
+    <style name="EditTextTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorControlNormal">@color/editTextColor</item>
+        <item name="colorControlActivated">@color/editTextColor</item>
+        <item name="colorControlHighlight">@color/editTextColor</item>
+
+    </style>
+
+
 </resources>

@@ -4,10 +4,10 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
-import com.app.feenix.api.ApiClient
 import com.app.feenix.app.AppController
 import com.app.feenix.broadcastreceiver.ServicesBroadcastManager
 import com.app.feenix.utils.Log
+import com.app.feenix.webservices.ApiClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import java.io.IOException
@@ -153,7 +153,7 @@ class InternetConnectionManager : ConnectivityManager.NetworkCallback(),
      * Checks if the public server is reachable
      * */
     private fun isPublicHostReachable(): Boolean {
-        return pingServer(ApiClient.BASE_URL)
+        return pingServer(ApiClient.BASE_URL_CLIENTPORTAL)
     }
 
     /**

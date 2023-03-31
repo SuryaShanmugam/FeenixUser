@@ -1,4 +1,4 @@
-package com.app.feenix.view.base
+package com.app.feenix.view.activities.base
 
 import android.content.Context
 

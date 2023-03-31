@@ -8,13 +8,15 @@ import androidx.viewpager.widget.ViewPager
 import cbs.com.bmr.Utilities.MyActivity
 import com.app.feenix.R
 import com.app.feenix.databinding.ActivityWalkthroughBinding
-import com.app.feenix.view.activities.SignInMobileActivity
+import com.app.feenix.feature.internet.InternetConnectionLayout
+import com.app.feenix.feature.internet.InternetConnectionManager
+import com.app.feenix.view.activities.base.BaseActivity
+import com.app.feenix.view.activities.signin.SignInMobileActivity
 import com.app.feenix.view.adapter.MyPagerAdapter
-import com.app.feenix.view.base.BaseActivity
 import com.rd.PageIndicatorView
 
-class WalkthroughActivity : BaseActivity(), View.OnClickListener {
-
+class WalkthroughActivity : BaseActivity(), View.OnClickListener,
+    InternetConnectionManager.InternetConnectionListener {
 
     private lateinit var binding: ActivityWalkthroughBinding
     private var mPagerIntro: ViewPager? = null
@@ -23,11 +25,14 @@ class WalkthroughActivity : BaseActivity(), View.OnClickListener {
     private var mPagerAdapter: MyPagerAdapter? = null
     private var mCardSignIn: CardView? = null
     var mContext: Context? = null
+    private lateinit var internetConnectionLayout: InternetConnectionLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityWalkthroughBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        internetConnectionLayout = binding.activityWalkthroughInternetConnectionLayout.root
+        internetConnectionLayout.init(this)
         initObjects()
         initCallbacks()
         populateIntro()
@@ -37,6 +42,30 @@ class WalkthroughActivity : BaseActivity(), View.OnClickListener {
     private fun initCallbacks() {
         mCardSignIn?.setOnClickListener(this)
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        internetConnectionLayout.apply {
+            onResume()
+            registerInternetConnectionListener("WalkthroughActivity")
+        }
+
+    }
+
+    override fun onPause() {
+        super.onPause()
+        internetConnectionLayout.unregisterInternetConnectionListener()
+    }
+
+    override fun onInternetAvailable() {
+
+        internetConnectionLayout.onInternetAvailable()
+
+    }
+
+    override fun onInternetLost() {
+        internetConnectionLayout.onInternetLost()
     }
 
     private fun initObjects() {
@@ -85,6 +114,8 @@ class WalkthroughActivity : BaseActivity(), View.OnClickListener {
         when (id) {
             R.id.card_signin -> {
                 MyActivity.launch(mContext!!, SignInMobileActivity::class.java)
+                overridePendingTransition(R.anim.slide_left, R.anim.slide_right)
+
             }
         }
     }

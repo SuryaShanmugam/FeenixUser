@@ -65,10 +65,12 @@ dependencies {
     implementation 'io.github.inflationx:viewpump:2.0.3'
 
     //Firebase
-    implementation 'com.google.firebase:firebase-analytics:21.2.0'
+    implementation 'com.google.firebase:firebase-analytics:21.2.1'
     implementation 'com.google.firebase:firebase-messaging:23.1.2'
     implementation 'com.google.firebase:firebase-core:21.1.1'
-    implementation 'com.google.firebase:firebase-auth:21.1.0'
+    implementation 'com.google.firebase:firebase-auth:21.2.0'
+    implementation platform('com.google.firebase:firebase-bom:30.5.0')
+
 
     //Playservices
     implementation "com.google.android.gms:play-services-base:18.2.0"

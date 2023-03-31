@@ -28,7 +28,7 @@ class MyPreference(context: Context) {
         set(email) = mPreferencesUser.edit().putString(encode(EMAIL), email).apply()
 
     var token: String?
-        get() = mPreferencesUser.getString(encode(TOKEN), null)
+        get() = mPreferencesUser.getString(encode(TOKEN), "")
         set(token) = mPreferencesUser.edit().putString(encode(TOKEN), token).apply()
 
     val userToken = "Bearer $token"
@@ -36,6 +36,10 @@ class MyPreference(context: Context) {
     var profilePic: String?
         get() = mPreferencesUser.getString(encode(PROFILE_PIC), null)
         set(profilePic) = mPreferencesUser.edit().putString(encode(PROFILE_PIC), profilePic).apply()
+    var Username: String?
+        get() = mPreferencesUser.getString(encode(USERNAME), null)
+        set(username) = mPreferencesUser.edit().putString(encode(USERNAME), username).apply()
+
 
     var isFirstTime: Boolean
         get() = mPreferencesMisc.getBoolean(encode(FIRST_TIME), true)
@@ -63,5 +67,6 @@ class MyPreference(context: Context) {
         private const val PROFILE_PIC = "profile_pic"
         private const val FIRST_TIME = "first_time"
         private const val FCM_TOKEN = "fcm_token"
+        private const val USERNAME = "username"
     }
 }

@@ -6,8 +6,6 @@ import java.util.*
 
 class Validator {
     companion object {
-
-
         fun isValidationEditext(editText: EditText, Message: String): Boolean {
 
             if (editText.text.isBlank()) {

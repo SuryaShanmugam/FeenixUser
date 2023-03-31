@@ -9,14 +9,17 @@ import android.os.Handler
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import cbs.com.bmr.Utilities.MyActivity
+import com.app.feenix.R
 import com.app.feenix.app.Constant
+import com.app.feenix.app.MyPreference
 import com.app.feenix.broadcastreceiver.ServicesBroadcastManager
 import com.app.feenix.databinding.ActivitySplashBinding
 import com.app.feenix.utils.CodeSnippet
 import com.app.feenix.utils.Log
 import com.app.feenix.utils.PermissionHandler
 import com.app.feenix.view.activities.Walkthrough.WalkthroughActivity
-import com.app.feenix.view.base.BaseActivity
+import com.app.feenix.view.activities.base.BaseActivity
+import com.app.feenix.view.activities.signin.SignInMultipleAccountsActivity
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 
 @SuppressLint("CustomSplashScreen")
@@ -29,6 +32,7 @@ class SplashActivity : BaseActivity() {
     private lateinit var binding: ActivitySplashBinding
     var handler = Handler()
     var mContext: Context? = null
+    private var myPreference: MyPreference? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySplashBinding.inflate(layoutInflater)
@@ -39,8 +43,17 @@ class SplashActivity : BaseActivity() {
 
     private fun initObject() {
         mContext = this@SplashActivity
+        myPreference = MyPreference(mContext!!)
         handler.postDelayed({
-            MyActivity.launchClearStack(mContext!!, WalkthroughActivity::class.java)
+            if (myPreference?.token!!.isNotEmpty()) {
+
+                MyActivity.launchClearStack(mContext!!, SignInMultipleAccountsActivity::class.java)
+            } else {
+                MyActivity.launchClearStack(mContext!!, WalkthroughActivity::class.java)
+                overridePendingTransition(R.anim.slide_left, R.anim.slide_right)
+            }
+
+
         }, 3000)
 
 
