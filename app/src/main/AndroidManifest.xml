@@ -24,6 +24,8 @@
     <uses-permission android:name="android.permission.READ_PHONE_NUMBERS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
+    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
+
     <application
         android:name=".app.AppController"
         android:allowBackup="false"
@@ -62,6 +64,15 @@
             android:name=".view.activities.signin.SignInMultipleAccountsActivity"
             android:exported="false"
             android:screenOrientation="fullSensor" />
+        <activity android:name=".view.activities.signin.SignInEmailActivity"
+            android:exported="false"
+            android:screenOrientation="fullSensor"/>
+        <activity android:name=".view.activities.signin.SignInNameActivity"
+            android:exported="false"
+            android:screenOrientation="fullSensor"/>
+        <activity android:name=".view.activities.signin.SignInProfileActivity"
+            android:exported="false"
+            android:screenOrientation="fullSensor"/>
 
         <service
             android:name=".broadcastreceiver.ForegroundService"
@@ -84,6 +95,16 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+        <receiver
+            android:name=".broadcastreceiver.SmsBroadcastReceiver"
+            android:exported="true"
+            android:permission="TODO">
+            <intent-filter>
+                <action android:name="com.google.android.gms.auth.api.phone.SMS_RETRIEVE" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

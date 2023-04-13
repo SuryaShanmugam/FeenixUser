@@ -5,9 +5,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentSender.SendIntentException
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
 import cbs.com.bmr.Utilities.MyActivity
+import cbs.com.bmr.Utilities.ToastBuilder
 import com.app.biu.model.RequestModel.ResponseModel.SignInMobileResponse
 import com.app.feenix.R
 import com.app.feenix.app.MyPreference
@@ -19,6 +22,7 @@ import com.google.android.gms.auth.api.credentials.Credential
 import com.google.android.gms.auth.api.credentials.Credentials
 import com.google.android.gms.auth.api.credentials.HintRequest
 import com.hbb20.CountryCodePicker
+import com.hellotirupathur.utils.TextChangedListener
 import com.hellotirupathur.utils.Validator
 
 class SignInMobileActivity : BaseActivity(), View.OnClickListener, ISignInMobile {
@@ -51,6 +55,7 @@ class SignInMobileActivity : BaseActivity(), View.OnClickListener, ISignInMobile
         authService!!.SignInService(this@SignInMobileActivity)
         MobileNumber = binding.editMobile
         mobileCodePicker = binding.countryCodePicker
+        TextChangedListener.onTextChanged(MobileNumber,binding.signIn)
 
     }
 
@@ -91,20 +96,27 @@ class SignInMobileActivity : BaseActivity(), View.OnClickListener, ISignInMobile
                 mobileCountryCode = mobileCodePicker.selectedCountryCodeWithPlus
 
                 if (Validator.isValidationEditext(MobileNumber, "Enter Mobile Number")) {
-                    authService?.getLoginMobile(
-                        this, MobileNumber.text.toString().trim(),
-                        mobileCountryCode!!
-                    )
+                    if(hasInternetConnection())
+                    {
+                        authService?.getLoginMobile(
+                            this, MobileNumber.text.toString().trim(),
+                            mobileCountryCode!!,""
+                        )
+                    }
+                    else
+                    {
+                        ToastBuilder.build(mContext,"Please Connect internet and Try again")
+                    }
+
                 }
             }
         }
     }
-
     override fun onSignInMobileResponse(signInMobileResponse: SignInMobileResponse) {
         if (signInMobileResponse.success!!) {
             myPreference!!.token = signInMobileResponse.data?.access_token
-            myPreference!!.Username = signInMobileResponse.data?.first_name
-            myPreference!!.email = signInMobileResponse.data?.email
+            myPreference!!.Username = signInMobileResponse.data?.first_name+signInMobileResponse.data?.last_name
+            myPreference!!.mobile = mobileCountryCode+binding.editMobile.text.toString().trim()
             val bundle = Bundle()
             bundle.putString("phoneNumber", binding.editMobile.text.toString().trim())
             bundle.putString("CountryCode", mobileCountryCode)
@@ -116,11 +128,7 @@ class SignInMobileActivity : BaseActivity(), View.OnClickListener, ISignInMobile
             val bundle = Bundle()
             bundle.putString("phoneNumber", binding.editMobile.text.toString().trim())
             bundle.putString("CountryCode", mobileCountryCode)
-            MyActivity.launchWithBundle(
-                mContext!!,
-                SignInMultipleAccountsActivity::class.java,
-                bundle
-            )
+            MyActivity.launchWithBundle(mContext!!, SignInMultipleAccountsActivity::class.java, bundle)
         }
     }
 

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.activities.signin.SignInEmailActivity">
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="#fff">
+
+        <ImageView
+            android:id="@+id/img_back_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            android:adjustViewBounds="true"
+            android:padding="@dimen/lite"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/ic_black_backarrow"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/navigation_icon"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/secondary"
+            app:srcCompat="@drawable/bg_signin_email"
+            tools:ignore="ContentDescription" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/layout_email"
+            android:layout_margin="@dimen/primary"
+            android:layout_below="@+id/logo"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/title"
+                fontPath="fonts/CircularStd-Bold.ttf"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/medium"
+                android:text="@string/enter_email"
+                android:textColor="@color/slide_text_color"
+                android:textSize="@dimen/default_txt1"
+                tools:ignore="MissingPrefix" />
+
+
+            <RelativeLayout
+                android:id="@+id/layout_mobile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/lite">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="05dp"
+                    android:orientation="vertical">
+
+
+                    <EditText
+                        android:id="@+id/email_id_sign"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:background="@drawable/bg_edittext_unselected"
+                        android:hint="@string/email_id"
+                        fontPath="fonts/Graphik-Regular.ttf"
+                        android:inputType="textEmailAddress"
+                        android:padding="@dimen/primary"
+                        android:textColor="@color/invoice_text_color"
+                        android:textColorHint="@color/slide_text_color"
+                        android:textSize="@dimen/default_txt"
+                        tools:ignore="Autofill,MissingPrefix" />
+
+                </LinearLayout>
+
+
+            </RelativeLayout>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="05dp"
+
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/txt_skip"
+                fontPath="fonts/CircularStd-Medium.ttf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="start"
+                android:padding="@dimen/primary1"
+                android:text="@string/skip_for_now"
+                android:textColor="@color/primary"
+                android:textSize="@dimen/secondary_txt"
+                tools:ignore="MissingPrefix" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end">
+
+                <ImageView
+                    android:id="@+id/signIn_email"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/primary"
+                    app:srcCompat="@drawable/btn_login_selector" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

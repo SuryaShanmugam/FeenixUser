@@ -3,6 +3,143 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".view.activities.signin.SignInMultipleAccountsActivity">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#fff"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="MissingPrefix">
 
+        <ImageView
+            android:id="@+id/img_back_multiple"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            android:adjustViewBounds="true"
+            android:padding="@dimen/lite"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/ic_black_backarrow"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/img_back_multiple"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/secondary"
+            app:srcCompat="@drawable/bg_signin_multipleaccounts"
+            tools:ignore="ContentDescription" />
+
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/logo">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/primary"
+                    android:layout_marginTop="@dimen/secondary"
+                    android:layout_marginEnd="@dimen/primary"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    tools:ignore="UselessParent">
+
+                    <TextView
+                        android:id="@+id/txt_desc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:layout_marginTop="@dimen/lite"
+                        android:ellipsize="end"
+                        android:gravity="start"
+                        android:lineSpacingExtra="@dimen/lite"
+                        android:text="@string/associate_number"
+                        android:textColor="@color/slide_text_color"
+                        android:textSize="@dimen/default_txt" />
+
+                    <TextView
+                        android:id="@+id/title"
+                        fontPath="fonts/CircularStd-Bold.ttf"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_below="@+id/txt_desc"
+                        android:layout_marginTop="@dimen/medium"
+                        android:text="@string/enter_email"
+                        android:textColor="@color/slide_text_color"
+                        android:textSize="@dimen/default_txt1"
+                        android:textStyle="bold" />
+
+
+                    <RelativeLayout
+                        android:id="@+id/layout_mobile"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/title"
+                        android:layout_marginTop="@dimen/lite">
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="05dp"
+                            android:orientation="vertical">
+
+
+                            <EditText
+                                android:id="@+id/email_id_multiple"
+                                android:layout_width="match_parent"
+                                android:layout_height="56dp"
+                                android:background="@drawable/bg_edittext_unselected"
+                                android:hint="@string/email_id"
+                                android:inputType="textEmailAddress"
+                                android:padding="@dimen/primary"
+                                android:textColor="@color/invoice_text_color"
+                                android:textColorHint="@color/slide_text_color"
+                                android:textSize="@dimen/default_txt" />
+
+                        </LinearLayout>
+
+
+                    </RelativeLayout>
+
+                </RelativeLayout>
+            </LinearLayout>
+        </ScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="05dp"
+            android:gravity="end"
+            android:orientation="vertical">
+
+
+            <ImageView
+                android:id="@+id/signIn_multiple"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/primary"
+                app:srcCompat="@drawable/btn_login_selector" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

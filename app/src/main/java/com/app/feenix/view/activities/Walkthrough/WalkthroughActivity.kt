@@ -114,8 +114,6 @@ class WalkthroughActivity : BaseActivity(), View.OnClickListener,
         when (id) {
             R.id.card_signin -> {
                 MyActivity.launch(mContext!!, SignInMobileActivity::class.java)
-                overridePendingTransition(R.anim.slide_left, R.anim.slide_right)
-
             }
         }
     }

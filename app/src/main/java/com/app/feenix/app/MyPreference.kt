@@ -49,7 +49,43 @@ class MyPreference(context: Context) {
         get() = mPreferencesMisc.getString(encode(FCM_TOKEN), null)
         set(fcmToken) = mPreferencesMisc.edit().putString(encode(FCM_TOKEN), fcmToken).apply()
 
+    var dynamicMapkey: String?
+        get() = mPreferencesMisc.getString(encode(DYNAMIC_MAP_KEY), null)
+        set(dynamicMapkey) = mPreferencesMisc.edit().putString(encode(DYNAMIC_MAP_KEY), dynamicMapkey).apply()
+    var firstName: String?
+        get() = mPreferencesUser.getString(encode(FIRST_NAME), null)
+        set(firstName) = mPreferencesUser.edit().putString(encode(FIRST_NAME), firstName).apply()
+    var lastName: String?
+        get() = mPreferencesUser.getString(encode(LAST_NAME), null)
+        set(lastName) = mPreferencesUser.edit().putString(encode(LAST_NAME), lastName).apply()
+
+    var countryCode: String?
+        get() = mPreferencesUser.getString(encode(COUNTRY_CODE), null)
+        set(countryCode) = mPreferencesUser.edit().putString(encode(COUNTRY_CODE), countryCode).apply()
+
+    var ReferralCode: String?
+        get() = mPreferencesUser.getString(encode(REFFERAL_CODE), null)
+        set(ReferralCode) = mPreferencesUser.edit().putString(encode(REFFERAL_CODE), ReferralCode).apply()
+
+    var walletBal: String?
+        get() = mPreferencesUser.getString(encode(WALLET_BAL), null)
+        set(walletBal) = mPreferencesUser.edit().putString(encode(WALLET_BAL), walletBal).apply()
+
+    var welcomeImage: String?
+        get() = mPreferencesUser.getString(encode(WELCOME_IMAGE), null)
+        set(welcomeImage) = mPreferencesUser.edit().putString(encode(WELCOME_IMAGE), welcomeImage).apply()
+    var fleet: String?
+        get() = mPreferencesUser.getString(encode(FLEET), null)
+        set(fleet) = mPreferencesUser.edit().putString(encode(FLEET), fleet).apply()
+
+    var sosNumber: String?
+        get() = mPreferencesUser.getString(encode(SOS_NUMBER), null)
+        set(sosNumber) = mPreferencesUser.edit().putString(encode(SOS_NUMBER), sosNumber).apply()
+
+
+
     fun clearUser() {
+
         mPreferencesUser.edit().clear().apply()
     }
 
@@ -68,5 +104,14 @@ class MyPreference(context: Context) {
         private const val FIRST_TIME = "first_time"
         private const val FCM_TOKEN = "fcm_token"
         private const val USERNAME = "username"
+        private const val DYNAMIC_MAP_KEY = "usermapkey"
+        private const val FIRST_NAME = "firstname"
+        private const val LAST_NAME = "lastname"
+        private const val COUNTRY_CODE = "countrycode"
+        private const val REFFERAL_CODE = "referalcode"
+        private const val WELCOME_IMAGE = "welcome_image"
+        private const val WALLET_BAL = "wallet_bal"
+        private const val FLEET = "fleet"
+        private const val SOS_NUMBER = "sos_number"
     }
 }

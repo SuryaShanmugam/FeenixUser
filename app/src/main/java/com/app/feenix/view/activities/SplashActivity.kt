@@ -44,13 +44,13 @@ class SplashActivity : BaseActivity() {
     private fun initObject() {
         mContext = this@SplashActivity
         myPreference = MyPreference(mContext!!)
+        myPreference?.fcmToken="fPaQiC4NhHw:APA91bFsGrKGYNQTcI_RvAu-rRPS4TDtBJuDFlzh7hBy5Q5R1plbhcysP7MUqUYXbuQtAuhZb9gbulKMuEWaEwH3m500CNUSNCk6cG7rf_V7xYe53J0J3QDBx8hCKxiMmdo-BVN4QVKd"
         handler.postDelayed({
             if (myPreference?.token!!.isNotEmpty()) {
 
                 MyActivity.launchClearStack(mContext!!, SignInMultipleAccountsActivity::class.java)
             } else {
                 MyActivity.launchClearStack(mContext!!, WalkthroughActivity::class.java)
-                overridePendingTransition(R.anim.slide_left, R.anim.slide_right)
             }
 
 
