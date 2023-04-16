@@ -101,6 +101,10 @@ dependencies {
     implementation 'com.romandanylyk:pageindicatorview:1.0.0@aar'
 
 
+    implementation 'com.github.jkwiecien:EasyImage:2.1.0'
+    implementation 'com.skyfishjy.ripplebackground:library:1.0.1'
+
+
 }
 apply plugin: 'com.google.gms.google-services'
 

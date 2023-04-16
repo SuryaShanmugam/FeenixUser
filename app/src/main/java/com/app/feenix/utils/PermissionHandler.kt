@@ -10,11 +10,11 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.view.Gravity
 import android.view.WindowManager
+import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.app.feenix.R
-import com.google.android.material.button.MaterialButton
 
 /**
  * This class is used to handle runtime permission targeting Android 6.0 and higher
@@ -120,9 +120,9 @@ object PermissionHandler {
         val permission_alert_dialog_content_text_view =
             permissionAlertDialog.findViewById<TextView>(R.id.permission_alert_dialog_content_text_view)
         val permission_alert_dialog_negative_button =
-            permissionAlertDialog.findViewById<MaterialButton>(R.id.permission_alert_dialog_negative_button)
+            permissionAlertDialog.findViewById<Button>(R.id.permission_alert_dialog_negative_button)
         val permission_alert_dialog_positive_button =
-            permissionAlertDialog.findViewById<MaterialButton>(R.id.permission_alert_dialog_positive_button)
+            permissionAlertDialog.findViewById<Button>(R.id.permission_alert_dialog_positive_button)
         permission_alert_dialog_content_text_view.text = getContent(permission)
         permission_alert_dialog_title_text_view.text = activity.getString(R.string.permission_title)
         permission_alert_dialog_negative_button.setOnClickListener {

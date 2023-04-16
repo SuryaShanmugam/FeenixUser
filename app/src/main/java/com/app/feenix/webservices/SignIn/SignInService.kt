@@ -22,6 +22,10 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import java.io.File
 
 
 class SignInService {
@@ -266,7 +270,8 @@ class SignInService {
         val authService: ApiInterface = ApiClient.clientportal.create(ApiInterface::class.java)
 
         val testObservable1 = authService.UpdateProfileName(
-            myPreference?.userToken!!, UpdateProfileNameRequest(firstname,lastname)
+            "XMLHttpRequest",
+            myPreference?.userToken!!, UpdateProfileNameRequest(firstname, lastname)
         )
 
         testObservable1.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
@@ -299,6 +304,7 @@ class SignInService {
         val authService: ApiInterface = ApiClient.clientportal.create(ApiInterface::class.java)
 
         val testObservable1 = authService.UpdateProfileEmail(
+            "XMLHttpRequest",
             myPreference?.userToken!!, UpdateProfileEmailRequest(Email)
         )
         testObservable1.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
@@ -324,5 +330,45 @@ class SignInService {
             })
     }
 
+    // Update User ProfilePic
+    fun UpdateUserPic(iupdateProfile: IUpdateProfile, file: File) {
+        iUpdateProfile = iupdateProfile
+        CustomeProgressDialog!!.showDialog(mContext)
+        val authService: ApiInterface = ApiClient.clientportal.create(ApiInterface::class.java)
+
+
+        val filePart: MultipartBody.Part = MultipartBody.Part.createFormData(
+            "picture",
+            file.name,
+            RequestBody.create(MediaType.parse("image/*"), file)
+        )
+
+        val testObservable1 = authService.UpdateProfilePic(
+            "XMLHttpRequest",
+            myPreference?.userToken!!, filePart
+        )
+        testObservable1.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Observer<UpdateProfileMobileResponse> {
+                override fun onSubscribe(d: Disposable) {
+                }
+
+                override fun onNext(loginresponse: UpdateProfileMobileResponse) {
+
+                    updateProfileMobileResponse = loginresponse
+
+                }
+
+                override fun onError(e: Throwable) {
+                    CustomeProgressDialog!!.hideDialog()
+                    ErrorHandler.handle(e.toString())
+                }
+
+                override fun onComplete() {
+                    CustomeProgressDialog!!.hideDialog()
+                    updateProfileMobileResponse?.let { iUpdateProfile?.onGetProfileNameResponse(it) }
+
+                }
+            })
+    }
 
 }

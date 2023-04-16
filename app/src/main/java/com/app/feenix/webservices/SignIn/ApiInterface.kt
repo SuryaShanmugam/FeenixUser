@@ -9,6 +9,7 @@ import com.app.feenix.model.request.UpdateProfileNameRequest
 import com.app.feenix.model.request.VerifyOTPRequest
 import com.app.feenix.model.response.UpdateProfileMobileResponse
 import io.reactivex.Observable
+import okhttp3.MultipartBody
 import retrofit2.http.*
 
 interface ApiInterface {
@@ -56,13 +57,24 @@ interface ApiInterface {
 
     @POST("update/profile")
     fun UpdateProfileName(
+        @Header("X-Requested-With") request: String?,
         @Header("Authorization") strToken: String?,
         @Body updateProfileMobileRequest: UpdateProfileNameRequest
     ): Observable<UpdateProfileMobileResponse>
+
     @POST("update/profile")
     fun UpdateProfileEmail(
+        @Header("X-Requested-With") request: String?,
         @Header("Authorization") strToken: String?,
         @Body updateProfileEmailRequest: UpdateProfileEmailRequest
+    ): Observable<UpdateProfileMobileResponse>
+
+    @Multipart
+    @POST("update/profile")
+    fun UpdateProfilePic(
+        @Header("X-Requested-With") request: String?,
+        @Header("Authorization") strToken: String?,
+        @Part filePart: MultipartBody.Part
     ): Observable<UpdateProfileMobileResponse>
 
     // Get Profile

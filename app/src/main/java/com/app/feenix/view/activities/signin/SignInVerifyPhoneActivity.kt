@@ -18,6 +18,7 @@ import com.app.feenix.app.MyPreference
 import com.app.feenix.broadcastreceiver.SmsBroadcastReceiver
 import com.app.feenix.databinding.ActivitySignInVerifyPhoneBinding
 import com.app.feenix.model.response.UpdateProfileMobileResponse
+import com.app.feenix.view.activities.HomeActivity
 import com.app.feenix.view.activities.base.BaseActivity
 import com.app.feenix.viewmodel.IGetProfileData
 import com.app.feenix.viewmodel.ISignInVerifyOtp
@@ -72,7 +73,7 @@ View.OnClickListener,IGetProfileData{
         first_name = bundle?.getString("first_name")
         last_name = bundle?.getString("last_name")
         new = bundle?.getInt("new")
-        binding.textTitleNo.setText(String.format("%s", phoneNumber))
+        binding.textTitleNo.text = String.format("%s", phoneNumber)
 
 
 
@@ -326,6 +327,7 @@ View.OnClickListener,IGetProfileData{
 
     private fun moveHomeActivity(activeRequestFlow: String, activeRequestId: String) {
 
+        MyActivity.launchClearStack(mContext!!, HomeActivity::class.java)
 
     }
 

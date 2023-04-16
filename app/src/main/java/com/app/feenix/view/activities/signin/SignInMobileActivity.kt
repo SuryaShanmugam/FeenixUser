@@ -5,8 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentSender.SendIntentException
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
 import cbs.com.bmr.Utilities.MyActivity
@@ -115,8 +113,10 @@ class SignInMobileActivity : BaseActivity(), View.OnClickListener, ISignInMobile
     override fun onSignInMobileResponse(signInMobileResponse: SignInMobileResponse) {
         if (signInMobileResponse.success!!) {
             myPreference!!.token = signInMobileResponse.data?.access_token
-            myPreference!!.Username = signInMobileResponse.data?.first_name+signInMobileResponse.data?.last_name
-            myPreference!!.mobile = mobileCountryCode+binding.editMobile.text.toString().trim()
+            myPreference!!.Username =
+                signInMobileResponse.data?.first_name + " " + signInMobileResponse.data?.last_name
+            myPreference!!.mobile = mobileCountryCode + binding.editMobile.text.toString().trim()
+            myPreference?.countryCode = mobileCountryCode
             val bundle = Bundle()
             bundle.putString("phoneNumber", binding.editMobile.text.toString().trim())
             bundle.putString("CountryCode", mobileCountryCode)

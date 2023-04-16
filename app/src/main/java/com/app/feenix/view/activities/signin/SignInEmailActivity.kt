@@ -10,13 +10,15 @@ import com.app.feenix.R
 import com.app.feenix.app.MyPreference
 import com.app.feenix.databinding.ActivitySignInEmailBinding
 import com.app.feenix.model.response.UpdateProfileMobileResponse
+import com.app.feenix.view.activities.HomeActivity
 import com.app.feenix.view.activities.base.BaseActivity
+import com.app.feenix.viewmodel.IGetProfileData
 import com.app.feenix.viewmodel.IUpdateProfile
 import com.app.feenix.webservices.SignIn.SignInService
 import com.hellotirupathur.utils.TextChangedListener
 import com.hellotirupathur.utils.Validator
 
-class SignInEmailActivity : BaseActivity() , IUpdateProfile, View.OnClickListener {
+class SignInEmailActivity : BaseActivity(), IUpdateProfile, View.OnClickListener, IGetProfileData {
 
     private lateinit var binding: ActivitySignInEmailBinding
     var mContext: Context? = null
@@ -63,7 +65,7 @@ class SignInEmailActivity : BaseActivity() , IUpdateProfile, View.OnClickListene
             }
             R.id.txt_skip->
             {
-                MyActivity.launchClearTop(mContext!!,SignInProfileActivity::class.java)
+                authService?.getProfileDetails(this)
             }
             R.id.img_back_email->
             {
@@ -73,15 +75,46 @@ class SignInEmailActivity : BaseActivity() , IUpdateProfile, View.OnClickListene
 
     }
     override fun onGetProfileNameResponse(updateProfileMobileResponse: UpdateProfileMobileResponse) {
-        if(updateProfileMobileResponse.success)
-        {
+        if(updateProfileMobileResponse.success) {
             myPreference!!.email = updateProfileMobileResponse.data?.email
-            MyActivity.launch(mContext!!,SignInProfileActivity::class.java)
-        }
-        else
-        {
-            ToastBuilder.build(mContext!!,"Response Error")
+            MyActivity.launch(mContext!!, SignInProfileActivity::class.java)
+        } else {
+            ToastBuilder.build(mContext!!, "Response Error")
         }
 
     }
+
+    override fun onGetProfileResponse(updateProfileMobileResponse: UpdateProfileMobileResponse) {
+
+        if (updateProfileMobileResponse.success) {
+            myPreference?.dynamicMapkey = updateProfileMobileResponse.data?.android_user_mapkey
+            myPreference?.email = updateProfileMobileResponse.data?.email
+            myPreference?.firstName = updateProfileMobileResponse.data?.first_name
+            myPreference?.lastName = updateProfileMobileResponse.data?.last_name
+            myPreference?.mobile = updateProfileMobileResponse.data?.mobile
+            myPreference?.countryCode = updateProfileMobileResponse.data?.country_code
+            myPreference?.ReferralCode = updateProfileMobileResponse.data?.referal
+            myPreference?.id = updateProfileMobileResponse.data?.id!!
+            myPreference?.welcomeImage = updateProfileMobileResponse.data.welcome_image
+            myPreference?.sosNumber = updateProfileMobileResponse.data.sos_number
+            myPreference?.profilePic = updateProfileMobileResponse.data.picture
+            myPreference?.fleet = updateProfileMobileResponse.data.fleet
+            myPreference?.walletBal = updateProfileMobileResponse.data.wallet_balance
+            moveHomeActivity(
+                updateProfileMobileResponse.data.active_request_flow,
+                updateProfileMobileResponse.data.active_request_id
+            )
+
+        } else {
+            ToastBuilder.build(mContext!!, "Response Error")
+        }
+
+    }
+
+    private fun moveHomeActivity(activeRequestFlow: String, activeRequestId: String) {
+
+        MyActivity.launchClearStack(mContext!!, HomeActivity::class.java)
+
+    }
+
 }

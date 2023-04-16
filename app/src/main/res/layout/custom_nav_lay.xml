@@ -1,0 +1,459 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bottom_layout_drive"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="0dp"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/header_layout"
+                android:layout_width="120dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/primary"
+                android:elevation="10dp"
+                tools:ignore="UnusedAttribute">
+
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/user_pic"
+                        android:layout_width="79dp"
+                        android:layout_height="80dp"
+                        android:src="@drawable/bg_circle_profile_default" />
+
+
+                    <TextView
+                        android:id="@+id/username_text_profile"
+                        fontPath="fonts/CircularStd-Bold.ttf"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text=""
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/medium_txt"
+                        tools:ignore="HardcodedText,MissingPrefix" />
+
+                </FrameLayout>
+
+
+                <RelativeLayout
+                    android:id="@+id/editIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerInParent="true"
+                    android:layout_marginTop="@dimen/primary"
+                    android:layout_marginEnd="@dimen/primary">
+
+
+                    <ImageView
+                        android:id="@+id/image_edit_profilepic"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:padding="4dp"
+                        app:srcCompat="@drawable/ic_profile_edit"
+                        tools:ignore="ContentDescription" />
+                </RelativeLayout>
+            </RelativeLayout>
+
+
+            <TextView
+                android:id="@+id/user_name"
+                fontPath="fonts/CircularStd-Bold.ttf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:singleLine="true"
+                android:text="@string/user_name"
+                android:textColor="@color/slide_text_color"
+                android:textSize="@dimen/primary_txt"
+                tools:ignore="MissingPrefix" />
+
+
+            <TextView
+                android:id="@+id/profileDrawer"
+                fontPath="fonts/Graphik-Regular.ttf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/extra_lite"
+                android:layout_marginBottom="@dimen/duplex"
+                android:gravity="center"
+                android:singleLine="true"
+                android:text="@string/view_profile"
+                android:textColor="@color/primary"
+                android:textSize="@dimen/default_txt"
+                tools:ignore="MissingPrefix" />
+
+            <TextView
+                android:id="@+id/user_mobile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="21dp"
+                android:singleLine="true"
+                android:text="@string/user_name"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/normal"
+                android:gravity="center"
+                android:orientation="vertical">
+
+
+                <LinearLayout
+                    android:id="@+id/homeDrawer"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:foreground="@drawable/ripple"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="@dimen/normal"
+                    android:paddingEnd="@dimen/normal"
+                    android:visibility="visible"
+                    tools:ignore="UnusedAttribute">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/ic_menu_getaride"
+                        tools:ignore="ContentDescription" />
+
+                    <TextView
+                        fontPath="fonts/Graphik-Regular.ttf"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:text="Get a ride "
+                        android:textColor="@color/slide_text_color"
+                        android:textSize="@dimen/default_txt"
+                        tools:ignore="HardcodedText,MissingPrefix" />
+
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/your_trips_Drawer"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:foreground="@drawable/ripple"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="@dimen/normal"
+                    android:paddingEnd="@dimen/normal"
+                    tools:ignore="UnusedAttribute">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/ic_menu_yourtrips"
+                        tools:ignore="ContentDescription" />
+
+                    <TextView
+                        fontPath="fonts/Graphik-Regular.ttf"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:text="@string/your_trip"
+                        android:textColor="@color/slide_text_color"
+                        android:textSize="14sp"
+                        tools:ignore="MissingPrefix" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/community_drawer"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:foreground="@drawable/ripple"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="@dimen/normal"
+                    android:paddingEnd="@dimen/normal"
+                    tools:ignore="UnusedAttribute">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/ic_menu_community"
+                        tools:ignore="ContentDescription" />
+
+                    <TextView
+                        fontPath="fonts/Graphik-Regular.ttf"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:text="@string/community"
+                        android:textColor="@color/slide_text_color"
+                        android:textSize="14sp"
+                        tools:ignore="MissingPrefix" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/walletDrawer"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:foreground="@drawable/ripple"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="@dimen/normal"
+                    android:paddingEnd="@dimen/normal">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/ic_menu_wallet"
+                        tools:ignore="ContentDescription" />
+
+                    <TextView
+                        fontPath="fonts/Graphik-Regular.ttf"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:text="@string/wallet"
+                        android:textColor="@color/slide_text_color"
+                        android:textSize="14sp"
+                        tools:ignore="MissingPrefix" />
+
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/couponDrawer"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:foreground="@drawable/ripple"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="@dimen/normal"
+                    android:paddingEnd="@dimen/normal">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/ic_menu_promotions"
+                        tools:ignore="ContentDescription" />
+
+                    <TextView
+                        fontPath="fonts/Graphik-Regular.ttf"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:text="@string/coupon"
+                        android:textColor="@color/slide_text_color"
+                        android:textSize="14sp"
+                        tools:ignore="MissingPrefix" />
+
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/NoficationDrawer"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:foreground="@drawable/ripple"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="@dimen/normal"
+                    android:paddingEnd="@dimen/normal">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/ic_menu_notification"
+                        tools:ignore="ContentDescription" />
+
+                    <TextView
+                        fontPath="fonts/Graphik-Regular.ttf"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:text="@string/notifications"
+                        android:textColor="@color/slide_text_color"
+                        android:textSize="14sp"
+                        tools:ignore="MissingPrefix" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/shareDrawer"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:foreground="@drawable/ripple"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="@dimen/normal"
+                    android:paddingEnd="@dimen/normal">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/ic_menu_referearn"
+                        tools:ignore="ContentDescription" />
+
+                    <TextView
+                        fontPath="fonts/Graphik-Regular.ttf"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:text="@string/refer_and_earn"
+                        android:textColor="@color/slide_text_color"
+                        android:textSize="14sp"
+                        tools:ignore="MissingPrefix" />
+
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/helpDeskDrawer"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:foreground="@drawable/ripple"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="@dimen/normal"
+                    android:paddingEnd="@dimen/normal">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/ic_menu_help"
+                        tools:ignore="ContentDescription" />
+
+                    <TextView
+                        fontPath="fonts/Graphik-Regular.ttf"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:text="@string/help_desk"
+                        android:textColor="@color/slide_text_color"
+                        android:textSize="14sp"
+                        tools:ignore="MissingPrefix" />
+
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/logoutDrawer"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:foreground="@drawable/ripple"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="@dimen/normal"
+                    android:paddingEnd="@dimen/normal">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/ic_menu_logout"
+                        tools:ignore="ContentDescription" />
+
+                    <TextView
+                        fontPath="fonts/Graphik-Regular.ttf"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:text="@string/log_out"
+                        android:textColor="@color/slide_text_color"
+                        android:textSize="14sp"
+                        tools:ignore="MissingPrefix" />
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+
+    <LinearLayout
+        android:id="@+id/bottom_layout_drive"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/lite"
+        android:foreground="@drawable/ripple"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/normal"
+        android:paddingEnd="@dimen/normal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/ic_menu_ridewithfeenix"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            fontPath="fonts/Graphik-Regular.ttf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:text="Drive with Feenix"
+            android:textColor="@color/slide_text_color"
+            android:textSize="14sp"
+            tools:ignore="HardcodedText,MissingPrefix" />
+
+
+    </LinearLayout>
+
+</RelativeLayout>

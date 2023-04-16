@@ -9,7 +9,6 @@ import android.os.Handler
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import cbs.com.bmr.Utilities.MyActivity
-import com.app.feenix.R
 import com.app.feenix.app.Constant
 import com.app.feenix.app.MyPreference
 import com.app.feenix.broadcastreceiver.ServicesBroadcastManager
@@ -19,7 +18,6 @@ import com.app.feenix.utils.Log
 import com.app.feenix.utils.PermissionHandler
 import com.app.feenix.view.activities.Walkthrough.WalkthroughActivity
 import com.app.feenix.view.activities.base.BaseActivity
-import com.app.feenix.view.activities.signin.SignInMultipleAccountsActivity
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 
 @SuppressLint("CustomSplashScreen")
@@ -48,7 +46,7 @@ class SplashActivity : BaseActivity() {
         handler.postDelayed({
             if (myPreference?.token!!.isNotEmpty()) {
 
-                MyActivity.launchClearStack(mContext!!, SignInMultipleAccountsActivity::class.java)
+                MyActivity.launchClearStack(mContext!!, HomeActivity::class.java)
             } else {
                 MyActivity.launchClearStack(mContext!!, WalkthroughActivity::class.java)
             }
@@ -68,13 +66,6 @@ class SplashActivity : BaseActivity() {
 
     override fun attachBaseContext(newBase: Context?) {
         super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase!!))
-    }
-
-    override fun onResume() {
-        super.onResume()
-        checkHasLocationPermission()
-
-
     }
 
 
@@ -182,5 +173,17 @@ class SplashActivity : BaseActivity() {
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun getPushNotificationPermission() = arrayOf(Manifest.permission.POST_NOTIFICATIONS)
-
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        PermissionHandler.onRequestPermissionResult(
+            this,
+            requestCode,
+            permissions,
+            grantResults
+        )
+    }
 }

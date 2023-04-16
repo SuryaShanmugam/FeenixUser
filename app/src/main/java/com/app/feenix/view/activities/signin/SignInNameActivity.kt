@@ -7,6 +7,7 @@ import android.view.WindowManager
 import cbs.com.bmr.Utilities.MyActivity
 import cbs.com.bmr.Utilities.ToastBuilder
 import com.app.feenix.R
+import com.app.feenix.app.MyPreference
 import com.app.feenix.databinding.ActivitySignInNameBinding
 import com.app.feenix.model.response.UpdateProfileMobileResponse
 import com.app.feenix.view.activities.base.BaseActivity
@@ -14,13 +15,14 @@ import com.app.feenix.viewmodel.IUpdateProfile
 import com.app.feenix.webservices.SignIn.SignInService
 import com.hellotirupathur.utils.TextChangedListener
 import com.hellotirupathur.utils.Validator
-import okhttp3.internal.Util
 
 class SignInNameActivity : BaseActivity() , View.OnClickListener,IUpdateProfile {
 
     private lateinit var binding: ActivitySignInNameBinding
     var mContext: Context? = null
     private var authService: SignInService? = null
+    private var myPreference: MyPreference? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySignInNameBinding.inflate(layoutInflater)
@@ -40,6 +42,7 @@ class SignInNameActivity : BaseActivity() , View.OnClickListener,IUpdateProfile 
         mContext = this@SignInNameActivity
         TextChangedListener.onTextChanged(binding.editFirstname,binding.signInName)
         TextChangedListener.onTextChanged(binding.editLastname,binding.signInName)
+        myPreference = MyPreference(mContext!!)
 
         authService = SignInService()
         authService!!.SignInService(this@SignInNameActivity)
@@ -70,10 +73,10 @@ class SignInNameActivity : BaseActivity() , View.OnClickListener,IUpdateProfile 
     }
 
     override fun onGetProfileNameResponse(updateProfileMobileResponse: UpdateProfileMobileResponse) {
-
-        if(updateProfileMobileResponse.success)
-        {
-            MyActivity.launch(mContext!!,SignInEmailActivity::class.java)
+        if(updateProfileMobileResponse.success) {
+            myPreference?.firstName = updateProfileMobileResponse.data?.first_name
+            myPreference?.lastName = updateProfileMobileResponse.data?.last_name
+            MyActivity.launch(mContext!!, SignInEmailActivity::class.java)
         }
         else
         {

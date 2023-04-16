@@ -30,5 +30,7 @@
     <color name="divider">#DBDFEA</color>
     <color name="invoice_text_color">#1D1803</color>
     <color name="txt_hint_color">#C5C5C5</color>
+    <color name="in_text_color">#919191</color>
+
 
 </resources>
