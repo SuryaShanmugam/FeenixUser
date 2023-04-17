@@ -9,14 +9,17 @@ import android.view.View
 import com.app.feenix.R
 import com.app.feenix.app.MyPreference
 import com.app.feenix.databinding.ActivityProfileBinding
+import com.app.feenix.model.response.UpdateProfileMobileResponse
 import com.app.feenix.utils.PermissionHandler
 import com.app.feenix.view.activities.base.BaseActivity
+import com.app.feenix.viewmodel.IUpdateProfile
+import com.app.feenix.webservices.SignIn.SignInService
 import com.bumptech.glide.Glide
 import pl.aprilapps.easyphotopicker.DefaultCallback
 import pl.aprilapps.easyphotopicker.EasyImage
 import java.io.File
 
-class ProfileActivity : BaseActivity(), View.OnClickListener {
+class ProfileActivity : BaseActivity(), View.OnClickListener, IUpdateProfile {
 
 
     private lateinit var binding: ActivityProfileBinding
@@ -24,6 +27,8 @@ class ProfileActivity : BaseActivity(), View.OnClickListener {
     private var myPreference: MyPreference? = null
     private val REQUEST_STORAGE_PERMISSION = 6
     private val REQUEST_FEED_IMAGE = 4
+    private var authService: SignInService? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProfileBinding.inflate(layoutInflater)
@@ -54,6 +59,8 @@ class ProfileActivity : BaseActivity(), View.OnClickListener {
     private fun initObjects() {
         mContext = this@ProfileActivity
         myPreference = MyPreference(mContext!!)
+        authService = SignInService()
+        authService!!.SignInService(this@ProfileActivity)
     }
 
     override fun onClick(p0: View?) {
@@ -65,6 +72,8 @@ class ProfileActivity : BaseActivity(), View.OnClickListener {
             }
             R.id.btn_update -> {
                 if (file != null) {
+                    authService?.UpdateUserPic(this, file)
+                } else {
 
                 }
 
@@ -147,6 +156,11 @@ class ProfileActivity : BaseActivity(), View.OnClickListener {
                 override fun onPermissionAllow() {
                 }
             })
+    }
+
+    override fun onGetProfileNameResponse(updateProfileMobileResponse: UpdateProfileMobileResponse) {
+
+
     }
 
 }
