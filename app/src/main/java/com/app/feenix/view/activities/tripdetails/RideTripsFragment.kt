@@ -55,12 +55,18 @@ class RideTripsFragment : BaseFragment(), IYourTripsData, RideTripsAdapter.TagsC
 
     override fun onRideTripResponse(rideTripResponse: RideTripResponse) {
         if (rideTripResponse.success!!) {
+            mRideList.clear()
+
             if (rideTripResponse.data.size > 0) {
+                for (Rdata in rideTripResponse.data) {
+                    if (Rdata.service_type?.is_delivery == 0) {
+                        mRideList.add(Rdata)
+                        rideTripsAdapter.notifyDataSetChanged()
+                    }
+                }
                 binding.rcRidetrips.visibility = View.VISIBLE
                 binding.errorLayout.visibility = View.GONE
-                mRideList.clear()
-                mRideList.addAll(rideTripResponse.data)
-                rideTripsAdapter.notifyDataSetChanged()
+
             } else {
                 binding.rcRidetrips.visibility = View.GONE
                 binding.errorLayout.visibility = View.VISIBLE

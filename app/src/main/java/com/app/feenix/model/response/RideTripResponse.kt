@@ -83,7 +83,7 @@ data class RideTripServiceType(
     val description: String?,
     val status: String?,
     val type: String?,
-    val is_delivery: String,
+    val is_delivery: Int
 
     )
 
