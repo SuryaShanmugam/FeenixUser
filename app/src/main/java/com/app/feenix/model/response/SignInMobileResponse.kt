@@ -40,7 +40,7 @@ data class SignInMobileResData(
     val android_app_version: String?,
     val ios_app_version: String?,
     val access_token: String?,
-    val new: String?
+    val new: Int?
 )
 
 

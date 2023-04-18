@@ -75,25 +75,28 @@ class SignInMultipleAccountsActivity : BaseActivity(), View.OnClickListener,ISig
     }
 
     override fun onSignInMobileResponse(signInMobileResponse: SignInMobileResponse) {
-        if (signInMobileResponse.success!!) {
-            myPreference!!.token = signInMobileResponse.data?.access_token
+        if (signInMobileResponse.data?.new == 1) {
+            myPreference!!.token = signInMobileResponse.data.access_token
             myPreference!!.Username =
-                signInMobileResponse.data?.first_name + " " + signInMobileResponse.data?.last_name
-            myPreference?.firstName = signInMobileResponse.data?.first_name
-            myPreference?.lastName = signInMobileResponse.data?.last_name
-            myPreference!!.email = signInMobileResponse.data?.email
+                signInMobileResponse.data.first_name + " " + signInMobileResponse.data.last_name
+            myPreference?.firstName = signInMobileResponse.data.first_name
+            myPreference?.lastName = signInMobileResponse.data.last_name
+            myPreference!!.email = signInMobileResponse.data.email
             myPreference!!.mobile = CountryCode + MobileNumber
             val bundle = Bundle()
             bundle.putString("phoneNumber", MobileNumber)
             bundle.putString("CountryCode", CountryCode)
-            bundle.putInt("new", signInMobileResponse.data?.new!!.toInt())
+            bundle.putInt("new", signInMobileResponse.data.new)
             bundle.putString("first_name", signInMobileResponse.data.first_name)
             bundle.putString("last_name", signInMobileResponse.data.last_name)
             MyActivity.launchWithBundle(mContext!!, SignInNameActivity::class.java, bundle)
         } else {
+            myPreference!!.token = signInMobileResponse.data?.access_token
             val bundle = Bundle()
             bundle.putString("phoneNumber", MobileNumber)
             bundle.putString("CountryCode", CountryCode)
+            bundle.putString("first_name", signInMobileResponse.data?.first_name)
+            bundle.putString("last_name", signInMobileResponse.data?.last_name)
             MyActivity.launchWithBundle(mContext!!, SignInVerifyPhoneActivity::class.java, bundle)
         }
 

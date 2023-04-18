@@ -99,10 +99,12 @@ View.OnClickListener,IGetProfileData{
                     MyActivity.launch(mContext!!,SignInNameActivity::class.java)
                 } else if (new == 0) {
                     if (first_name.isNullOrEmpty() && last_name.isNullOrEmpty()) {
-                        MyActivity.launch(mContext!!,SignInNameActivity::class.java)
+                        MyActivity.launch(mContext!!, SignInNameActivity::class.java)
                     } else {
                         authService?.getProfileDetails(this)
                     }
+                } else {
+                    authService?.getProfileDetails(this)
                 }
             }
             R.id.txt_resend_otp->

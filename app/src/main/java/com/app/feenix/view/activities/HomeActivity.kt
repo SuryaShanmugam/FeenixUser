@@ -13,6 +13,7 @@ import cbs.com.bmr.Utilities.MyActivity
 import com.app.feenix.R
 import com.app.feenix.app.MyPreference
 import com.app.feenix.databinding.ActivityHomeBinding
+import com.app.feenix.utils.Log
 import com.app.feenix.view.activities.base.BaseActivity
 import com.app.feenix.view.activities.tripdetails.YourTripsActivity
 import com.bumptech.glide.Glide
@@ -97,6 +98,8 @@ class HomeActivity : BaseActivity(), View.OnClickListener {
             R.string.drawer_open, R.string.drawer_close
         )
         mDrawerToggle!!.isDrawerIndicatorEnabled = false
+
+        Log.error("fjdfpreef", myPreference?.userToken!!)
 
     }
 
