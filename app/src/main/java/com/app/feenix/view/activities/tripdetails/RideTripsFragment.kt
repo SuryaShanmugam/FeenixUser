@@ -78,7 +78,9 @@ class RideTripsFragment : BaseFragment(), IYourTripsData, RideTripsAdapter.TagsC
     }
 
     override fun onTagsClickCallback(position: Int) {
-
+        val response = mRideList.get(position)
+        val bundle = Bundle()
+        bundle.putInt("isDelivery", response.service_type?.is_delivery!!)
 
     }
 
