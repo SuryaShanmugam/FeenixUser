@@ -41,14 +41,9 @@ class WalkthroughFragment : Fragment() {
         binding = FragmentWalkthroughBinding.inflate(inflater, container, false)
         initObjects()
         setIntro()
-        initCallbacks()
         return binding.root
     }
 
-    private fun initCallbacks() {
-
-
-    }
 
     private fun initObjects() {
         mContext = activity

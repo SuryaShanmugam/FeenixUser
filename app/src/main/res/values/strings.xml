@@ -70,5 +70,10 @@
     <!--    Profile-->
 
     <string name="profile">Profile</string>
+    <string name="tab">tab</string>
 
+
+<!--    YourTrips-->
+    <string name="no_upcoming">No rides yet</string>
+    <string name="you_don_t_have_any_completed_rides_with_feenix_n_to_show_take_your_first_ride_today">You don\'t have any completed rides with feenix \n to show. Take your first ride today!</string>
 </resources>

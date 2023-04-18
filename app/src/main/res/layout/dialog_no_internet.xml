@@ -58,19 +58,17 @@
 
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-                android:gravity="center"
-                android:weightSum="2">
+                android:gravity="center">
 
                 <Button
                     android:id="@+id/dismissButton"
                     fontPath="fonts/CircularStd-Medium.ttf"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_margin="5dp"
-                    android:layout_weight="1"
                     android:background="@drawable/bg_rect_primary"
                     android:text="@string/intercom_try_again"
                     android:textAllCaps="false"
