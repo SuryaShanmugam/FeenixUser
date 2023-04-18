@@ -3,13 +3,11 @@ package com.app.feenix.webservices.SignIn
 
 import com.app.biu.model.RequestModel.ResponseModel.SignInMobileResponse
 import com.app.biu.model.RequestModel.ResponseModel.SignInVerifyOTPResponse
-import com.app.feenix.model.request.UpdateProfileEmailRequest
-import com.app.feenix.model.request.UpdateProfileMobileRequest
-import com.app.feenix.model.request.UpdateProfileNameRequest
-import com.app.feenix.model.request.VerifyOTPRequest
+import com.app.feenix.model.request.*
 import com.app.feenix.model.response.UpdateProfileMobileResponse
 import io.reactivex.Observable
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.*
 
 interface ApiInterface {
@@ -77,6 +75,25 @@ interface ApiInterface {
         @Part filePart: MultipartBody.Part
     ): Observable<UpdateProfileMobileResponse>
 
+// update all profile
+    @Multipart
+    @POST("update/profile")
+    fun UpdateProfilewithPic(
+        @Header("X-Requested-With") request: String?,
+        @Header("Authorization") strToken: String?,
+        @Part filePart: MultipartBody.Part,
+        @Part ("first_name") first_name:RequestBody,
+        @Part ("last_name") last_name:RequestBody,
+        @Part ("mobile") mobile:RequestBody,
+        @Part ("country_code") country_code:RequestBody,
+        @Part ("email") email:RequestBody
+): Observable<UpdateProfileMobileResponse>
+    @POST("update/profile")
+    fun UpdateProfilewithoutPic(
+        @Header("X-Requested-With") request: String?,
+        @Header("Authorization") strToken: String?,
+        @Body updateProfileRequest: UpdateProfileRequest
+    ): Observable<UpdateProfileMobileResponse>
     // Get Profile
 
     @GET("details")

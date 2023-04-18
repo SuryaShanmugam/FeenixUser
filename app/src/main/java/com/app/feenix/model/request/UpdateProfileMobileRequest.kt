@@ -12,3 +12,8 @@ data class UpdateProfileEmailRequest(
 data class  VerifyOTPRequest(
     val otp: String?
 )
+
+data class UpdateProfileRequest(
+    val first_name: String?, val last_name: String?,
+    val mobile: String?, val country_code: String?,val email: String?
+)

@@ -49,7 +49,6 @@ class SignInEmailActivity : BaseActivity(), IUpdateProfile, View.OnClickListener
         authService = SignInService()
         authService!!.SignInService(this@SignInEmailActivity)
     }
-
     override fun onClick(v: View?) {
         val id= v?.id
         when(id)
