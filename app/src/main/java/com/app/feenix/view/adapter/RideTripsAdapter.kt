@@ -63,7 +63,7 @@ class RideTripsAdapter(
             itemBinding.ratingText.text = String.format("%.0f", rating)
 
 
-            if (mtagsdata.equals("CANCELLED")) {
+            if (mtagsdata.status.equals("CANCELLED")) {
                 itemBinding.dateTime.text = Utils.tripsDateformat(
                     "yyyy-MM-dd HH:mm:ss",
                     "EEE, MMM dd , hh:mm aaa", mtagsdata.assigned_at
