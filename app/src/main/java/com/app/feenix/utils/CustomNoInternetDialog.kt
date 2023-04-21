@@ -7,8 +7,6 @@ import android.view.Gravity
 import android.view.Window
 import android.view.WindowManager
 import android.widget.Button
-import android.widget.Toast
-import androidx.core.content.ContextCompat.getSystemService
 import cbs.com.bmr.Utilities.ToastBuilder
 import com.app.feenix.R
 
@@ -32,9 +30,10 @@ open class CustomNoInternetDialog(context: Context) {
             dialog = Dialog(context)
             dialog!!.requestWindowFeature(Window.FEATURE_NO_TITLE)
             dialog!!.window?.setBackgroundDrawableResource(android.R.color.transparent)
-            dialog!!.setCancelable(false)
+            dialog!!.setCancelable(true)
+            dialog!!.setContentView(R.layout.dialog_no_internet)
             dialog!!.setCanceledOnTouchOutside(false)
-            val window: Window = dialog!!.getWindow()!!
+            val window: Window = dialog!!.window!!
             window.setLayout(
                 WindowManager.LayoutParams.MATCH_PARENT,
                 WindowManager.LayoutParams.WRAP_CONTENT
@@ -43,12 +42,13 @@ open class CustomNoInternetDialog(context: Context) {
             val buttontry: Button = dialog!!.findViewById(R.id.dismissButton)
 
             buttontry.setOnClickListener {
-                val ConnectionManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                val ConnectionManager =
+                    context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
                 val networkInfo = ConnectionManager.activeNetworkInfo
                 if (networkInfo != null && networkInfo.isConnected == true) {
-                    hideDialog()
+                    dialog!!.dismiss()
                 } else {
-                    ToastBuilder.build(context,"No Internet, Please Try Again")
+                    ToastBuilder.build(context, "No Internet, Please Try Again")
                 }
             }
             dialog!!.show()

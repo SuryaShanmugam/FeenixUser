@@ -6,10 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import cbs.com.bmr.Utilities.MyActivity
 import com.app.biu.model.RequestModel.ResponseModel.RideTripResponse
 import com.app.biu.model.RequestModel.ResponseModel.RideTripResponseData
 import com.app.feenix.databinding.FragmentRidetripsBinding
-import com.app.feenix.utils.CustomNoInternetDialog
 import com.app.feenix.view.activities.base.BaseFragment
 import com.app.feenix.view.adapter.RideTripsAdapter
 import com.app.feenix.viewmodel.IYourTripsData
@@ -48,8 +48,6 @@ class DeliveryTripsFragment : BaseFragment(), IYourTripsData, RideTripsAdapter.T
         rideTripsAdapter = RideTripsAdapter(mContext!!, mRideList, this)
         if (hasInternetConnection()) {
             yourTripService?.getRideTrips(this)
-        } else {
-            CustomNoInternetDialog.getInstance(mContext!!).showDialog(mContext!!)
         }
     }
 
@@ -78,8 +76,12 @@ class DeliveryTripsFragment : BaseFragment(), IYourTripsData, RideTripsAdapter.T
     }
 
     override fun onTagsClickCallback(position: Int) {
-
+        val response = mRideList.get(position)
+        val bundle = Bundle()
+        bundle.putParcelable("RideDetails", response)
+        MyActivity.launchWithBundle(mContext!!, TripDetailActivity::class.java, bundle)
 
     }
+
 
 }
