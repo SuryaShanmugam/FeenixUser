@@ -76,6 +76,16 @@
     <!--    YourTrips-->
     <string name="no_upcoming">No rides yet</string>
     <string name="money_symbols">GH₵</string>
-
     <string name="you_don_t_have_any_completed_rides_with_feenix_n_to_show_take_your_first_ride_today">You don\'t have any completed rides with feenix \n to show. Take your first ride today!</string>
+    <string name="amount_paid">Amount Paid</string>
+    <string name="invoice_total">Invoice Total</string>
+    <string name="tax">Tax</string>
+    <string name="time_fare">Time Fare</string>
+    <string name="time_taken">Time Taken</string>
+    <string name="distance_fare">Distance Fare</string>
+    <string name="distance_travelled">Distance travelled</string>
+    <string name="booking_id">Booking ID</string>
+    <string name="receipt">Receipt</string>
+
+
 </resources>

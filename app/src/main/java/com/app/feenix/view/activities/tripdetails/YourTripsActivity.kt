@@ -6,7 +6,6 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.app.feenix.R
-import com.app.feenix.app.MyPreference
 import com.app.feenix.databinding.ActivityYourTripsBinding
 import com.app.feenix.view.activities.base.BaseActivity
 import com.app.feenix.view.adapter.MyPagerAdapter
@@ -18,7 +17,6 @@ class YourTripsActivity : BaseActivity(), TabLayout.OnTabSelectedListener, View.
 
     private lateinit var binding: ActivityYourTripsBinding
     var mContext: Context? = null
-    private var myPreference: MyPreference? = null
 
     private var mTabLayout: TabLayout? = null
     var mViewPager: ViewPager? = null

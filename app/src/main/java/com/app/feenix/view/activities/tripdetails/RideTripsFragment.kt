@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import cbs.com.bmr.Utilities.MyActivity
 import com.app.biu.model.RequestModel.ResponseModel.RideTripResponse
 import com.app.biu.model.RequestModel.ResponseModel.RideTripResponseData
 import com.app.feenix.databinding.FragmentRidetripsBinding
@@ -80,7 +81,8 @@ class RideTripsFragment : BaseFragment(), IYourTripsData, RideTripsAdapter.TagsC
     override fun onTagsClickCallback(position: Int) {
         val response = mRideList.get(position)
         val bundle = Bundle()
-        bundle.putInt("isDelivery", response.service_type?.is_delivery!!)
+        bundle.putParcelable("RideDetails", response)
+        MyActivity.launchWithBundle(mContext!!, TripDetailActivity::class.java, bundle)
 
     }
 
