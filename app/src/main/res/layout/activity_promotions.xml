@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.activities.promotions.PromotionsActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/head"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="@color/white"
+            app:cardElevation="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/lite">
+
+                <ImageView
+                    android:id="@+id/img_promotion_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:foreground="@drawable/ripple"
+                    android:padding="13dp"
+                    app:srcCompat="@drawable/ic_black_backarrow" />
+
+                <TextView
+                    fontPath="fonts/CircularStd-Bold.ttf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center"
+                    android:text="@string/coupon"
+                    android:textColor="@color/slide_text_color"
+                    android:textSize="@dimen/primary_txt"
+                    tools:ignore="MissingPrefix" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/redeemCoupon"
+            android:layout_below="@+id/head"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="@dimen/primary"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/layout_entercodes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/logo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/secondary"
+                    app:srcCompat="@drawable/ic_promocodes_logo"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    fontPath="fonts/Graphik-Regular.ttf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/extra_lite"
+                    android:gravity="center"
+                    android:padding="@dimen/lite"
+                    android:text="Please enter promocode or referral code to \n get discounts and ride credits"
+                    android:textColor="#1D1803"
+                    android:textSize="@dimen/default_txt1"
+                    tools:ignore="HardcodedText,MissingPrefix" />
+
+                <EditText
+                    android:id="@+id/edit_promocodes"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginStart="@dimen/secondary"
+                    android:layout_marginTop="@dimen/secondary"
+                    android:layout_marginEnd="@dimen/secondary"
+                    android:background="@drawable/bg_edittext_unselected"
+                    android:hint="Enter Promocode (Optional)"
+                    android:inputType="textCapCharacters"
+                    android:padding="@dimen/primary"
+                    android:text=""
+                    android:textColor="#595960"
+                    android:textColorHint="#C5C5C5"
+                    android:textSize="@dimen/default_txt"
+                    tools:ignore="Autofill,HardcodedText" />
+
+                <TextView
+                    android:id="@+id/txt_show_error"
+                    fontPath="fonts/Graphik-Regular.ttf"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/secondary"
+                    android:layout_marginTop="@dimen/extra_lite"
+                    android:layout_marginEnd="@dimen/secondary"
+                    android:layout_marginBottom="@dimen/duplex"
+                    android:drawableStart="@drawable/ic_new_wallet_transaction_failed"
+                    android:drawablePadding="@dimen/primary"
+                    android:padding="@dimen/lite"
+                    android:text=""
+                    android:textColor="#D93025"
+                    android:textSize="@dimen/default_txt"
+                    android:visibility="gone"
+                    tools:ignore="HardcodedText,MissingPrefix" />
+
+                <TextView
+                    android:id="@+id/txt_show_available_promocodes"
+                    fontPath="fonts/CircularStd-Bold.ttf"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/primary"
+                    android:layout_marginTop="@dimen/duplex"
+                    android:layout_marginEnd="@dimen/primary"
+                    android:layout_marginBottom="@dimen/duplex"
+                    android:drawableStart="@drawable/ic_menu_promotions"
+                    android:drawablePadding="@dimen/primary"
+                    android:drawableTint="@color/primary"
+                    android:padding="@dimen/lite"
+                    android:text="Show Available Promocode"
+                    android:textColor="#595960"
+                    android:textSize="@dimen/default_txt"
+                    tools:ignore="HardcodedText,MissingPrefix,UseCompatTextViewDrawableXml" />
+
+
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/txt_avaiablecoupons"
+                fontPath="fonts/CircularStd-Bold.ttf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/primary"
+                android:layout_marginTop="@dimen/duplex"
+                android:layout_marginEnd="@dimen/primary"
+                android:layout_marginBottom="@dimen/duplex"
+                android:padding="@dimen/lite"
+                android:text="Available Coupons"
+                android:textColor="#595960"
+                android:textSize="@dimen/default_txt"
+                android:visibility="gone"
+                tools:ignore="HardcodedText,MissingPrefix" />
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_promotions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/primary"
+                android:divider="@android:color/transparent"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/redeemCoupon"
+            fontPath="fonts/Circular Std Medium.otf"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="@dimen/primary"
+            android:layout_marginEnd="@dimen/primary"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/bg_rect_primary"
+            android:text="Apply"
+            android:textAllCaps="false"
+            android:textColor="#292000"
+            android:textSize="@dimen/secondary_txt"
+            android:visibility="gone"
+            tools:ignore="HardcodedText,MissingPrefix" />
+
+    </RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
