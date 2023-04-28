@@ -153,7 +153,7 @@ class InternetConnectionManager : ConnectivityManager.NetworkCallback(),
      * Checks if the public server is reachable
      * */
     private fun isPublicHostReachable(): Boolean {
-        return pingServer(ApiClient.BASE_URL_CLIENTPORTAL)
+        return pingServer(ApiClient.BASE_URL)
     }
 
     /**

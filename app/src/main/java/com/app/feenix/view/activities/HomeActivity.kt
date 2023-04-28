@@ -16,6 +16,7 @@ import com.app.feenix.databinding.ActivityHomeBinding
 import com.app.feenix.utils.Log
 import com.app.feenix.view.activities.base.BaseActivity
 import com.app.feenix.view.activities.tripdetails.YourTripsActivity
+import com.app.feenix.view.activities.wallet.WalletActivity
 import com.bumptech.glide.Glide
 import com.google.android.material.navigation.NavigationView
 
@@ -145,6 +146,10 @@ class HomeActivity : BaseActivity(), View.OnClickListener {
             R.id.profileDrawer -> {
                 drawerLayout?.closeDrawer(GravityCompat.START)
                 MyActivity.launch(mContext!!, ProfileActivity::class.java)
+            }
+            R.id.walletDrawer -> {
+                drawerLayout?.closeDrawer(GravityCompat.START)
+                MyActivity.launch(mContext!!, WalletActivity::class.java)
             }
         }
     }

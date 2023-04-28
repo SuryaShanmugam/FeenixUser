@@ -15,7 +15,7 @@ import com.app.feenix.view.activities.base.BaseActivity
 import com.app.feenix.view.activities.base.BaseFragment
 import com.app.feenix.view.adapter.RideTripsAdapter
 import com.app.feenix.viewmodel.IYourTripsData
-import com.app.feenix.webservices.SignIn.YourTripService
+import com.app.feenix.webservices.yourTrips.YourTripService
 
 class DeliveryTripsFragment : BaseFragment(), IYourTripsData, RideTripsAdapter.TagsClickCallback {
 

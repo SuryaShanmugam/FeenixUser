@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit
 object ApiClient {
 
     var BASE_URL_CLIENTPORTAL = "https://feenix.online/api/user/"
+    var BASE_URL = "https://feenix.online/"
 
     private var sRetrofitclient: Retrofit? = null
     private lateinit var okHttpClient: OkHttpClient

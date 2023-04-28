@@ -87,5 +87,18 @@
     <string name="booking_id">Booking ID</string>
     <string name="receipt">Receipt</string>
 
+    <!--    Wallet-->
+    <string name="money_in_wallet">Wallet Balance</string>
+    <string name="add_money">Add Money</string>
+    <string name="enter_amount">Enter amount</string>
+    <string name="add_wallet_amt">Add wallet amount</string>
+    <string name="no_transaction_found">No Transaction Found</string>
+    <string name="mobile_money">Mobile Money</string>
+    <string name="card">Card Payment</string>
+
+    <string name="rs_100">GH₵10</string>
+    <string name="rs_200">GH₵20</string>
+    <string name="rs_500">GH₵30</string>
+    <string name="rs_400">GH₵40</string>
 
 </resources>

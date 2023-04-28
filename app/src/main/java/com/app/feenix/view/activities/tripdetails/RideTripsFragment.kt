@@ -15,7 +15,7 @@ import com.app.feenix.view.activities.base.BaseActivity
 import com.app.feenix.view.activities.base.BaseFragment
 import com.app.feenix.view.adapter.RideTripsAdapter
 import com.app.feenix.viewmodel.IYourTripsData
-import com.app.feenix.webservices.SignIn.YourTripService
+import com.app.feenix.webservices.yourTrips.YourTripService
 
 class RideTripsFragment : BaseFragment(), IYourTripsData, RideTripsAdapter.TagsClickCallback {
 
@@ -58,18 +58,6 @@ class RideTripsFragment : BaseFragment(), IYourTripsData, RideTripsAdapter.TagsC
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        internetConnectionLayout.apply {
-            onResume()
-            registerInternetConnectionListener("RideTripsFragment")
-        }
-    }
-
-    override fun onPause() {
-        internetConnectionLayout.unregisterInternetConnectionListener()
-        super.onPause()
-    }
 
     override fun onRideTripResponse(rideTripResponse: RideTripResponse) {
         if (rideTripResponse.success!!) {

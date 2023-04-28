@@ -202,6 +202,7 @@
                     android:foreground="@drawable/ripple"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
+                    android:visibility="gone"
                     android:paddingStart="@dimen/normal"
                     android:paddingEnd="@dimen/normal"
                     tools:ignore="UnusedAttribute">

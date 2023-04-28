@@ -92,6 +92,10 @@
             android:name=".view.activities.tripdetails.TripDetailActivity"
             android:exported="false"
             android:screenOrientation="fullSensor" />
+        <activity
+            android:name=".view.activities.wallet.WalletActivity"
+            android:exported="false"
+            android:screenOrientation="fullSensor" />
 
         <service
             android:name=".broadcastreceiver.ForegroundService"

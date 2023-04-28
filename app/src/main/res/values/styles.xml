@@ -50,9 +50,14 @@
         <item name="colorControlHighlight">@color/editTextColor</item>
 
     </style>
+
     <style name="MyCustomTextAppearance" parent="TextAppearance.Design.Tab">
         <item name="textAllCaps">false</item>
     </style>
 
+    <style name="RoundedCornersDialog" parent="Theme.MaterialComponents.Dialog">
+        <item name="dialogCornerRadius">@dimen/primary</item>
+
+    </style>
 
 </resources>
