@@ -101,4 +101,8 @@
     <string name="rs_500">GH₵30</string>
     <string name="rs_400">GH₵40</string>
 
+    <!--    Promocodes-->
+
+    <string name="promo_added_successfully">Promo Code Added Successfully</string>
+
 </resources>

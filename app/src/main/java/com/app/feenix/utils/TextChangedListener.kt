@@ -1,11 +1,15 @@
 package com.hellotirupathur.utils
 
+import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.app.feenix.R
-import java.util.*
 
 class TextChangedListener {
     companion object {
@@ -28,6 +32,37 @@ class TextChangedListener {
         }
 
 
+        fun onTextPromocodesChanged(
+            mEditPromocodes: EditText, context: Context,
+            mApplyCode: Button, mTextPromoError: TextView
+        ) {
+            mEditPromocodes.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(
+                    s: CharSequence,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
+
+                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+                override fun afterTextChanged(s: Editable) {
+                    if (s.toString().length > 0) {
+                        mEditPromocodes.setTextColor(
+                            ContextCompat.getColor(
+                                context,
+                                R.color.slide_text_color
+                            )
+                        )
+                        mEditPromocodes.setBackgroundResource(R.drawable.bg_edittext_selected)
+                        mApplyCode.visibility = View.VISIBLE
+                        mTextPromoError.visibility = View.GONE
+                    } else {
+                        mApplyCode.visibility = View.GONE
+                    }
+                }
+            })
+        }
 
     }
 }

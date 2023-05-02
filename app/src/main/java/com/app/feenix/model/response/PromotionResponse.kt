@@ -21,3 +21,8 @@ data class PromotionsData(
 )
 
 
+data class AddPromocodeResponse(
+    val success: Boolean,
+    val message: String?
+)
+

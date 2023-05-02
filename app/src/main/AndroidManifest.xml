@@ -96,6 +96,14 @@
             android:name=".view.activities.wallet.WalletActivity"
             android:exported="false"
             android:screenOrientation="fullSensor" />
+        <activity
+            android:name=".view.activities.promotions.PromotionsActivity"
+            android:exported="false"
+            android:screenOrientation="fullSensor" />
+        <activity
+            android:name=".view.activities.notification.NotificationActivity"
+            android:exported="false"
+            android:screenOrientation="fullSensor" />
 
         <service
             android:name=".broadcastreceiver.ForegroundService"

@@ -10,11 +10,14 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import cbs.com.bmr.Utilities.MyActivity
+import cbs.com.bmr.Utilities.MyActivity.launchWithBundle
 import com.app.feenix.R
 import com.app.feenix.app.MyPreference
 import com.app.feenix.databinding.ActivityHomeBinding
 import com.app.feenix.utils.Log
 import com.app.feenix.view.activities.base.BaseActivity
+import com.app.feenix.view.activities.notification.NotificationActivity
+import com.app.feenix.view.activities.promotions.PromotionsActivity
 import com.app.feenix.view.activities.tripdetails.YourTripsActivity
 import com.app.feenix.view.activities.wallet.WalletActivity
 import com.bumptech.glide.Glide
@@ -150,6 +153,16 @@ class HomeActivity : BaseActivity(), View.OnClickListener {
             R.id.walletDrawer -> {
                 drawerLayout?.closeDrawer(GravityCompat.START)
                 MyActivity.launch(mContext!!, WalletActivity::class.java)
+            }
+            R.id.couponDrawer -> {
+                drawerLayout?.closeDrawer(GravityCompat.START)
+                val bundle = Bundle()
+                bundle.putString("Type", "1")
+                launchWithBundle(mContext!!, PromotionsActivity::class.java, bundle)
+            }
+            R.id.NoficationDrawer -> {
+                drawerLayout?.closeDrawer(GravityCompat.START)
+                MyActivity.launch(mContext!!, NotificationActivity::class.java)
             }
         }
     }

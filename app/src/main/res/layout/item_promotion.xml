@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinator_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/lite"
+    android:background="@color/white"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:layout_margin="@dimen/lite"
+        android:gravity="top"
+        android:orientation="vertical"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/duplex"
+                android:layout_marginEnd="@dimen/primary"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/txt_promocode"
+                    fontPath="fonts/CircularStd-Medium.ttf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/bg_promocode_rectangle"
+                    android:padding="@dimen/lite"
+                    android:singleLine="true"
+                    android:text="RDEFDEF"
+                    android:textColor="#443600"
+                    android:textSize="@dimen/small_txt11"
+                    tools:ignore="HardcodedText,MissingPrefix" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end">
+
+                    <RadioButton
+                        android:id="@+id/txt_radiobutton"
+                        fontPath="fonts/Graphik-Regular.ttf"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:buttonTint="#C3C1CB"
+                        android:padding="@dimen/lite"
+                        android:singleLine="true"
+                        android:textColor="#443600"
+                        android:textSize="@dimen/small_txt11"
+                        tools:ignore="HardcodedText,MissingPrefix" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/txt_promotitle"
+                fontPath="fonts/Graphik-Regular.ttf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/primary"
+                android:layout_marginTop="@dimen/duplex"
+                android:layout_marginEnd="@dimen/primary"
+                android:padding="@dimen/lite"
+                android:text=""
+                android:textColor="@color/slide_text_color"
+                android:textSize="@dimen/default_txt"
+                tools:ignore="HardcodedText,MissingPrefix" />
+
+
+            <TextView
+                android:id="@+id/txt_promodesc"
+                fontPath="fonts/Graphik-Regular.ttf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/primary"
+                android:layout_marginTop="@dimen/duplex"
+                android:layout_marginEnd="@dimen/primary"
+                android:maxLines="2"
+                android:padding="@dimen/lite"
+                android:text=""
+                android:textColor="@color/in_text_color"
+                android:textSize="@dimen/semismall_txt"
+                tools:ignore="HardcodedText,MissingPrefix" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/lite"
+        android:layout_marginBottom="@dimen/lite"
+        android:background="#F3F2F8" />
+</LinearLayout>
