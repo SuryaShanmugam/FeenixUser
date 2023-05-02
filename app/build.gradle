@@ -105,6 +105,11 @@ dependencies {
     implementation 'com.skyfishjy.ripplebackground:library:1.0.1'
 
 
+    //Intecom
+    implementation 'io.intercom.android:intercom-sdk-base:5.4.1'
+    implementation 'io.intercom.android:intercom-sdk-fcm:5.4.1'
+
+
 }
 apply plugin: 'com.google.gms.google-services'
 

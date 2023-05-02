@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.activities.signin.SignInEmailActivity">
+    tools:context=".view.ui.signin.SignInEmailActivity">
 
     <RelativeLayout
         android:layout_width="0dp"

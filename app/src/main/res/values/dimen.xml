@@ -23,6 +23,8 @@
     <dimen name="secondary_txt">20sp</dimen>
     <dimen name="secondary_txt22">22sp</dimen>
     <dimen name="secondary_txt1">24sp</dimen>
+    <dimen name="secondary_txt2">28sp</dimen>
+
     <dimen name="medium_txt">30sp</dimen>
     <dimen name="large_txt">36sp</dimen>
 
@@ -34,6 +36,7 @@
     <dimen name="normal2">20dp</dimen>
     <dimen name="normal11">21dp</dimen>
     <dimen name="secondary">24dp</dimen>
+
     <dimen name="medium">36dp</dimen>
     <dimen name="large">48dp</dimen>
     <dimen name="extra_large">72dp</dimen>

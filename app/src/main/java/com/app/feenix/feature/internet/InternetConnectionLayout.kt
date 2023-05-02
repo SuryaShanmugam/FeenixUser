@@ -10,7 +10,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import com.app.feenix.R
 import com.app.feenix.databinding.InflaterInternetConnectionInfoLayoutBinding
-import com.app.feenix.view.activities.base.BaseActivity
+import com.app.feenix.view.ui.base.BaseActivity
 
 
 class InternetConnectionLayout(context: Context, attrs: AttributeSet) :

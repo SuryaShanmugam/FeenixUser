@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/primary"
-    tools:context="com.app.feenix.view.activities.notification.NotificationActivity">
+    tools:context="com.app.feenix.view.ui.notification.NotificationActivity">
 
 
     <androidx.cardview.widget.CardView

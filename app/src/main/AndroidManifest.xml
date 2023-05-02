@@ -39,14 +39,14 @@
         tools:ignore="AllowBackup">
 
         <activity
-            android:name=".view.activities.HomeActivity"
+            android:name=".view.ui.HomeActivity"
             android:exported="false" />
         <activity
-            android:name=".view.activities.Walkthrough.WalkthroughActivity"
+            android:name=".view.ui.Walkthrough.WalkthroughActivity"
             android:exported="false"
             android:screenOrientation="fullSensor" />
         <activity
-            android:name=".view.activities.SplashActivity"
+            android:name=".view.ui.SplashActivity"
             android:exported="true"
             android:screenOrientation="fullSensor"
             android:theme="@style/SplashTheme">
@@ -57,51 +57,56 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.activities.signin.SignInMobileActivity"
+            android:name=".view.ui.signin.SignInMobileActivity"
             android:exported="false"
             android:screenOrientation="fullSensor" />
         <activity
-            android:name=".view.activities.signin.SignInVerifyPhoneActivity"
+            android:name=".view.ui.signin.SignInVerifyPhoneActivity"
             android:exported="false"
             android:screenOrientation="fullSensor" />
         <activity
-            android:name=".view.activities.signin.SignInMultipleAccountsActivity"
+            android:name=".view.ui.signin.SignInMultipleAccountsActivity"
             android:exported="false"
             android:screenOrientation="fullSensor" />
         <activity
-            android:name=".view.activities.signin.SignInEmailActivity"
+            android:name=".view.ui.signin.SignInEmailActivity"
             android:exported="false"
             android:screenOrientation="fullSensor" />
         <activity
-            android:name=".view.activities.signin.SignInNameActivity"
+            android:name=".view.ui.signin.SignInNameActivity"
             android:exported="false"
             android:screenOrientation="fullSensor" />
         <activity
-            android:name=".view.activities.signin.SignInProfileActivity"
+            android:name=".view.ui.signin.SignInProfileActivity"
             android:exported="false"
             android:screenOrientation="fullSensor" />
         <activity
-            android:name=".view.activities.ProfileActivity"
+            android:name=".view.ui.ProfileActivity"
             android:exported="false"
             android:screenOrientation="fullSensor" />
         <activity
-            android:name=".view.activities.tripdetails.YourTripsActivity"
+            android:name=".view.ui.tripdetails.YourTripsActivity"
             android:exported="false"
             android:screenOrientation="fullSensor" />
         <activity
-            android:name=".view.activities.tripdetails.TripDetailActivity"
+            android:name=".view.ui.tripdetails.TripDetailActivity"
             android:exported="false"
             android:screenOrientation="fullSensor" />
         <activity
-            android:name=".view.activities.wallet.WalletActivity"
+            android:name=".view.ui.wallet.WalletActivity"
             android:exported="false"
             android:screenOrientation="fullSensor" />
         <activity
-            android:name=".view.activities.promotions.PromotionsActivity"
+            android:name=".view.ui.promotions.PromotionsActivity"
             android:exported="false"
             android:screenOrientation="fullSensor" />
         <activity
-            android:name=".view.activities.notification.NotificationActivity"
+            android:name=".view.ui.notification.NotificationActivity"
+            android:exported="false"
+            android:screenOrientation="fullSensor" />
+
+        <activity
+            android:name=".view.ui.referAndearn.ReferAndEarnActivity"
             android:exported="false"
             android:screenOrientation="fullSensor" />
 

@@ -73,7 +73,8 @@ class MyPreference(context: Context) {
 
     var welcomeImage: String?
         get() = mPreferencesUser.getString(encode(WELCOME_IMAGE), null)
-        set(welcomeImage) = mPreferencesUser.edit().putString(encode(WELCOME_IMAGE), welcomeImage).apply()
+        set(welcomeImage) = mPreferencesUser.edit().putString(encode(WELCOME_IMAGE), welcomeImage)
+            .apply()
     var fleet: String?
         get() = mPreferencesUser.getString(encode(FLEET), null)
         set(fleet) = mPreferencesUser.edit().putString(encode(FLEET), fleet).apply()
@@ -82,6 +83,28 @@ class MyPreference(context: Context) {
         get() = mPreferencesUser.getString(encode(SOS_NUMBER), null)
         set(sosNumber) = mPreferencesUser.edit().putString(encode(SOS_NUMBER), sosNumber).apply()
 
+    var TotalRequest: String?
+        get() = mPreferencesUser.getString(encode(TOTAL_REQUEST), null)
+        set(TotalRequest) = mPreferencesUser.edit().putString(encode(TOTAL_REQUEST), TotalRequest)
+            .apply()
+
+    var CancelledRequest: String?
+        get() = mPreferencesUser.getString(encode(CANCELLED_REQUEST), null)
+        set(CancelledRequest) = mPreferencesUser.edit()
+            .putString(encode(CANCELLED_REQUEST), CancelledRequest).apply()
+    var CompletedRequest: String?
+        get() = mPreferencesUser.getString(encode(COMPLETED_REQUEST), null)
+        set(CompletedRequest) = mPreferencesUser.edit()
+            .putString(encode(COMPLETED_REQUEST), CompletedRequest).apply()
+    var LastBookingDate: String?
+        get() = mPreferencesUser.getString(encode(LAST_BOOKING_DATE), null)
+        set(CompletedRequest) = mPreferencesUser.edit()
+            .putString(encode(LAST_BOOKING_DATE), CompletedRequest).apply()
+
+    var LastBookingStatus: String?
+        get() = mPreferencesUser.getString(encode(LAST_BOOKING_STATUS), null)
+        set(CompletedRequest) = mPreferencesUser.edit()
+            .putString(encode(LAST_BOOKING_STATUS), CompletedRequest).apply()
 
 
     fun clearUser() {
@@ -113,5 +136,10 @@ class MyPreference(context: Context) {
         private const val WALLET_BAL = "wallet_bal"
         private const val FLEET = "fleet"
         private const val SOS_NUMBER = "sos_number"
+        private const val TOTAL_REQUEST = "total_request"
+        private const val CANCELLED_REQUEST = "cancelled_request"
+        private const val COMPLETED_REQUEST = "completed_request"
+        private const val LAST_BOOKING_DATE = "LastBooking_date"
+        private const val LAST_BOOKING_STATUS = "LastBooking_status"
     }
 }

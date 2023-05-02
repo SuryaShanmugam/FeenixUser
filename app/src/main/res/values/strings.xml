@@ -105,4 +105,10 @@
 
     <string name="promo_added_successfully">Promo Code Added Successfully</string>
 
+    <!--    ReferAndEarn-->
+
+    <string name="reference_code">Reference Code</string>
+    <string name="share_content">A new way of moving around is here. First ride hailing app that supports charity with each ride. Let your next trip to town mean much more. Download now to get affordable rates and offers. https://bit.ly/2uk7F4Z  Use this referral Code:  </string>
+
+
 </resources>

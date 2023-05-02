@@ -10,7 +10,7 @@ import androidx.core.app.NotificationCompat
 import com.app.feenix.R
 import com.app.feenix.notification.NotificationConstants
 import com.app.feenix.notification.NotificationSystemManager
-import com.app.feenix.view.activities.SplashActivity
+import com.app.feenix.view.ui.SplashActivity
 
 class ForegroundNotificationHandler(private val context: Context) {
 

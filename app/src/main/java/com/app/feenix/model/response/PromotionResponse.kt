@@ -4,7 +4,7 @@ package com.app.biu.model.ResponseModel
 data class PromotionResponse(
     val success: Boolean?,
     val available_promo: MutableList<PromotionsData>,
-    val used_promo: MutableList<PromotionsData>,
+    val used_promo: MutableList<PromotionsData>
 )
 
 data class PromotionsData(

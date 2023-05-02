@@ -52,6 +52,11 @@ data class UpdateProfileMobileData(
     val completed_request: String,
     val cancelled_request: String,
     val last_trip_status: String,
+    val last_booking_date: LastBookingDate?,
     val active_request_flow: String,
     val active_request_id: String
+)
+
+data class LastBookingDate(
+    val date: String
 )
