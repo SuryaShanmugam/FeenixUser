@@ -11,6 +11,7 @@ import com.app.feenix.utils.LocaleContextWrapper
 import io.github.inflationx.calligraphy3.CalligraphyConfig
 import io.github.inflationx.calligraphy3.CalligraphyInterceptor
 import io.github.inflationx.viewpump.ViewPump
+import io.intercom.android.sdk.Intercom
 
 class AppController : Application() {
 
@@ -40,6 +41,11 @@ class AppController : Application() {
         NotificationSystemManager.initiate(this)
         ConnectivityTriggerHandler.initiate()
         ConnectivityTriggerHandler.getInstance().initTrigger(this)
+        Intercom.initialize(
+            this,
+            "android_sdk-a4fa553e3cb668a6b71c920df93b2a3ca7453614",
+            "z63zjeha"
+        )
 
         updateAppLocaleContext()
     }

@@ -249,6 +249,7 @@ class SignInService {
 
                 }
                 override fun onError(e: Throwable) {
+                    com.app.feenix.utils.Log.error("ertrewre", "" + e.toString())
                     CustomeProgressDialog!!.hideDialog()
                     ErrorHandler.handle(e.toString())
                 }

@@ -18,7 +18,6 @@ import com.app.feenix.BuildConfig
 import com.app.feenix.R
 import com.app.feenix.app.MyPreference
 import com.app.feenix.databinding.ActivityHomeBinding
-import com.app.feenix.utils.Log
 import com.app.feenix.view.ui.Walkthrough.WalkthroughActivity
 import com.app.feenix.view.ui.base.BaseActivity
 import com.app.feenix.view.ui.notification.NotificationActivity
@@ -112,7 +111,6 @@ class HomeActivity : BaseActivity(), View.OnClickListener {
         )
         mDrawerToggle!!.isDrawerIndicatorEnabled = false
 
-        Log.error("fjdfpreef", myPreference?.userToken!!)
         val registration = Registration.create().withUserId(myPreference?.firstName!!)
         Intercom.client().registerIdentifiedUser(registration)
 

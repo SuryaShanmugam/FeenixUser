@@ -111,4 +111,11 @@
     <string name="share_content">A new way of moving around is here. First ride hailing app that supports charity with each ride. Let your next trip to town mean much more. Download now to get affordable rates and offers. https://bit.ly/2uk7F4Z  Use this referral Code:  </string>
 
 
+    <!--    Common Datas-->
+
+
+    <string name="ACCOUNT_KIT_CLIENT_TOKEN">3887da82c6cd955afde463e194944a70</string>
+
+    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
+    <string name="FACEBOOK_APP_ID">483981515671355</string>
 </resources>
