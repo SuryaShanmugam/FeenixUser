@@ -1,9 +1,13 @@
 package com.app.feenix.view.ui.base
 
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.app.feenix.feature.internet.InternetConnectionManager
+import com.app.feenix.feature.internet.LocationConnectivityManager
 import com.app.feenix.utils.LocaleContextWrapper
 import com.app.feenix.utils.Log
 import com.app.feenix.utils.customcomponents.AppToast
@@ -25,6 +29,14 @@ open class BaseActivity : AppCompatActivity(),
         Log.d("BaseTag", "Base activity set night mode off")
     }
 
+    override fun onResume() {
+        super.onResume()
+        IntentFilter().let {
+            val beaconConnectivityManager = LocationConnectivityManager.getInstance()
+            it.addAction(beaconConnectivityManager.getLocationStateChangeAction())
+            registerReceiver(broadcastReceiver, it)
+        }
+    }
 
     override fun attachBaseContext(newBase: Context?) {
         super.attachBaseContext(newBase?.let { LocaleContextWrapper.wrapContext(it) })
@@ -44,5 +56,16 @@ open class BaseActivity : AppCompatActivity(),
         return InternetConnectionManager.getInstance().hasInternetConnection(this)
     }
 
+
+    private val broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val beaconConnectivityManager = LocationConnectivityManager.getInstance()
+            when (intent?.action) {
+                beaconConnectivityManager.getLocationStateChangeAction() -> {
+                    beaconConnectivityManager.handleLocationStateChanged()
+                }
+            }
+        }
+    }
 
 }

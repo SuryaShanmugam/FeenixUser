@@ -6,6 +6,8 @@ import android.content.ContextWrapper
 import com.app.feenix.R
 import com.app.feenix.feature.internet.ConnectivityTriggerHandler
 import com.app.feenix.feature.internet.InternetConnectionManager
+import com.app.feenix.feature.internet.LocationConnectivityManager
+import com.app.feenix.feature.internet.LocationStateManager
 import com.app.feenix.notification.NotificationSystemManager
 import com.app.feenix.utils.LocaleContextWrapper
 import io.github.inflationx.calligraphy3.CalligraphyConfig
@@ -16,7 +18,7 @@ import io.intercom.android.sdk.Intercom
 class AppController : Application() {
 
     private lateinit var localeContext: Context
-
+    private var locationStateManager: LocationStateManager? = null
     companion object {
         private var instance: AppController? = null
         val applicationInstance: AppController
@@ -37,6 +39,7 @@ class AppController : Application() {
             )
                 .build()
         )
+        LocationConnectivityManager.initiate(this)
         InternetConnectionManager.initiate(this)
         NotificationSystemManager.initiate(this)
         ConnectivityTriggerHandler.initiate()
@@ -55,6 +58,11 @@ class AppController : Application() {
     }
 
     fun getLocaleContext() = localeContext
-
+    fun locationStateManager(): LocationStateManager {
+        if (locationStateManager == null) {
+            locationStateManager = LocationStateManager(this)
+        }
+        return locationStateManager!!
+    }
 
 }

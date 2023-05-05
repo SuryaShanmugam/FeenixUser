@@ -110,7 +110,7 @@ object PermissionHandler {
         val window = permissionAlertDialog.window
         window!!.setLayout(
             WindowManager.LayoutParams.MATCH_PARENT,
-            WindowManager.LayoutParams.MATCH_PARENT
+            WindowManager.LayoutParams.WRAP_CONTENT
         )
         window.setGravity(Gravity.CENTER)
         permissionAlertDialog.show()

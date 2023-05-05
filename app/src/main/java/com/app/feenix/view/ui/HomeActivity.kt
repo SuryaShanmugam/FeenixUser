@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import cbs.com.bmr.Utilities.MyActivity
@@ -18,6 +19,11 @@ import com.app.feenix.BuildConfig
 import com.app.feenix.R
 import com.app.feenix.app.MyPreference
 import com.app.feenix.databinding.ActivityHomeBinding
+import com.app.feenix.feature.internet.LocationConnectivityCallback
+import com.app.feenix.feature.internet.LocationConnectivityManager
+import com.app.feenix.handler.AlertDialogHandler
+import com.app.feenix.utils.CodeSnippet
+import com.app.feenix.utils.PermissionHandler
 import com.app.feenix.view.ui.Walkthrough.WalkthroughActivity
 import com.app.feenix.view.ui.base.BaseActivity
 import com.app.feenix.view.ui.notification.NotificationActivity
@@ -26,12 +32,17 @@ import com.app.feenix.view.ui.referAndearn.ReferAndEarnActivity
 import com.app.feenix.view.ui.tripdetails.YourTripsActivity
 import com.app.feenix.view.ui.wallet.WalletActivity
 import com.bumptech.glide.Glide
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.material.navigation.NavigationView
 import io.intercom.android.sdk.Intercom
 import io.intercom.android.sdk.UserAttributes
 import io.intercom.android.sdk.identity.Registration
 
-class HomeActivity : BaseActivity(), View.OnClickListener {
+class HomeActivity : BaseActivity(), View.OnClickListener, OnMapReadyCallback,
+    LocationConnectivityCallback {
 
     private lateinit var binding: ActivityHomeBinding
 
@@ -53,6 +64,7 @@ class HomeActivity : BaseActivity(), View.OnClickListener {
     lateinit var logoutDrawer: LinearLayout
     lateinit var bottomDrawer: LinearLayout
     lateinit var profileDrawer: TextView
+    private var locationConnectivityManager: LocationConnectivityManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,10 +75,35 @@ class HomeActivity : BaseActivity(), View.OnClickListener {
         prepareObjects()
         setupDrawer()
         initSetHomeProfile()
+        setupLocation()
+
+    }
+
+    private fun setupLocation() {
+
+        LocationConnectivityManager.getInstance().let {
+            locationConnectivityManager = it
+            it.setLocationConnectivityCallback(this@HomeActivity)
+            if (!it.isBeaconLocationPermissionGranted()) {
+                showLocationDisclosureAlert()
+            }
+        }
+    }
+
+    private fun showLocationDisclosureAlert() {
+        alertDialog = AlertDialogHandler.showAlertDialog(this,
+            AlertDialog.Builder(this).setTitle(R.string.location_disclosure_title)
+                .setMessage(R.string.location_disclosure_content).setPositiveButton(
+                    R.string.dialog_ok
+                ) { dialog, _ ->
+                    dialog.dismiss()
+                    alertDialog = null
+                    locationConnectivityManager?.checkHasRequiredPermission(this@HomeActivity)
+                }
+                .setCancelable(false))
     }
 
     private fun initSetHomeProfile() {
-
         Glide.with(mContext!!).load(myPreference?.profilePic).into(binding.navviewLayout.userPic)
         binding.navviewLayout.userName.text = myPreference?.Username
     }
@@ -226,6 +263,21 @@ class HomeActivity : BaseActivity(), View.OnClickListener {
     override fun onResume() {
         super.onResume()
         Intercom.client().handlePushMessage()
+        initMaps()
+    }
+
+    private var mMap: GoogleMap? = null
+    private var mapFragment: SupportMapFragment? = null
+    private fun initMaps() {
+        if (mMap == null) {
+            val fm = supportFragmentManager
+            mapFragment = fm.findFragmentById(R.id.map) as SupportMapFragment?
+            mapFragment?.getMapAsync(this@HomeActivity)
+        }
+
+        if (mMap != null) {
+//            setupMap()
+        }
     }
 
     private fun helpDesk() {
@@ -241,5 +293,75 @@ class HomeActivity : BaseActivity(), View.OnClickListener {
             super.onBackPressed()
         }
     }
+
+    override fun onMapReady(p0: GoogleMap) {
+
+        mMap = p0
+        val style = MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style)
+        mMap?.setMapStyle(style)
+    }
+
+    private var alertDialog: AlertDialog? = null
+
+    override fun onShowLocationPermissionDialog(permissions: Array<String>) {
+
+        if (alertDialog == null) {
+            alertDialog = PermissionHandler.showPermissionAlert(
+                this,
+                PermissionHandler.getFailedPermissions(this, permissions)
+            )
+        }
+    }
+
+    override fun onDismissLocationPermissionDialog() {
+        alertDialog = null
+    }
+
+    override fun requestBackgroundLocationUserConsent() {
+        if (alertDialog == null) {
+            alertDialog = AlertDialogHandler.showAlertDialog(this,
+                AlertDialog.Builder(this).setTitle(R.string.bg_location_title)
+                    .setMessage(R.string.bg_location_user_consent_msg).setPositiveButton(
+                        R.string.dialog_ok
+                    ) { dialog, _ ->
+                        dialog.dismiss()
+                        alertDialog = null
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            locationConnectivityManager?.checkHasBgLocationPermission(this@HomeActivity)
+                        } else {
+                        }
+                    }
+                    .setNegativeButton(R.string.dialog_cancel) { dialog, _ ->
+                        dialog.dismiss()
+                        alertDialog = null
+                    }
+                    .setCancelable(false))
+        }
+    }
+
+    override fun showLocationErrorAlert() {
+        var title = getString(R.string.location_services_permission_title)
+        var message = getString(R.string.salto_location_services_permission_msg)
+        var positiveButtonText = getString(R.string.go_to_settings_label)
+
+        if (alertDialog == null) {
+            alertDialog = AlertDialogHandler.showAlertDialog(this, AlertDialog.Builder(this)
+                .setTitle(title)
+                .setMessage(message)
+                .setOnDismissListener {
+                    alertDialog = null
+                }
+                .setPositiveButton(
+                    positiveButtonText
+                ) { dialog, _ ->
+                    dialog.dismiss()
+                    alertDialog = null
+                    CodeSnippet.goToLocationServices(this)
+
+                })
+
+        }
+    }
+
 
 }

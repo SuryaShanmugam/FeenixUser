@@ -11,7 +11,7 @@ class FcmService : FirebaseMessagingService() {
         super.onNewToken(token)
         myPreference = MyPreference(this)
         myPreference?.fcmToken = token
-        Log.d("FCMTOken", token)
+        Log.error("FCMTOken", token)
 
     }
 
