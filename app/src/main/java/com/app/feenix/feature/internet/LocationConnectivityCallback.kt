@@ -5,4 +5,5 @@ interface LocationConnectivityCallback {
     fun onDismissLocationPermissionDialog()
     fun requestBackgroundLocationUserConsent()
     fun showLocationErrorAlert()
+    fun hasOtherPermissions()
 }

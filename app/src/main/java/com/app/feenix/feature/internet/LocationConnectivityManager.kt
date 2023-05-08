@@ -6,10 +6,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.app.feenix.app.AppController
-import com.app.feenix.utils.AppLifecycleObserver
-import com.app.feenix.utils.CodeSnippet
-import com.app.feenix.utils.LocaleContextWrapper
-import com.app.feenix.utils.PermissionHandler
+import com.app.feenix.utils.*
 
 /**
  * This class is responsible for starting/stopping beacon scanning. It monitors if any beacon data is
@@ -118,6 +115,8 @@ class LocationConnectivityManager : LocationStateManager.PermissionStateChangeCa
 
                     if (!locationStateManager.isLocationServicesEnabled()) {
                         beaconConnectivityCallback?.showLocationErrorAlert()
+                    } else {
+                        beaconConnectivityCallback?.hasOtherPermissions()
                     }
                 }
 

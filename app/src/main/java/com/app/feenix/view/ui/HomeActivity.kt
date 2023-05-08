@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.GravityCompat
@@ -22,6 +23,8 @@ import com.app.feenix.databinding.ActivityHomeBinding
 import com.app.feenix.feature.internet.LocationConnectivityCallback
 import com.app.feenix.feature.internet.LocationConnectivityManager
 import com.app.feenix.handler.AlertDialogHandler
+import com.app.feenix.utils.Log
+import com.app.feenix.utils.PermissionHandler
 import com.app.feenix.view.ui.Walkthrough.WalkthroughActivity
 import com.app.feenix.view.ui.base.BaseActivity
 import com.app.feenix.view.ui.notification.NotificationActivity
@@ -82,7 +85,7 @@ class HomeActivity : BaseActivity(), View.OnClickListener, OnMapReadyCallback,
         LocationConnectivityManager.getInstance().let {
             locationConnectivityManager = it
             it.setLocationConnectivityCallback(this@HomeActivity)
-            if (!it.isAllBeaconPermissionGranted()) {
+            if (!it.isBeaconLocationPermissionGranted()) {
                 showLocationDisclosureAlert()
             }
         }
@@ -101,6 +104,20 @@ class HomeActivity : BaseActivity(), View.OnClickListener, OnMapReadyCallback,
                     locationConnectivityManager.checkHasRequiredPermission(this@HomeActivity)
                 }
                 .setCancelable(false))
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        locationConnectivityManager.onRequestPermissionsResult(
+            this,
+            requestCode,
+            permissions,
+            grantResults
+        )
     }
 
     private fun initSetHomeProfile() {
@@ -303,19 +320,46 @@ class HomeActivity : BaseActivity(), View.OnClickListener, OnMapReadyCallback,
 
 
     override fun onShowLocationPermissionDialog(permissions: Array<String>) {
-        TODO("Not yet implemented")
+        if (alertDialog == null) {
+            alertDialog = PermissionHandler.showPermissionAlert(
+                this,
+                PermissionHandler.getFailedPermissions(this, permissions)
+            )
+        }
     }
 
     override fun onDismissLocationPermissionDialog() {
-        TODO("Not yet implemented")
+        alertDialog = null
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun requestBackgroundLocationUserConsent() {
-        TODO("Not yet implemented")
+        if (alertDialog == null) {
+            Log.d("LocPer", "requestBackgroundLocationUserConsent")
+            alertDialog = AlertDialogHandler.showAlertDialog(this,
+                AlertDialog.Builder(this).setTitle(R.string.bg_location_title)
+                    .setMessage(R.string.bg_location_user_consent_msg).setPositiveButton(
+                        R.string.dialog_ok
+                    ) { dialog, _ ->
+                        dialog.dismiss()
+                        alertDialog = null
+                        locationConnectivityManager.checkHasBgLocationPermission(this@HomeActivity)
+                    }
+                    .setNegativeButton(R.string.cancel) { dialog, _ ->
+                        dialog.dismiss()
+                        alertDialog = null
+                    }
+                    .setCancelable(false))
+        }
     }
 
     override fun showLocationErrorAlert() {
-        TODO("Not yet implemented")
+        alertDialog = null
+    }
+
+    override fun hasOtherPermissions() {
+
+
     }
 
 
