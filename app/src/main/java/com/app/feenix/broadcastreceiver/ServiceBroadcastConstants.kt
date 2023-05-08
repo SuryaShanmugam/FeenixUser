@@ -5,6 +5,7 @@ interface ServiceBroadcastConstants {
     interface BroadcastActions {
         companion object {
             const val INTERNET_CONNECTION_STATUS = "com.app.feenix.internet_connection_status"
+            const val LOCATION_CONNECTION_STATUS = "com.app.feenix.location_connection_status"
 
 
         }

@@ -6,6 +6,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.app.feenix.app.AppController
+import com.app.feenix.utils.AppLifecycleObserver
 import com.app.feenix.utils.CodeSnippet
 import com.app.feenix.utils.LocaleContextWrapper
 import com.app.feenix.utils.PermissionHandler
@@ -45,7 +46,9 @@ class LocationConnectivityManager : LocationStateManager.PermissionStateChangeCa
     private fun initBeaconManager(context: Context) {
         locationStateManager = AppController.applicationInstance.locationStateManager()
         locationStateManager.setStateChangeCallback(this)
+        monitorBeaconPermissionsWhileScanning()
     }
+
 
     private var beaconConnectivityCallback: LocationConnectivityCallback? = null
     private val tags = "BeaconCM"
@@ -55,6 +58,15 @@ class LocationConnectivityManager : LocationStateManager.PermissionStateChangeCa
         beaconConnectivityCallback: LocationConnectivityCallback
     ) {
         this.beaconConnectivityCallback = beaconConnectivityCallback
+    }
+
+    private fun monitorBeaconPermissionsWhileScanning() {
+
+        if (!AppLifecycleObserver.isAppOnForeground) {
+            if (locationStateManager.isLocationServicesEnabled()) {
+
+            }
+        }
     }
 
     fun checkHasRequiredPermission(activity: AppCompatActivity) {

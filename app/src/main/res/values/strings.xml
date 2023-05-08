@@ -124,6 +124,7 @@
     <string name="go_to_settings_label">Go to Settings</string>
     <string name="bg_location_title">Location Access Settings</string>
     <string name="bg_location_user_consent_msg">Allow us to access your location  <b>all the time</b> so that you will be able to receive alarm in case the app is closed or not in use</string>
+    <string name="beacon_location_services_permission_msg">You have to enable Location Services for Ride</string>
 
     <string name="location_disclosure_title">Location Access</string>
     <string name="location_disclosure_content">Feenix User App uses location to get your current location for Ride booking purposes. when the app is closed or not in use</string>

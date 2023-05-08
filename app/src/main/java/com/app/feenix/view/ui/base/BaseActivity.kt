@@ -38,6 +38,11 @@ open class BaseActivity : AppCompatActivity(),
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        unregisterReceiver(broadcastReceiver)
+    }
+
     override fun attachBaseContext(newBase: Context?) {
         super.attachBaseContext(newBase?.let { LocaleContextWrapper.wrapContext(it) })
     }

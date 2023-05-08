@@ -19,4 +19,6 @@ class AlarmNotificationFactory(private val context: Context) : CoroutineScope by
         ).createForegroundNotification()
     }
 
+    fun removeBeaconNotification(notificationId: Int) {
+    }
 }

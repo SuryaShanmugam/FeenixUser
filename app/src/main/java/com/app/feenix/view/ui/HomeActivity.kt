@@ -22,8 +22,6 @@ import com.app.feenix.databinding.ActivityHomeBinding
 import com.app.feenix.feature.internet.LocationConnectivityCallback
 import com.app.feenix.feature.internet.LocationConnectivityManager
 import com.app.feenix.handler.AlertDialogHandler
-import com.app.feenix.utils.CodeSnippet
-import com.app.feenix.utils.PermissionHandler
 import com.app.feenix.view.ui.Walkthrough.WalkthroughActivity
 import com.app.feenix.view.ui.base.BaseActivity
 import com.app.feenix.view.ui.notification.NotificationActivity
@@ -64,7 +62,7 @@ class HomeActivity : BaseActivity(), View.OnClickListener, OnMapReadyCallback,
     lateinit var logoutDrawer: LinearLayout
     lateinit var bottomDrawer: LinearLayout
     lateinit var profileDrawer: TextView
-    private var locationConnectivityManager: LocationConnectivityManager? = null
+    lateinit var locationConnectivityManager: LocationConnectivityManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,20 +73,22 @@ class HomeActivity : BaseActivity(), View.OnClickListener, OnMapReadyCallback,
         prepareObjects()
         setupDrawer()
         initSetHomeProfile()
-        setupLocation()
+        setupLocationPermission()
 
     }
 
-    private fun setupLocation() {
+    private fun setupLocationPermission() {
 
         LocationConnectivityManager.getInstance().let {
             locationConnectivityManager = it
             it.setLocationConnectivityCallback(this@HomeActivity)
-            if (!it.isBeaconLocationPermissionGranted()) {
+            if (!it.isAllBeaconPermissionGranted()) {
                 showLocationDisclosureAlert()
             }
         }
     }
+
+    private var alertDialog: AlertDialog? = null
 
     private fun showLocationDisclosureAlert() {
         alertDialog = AlertDialogHandler.showAlertDialog(this,
@@ -98,7 +98,7 @@ class HomeActivity : BaseActivity(), View.OnClickListener, OnMapReadyCallback,
                 ) { dialog, _ ->
                     dialog.dismiss()
                     alertDialog = null
-                    locationConnectivityManager?.checkHasRequiredPermission(this@HomeActivity)
+                    locationConnectivityManager.checkHasRequiredPermission(this@HomeActivity)
                 }
                 .setCancelable(false))
     }
@@ -301,66 +301,21 @@ class HomeActivity : BaseActivity(), View.OnClickListener, OnMapReadyCallback,
         mMap?.setMapStyle(style)
     }
 
-    private var alertDialog: AlertDialog? = null
 
     override fun onShowLocationPermissionDialog(permissions: Array<String>) {
-
-        if (alertDialog == null) {
-            alertDialog = PermissionHandler.showPermissionAlert(
-                this,
-                PermissionHandler.getFailedPermissions(this, permissions)
-            )
-        }
+        TODO("Not yet implemented")
     }
 
     override fun onDismissLocationPermissionDialog() {
-        alertDialog = null
+        TODO("Not yet implemented")
     }
 
     override fun requestBackgroundLocationUserConsent() {
-        if (alertDialog == null) {
-            alertDialog = AlertDialogHandler.showAlertDialog(this,
-                AlertDialog.Builder(this).setTitle(R.string.bg_location_title)
-                    .setMessage(R.string.bg_location_user_consent_msg).setPositiveButton(
-                        R.string.dialog_ok
-                    ) { dialog, _ ->
-                        dialog.dismiss()
-                        alertDialog = null
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                            locationConnectivityManager?.checkHasBgLocationPermission(this@HomeActivity)
-                        } else {
-                        }
-                    }
-                    .setNegativeButton(R.string.dialog_cancel) { dialog, _ ->
-                        dialog.dismiss()
-                        alertDialog = null
-                    }
-                    .setCancelable(false))
-        }
+        TODO("Not yet implemented")
     }
 
     override fun showLocationErrorAlert() {
-        var title = getString(R.string.location_services_permission_title)
-        var message = getString(R.string.salto_location_services_permission_msg)
-        var positiveButtonText = getString(R.string.go_to_settings_label)
-
-        if (alertDialog == null) {
-            alertDialog = AlertDialogHandler.showAlertDialog(this, AlertDialog.Builder(this)
-                .setTitle(title)
-                .setMessage(message)
-                .setOnDismissListener {
-                    alertDialog = null
-                }
-                .setPositiveButton(
-                    positiveButtonText
-                ) { dialog, _ ->
-                    dialog.dismiss()
-                    alertDialog = null
-                    CodeSnippet.goToLocationServices(this)
-
-                })
-
-        }
+        TODO("Not yet implemented")
     }
 
 
