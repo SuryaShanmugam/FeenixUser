@@ -53,7 +53,7 @@
             android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/layout_home_hidden"
+                android:id="@+id/layout_home_default"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="@dimen/primary"
@@ -288,7 +288,7 @@
             </LinearLayout>
 
             <RelativeLayout
-                android:id="@+id/layout_home_visible"
+                android:id="@+id/layout_home_expanded"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"

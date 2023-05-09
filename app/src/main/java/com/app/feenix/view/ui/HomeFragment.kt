@@ -8,11 +8,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.app.feenix.R
 import com.app.feenix.app.MyPreference
 import com.app.feenix.databinding.FragmentHomeBinding
+import com.app.feenix.databinding.LayoutHomeBottomBinding
 import com.app.feenix.eventbus.OnHomeLocationEnableModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -21,6 +23,10 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.net.PlacesClient
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -33,6 +39,9 @@ class HomeFragment : Fragment(), OnMapReadyCallback, View.OnClickListener {
     private var mapFragment: SupportMapFragment? = null
     private lateinit var mylocationButton: CardView
 
+    // Places Initialise
+    var placesClient: PlacesClient? = null
+    lateinit var sourceLayout: LayoutHomeBottomBinding
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -42,11 +51,12 @@ class HomeFragment : Fragment(), OnMapReadyCallback, View.OnClickListener {
         initObjects()
         initCallbacks()
         initMaps()
+        initBottomSheetAnimations()
         return binding.root
     }
 
-    private fun initCallbacks() {
 
+    private fun initCallbacks() {
         mylocationButton.setOnClickListener(this)
     }
 
@@ -54,9 +64,15 @@ class HomeFragment : Fragment(), OnMapReadyCallback, View.OnClickListener {
     private fun initObjects() {
         mContext = activity
         myPreference = MyPreference(mContext!!)
-        mylocationButton = binding.sourceLayout.cardviewMylocationHome
+        sourceLayout = binding.sourceLayout
+        mylocationButton = sourceLayout.cardviewMylocationHome
+        Places.initialize(mContext!!, myPreference.dynamicMapkey!!)
+        placesClient = Places.createClient(mContext!!)
     }
 
+
+    // InitMaps & Current Locations Setup
+    private var isCalledLocationChange = 0
     private fun initMaps() {
         if (mMap == null) {
             val fm = childFragmentManager
@@ -77,14 +93,15 @@ class HomeFragment : Fragment(), OnMapReadyCallback, View.OnClickListener {
 
     }
 
-    private var isCalledLocationChange = 0
+
     private fun setupMap() {
 
         if (ActivityCompat.checkSelfPermission(
                 mContext!!,
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                mContext!!, Manifest.permission.ACCESS_COARSE_LOCATION
+                mContext!!,
+                Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             return
@@ -143,6 +160,49 @@ class HomeFragment : Fragment(), OnMapReadyCallback, View.OnClickListener {
                 val latLng = LatLng(mMap!!.myLocation.latitude, mMap!!.myLocation.longitude)
                 animateCamera(latLng)
             }
+        }
+    }
+
+    //BottomSheetAnimations
+    var coordinator_layout_home: CoordinatorLayout? = null
+    var bottom_sheet_homebehavior: BottomSheetBehavior<*>? = null
+    private fun initBottomSheetAnimations() {
+
+        coordinator_layout_home = sourceLayout.coordinatorLayoutHome
+        val bottom_sheet_homenew =
+            coordinator_layout_home!!.findViewById<View>(R.id.bottom_sheet_home)
+        bottom_sheet_homebehavior = BottomSheetBehavior.from(bottom_sheet_homenew)
+        bottom_sheet_homebehavior?.peekHeight = 740
+
+        bottom_sheet_homebehavior?.setBottomSheetCallback(object : BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                    bottom_sheet_homenew.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+
+                    sourceLayout.layoutHomeDefault.visibility = View.GONE
+                    sourceLayout.cardviewMylocationHome.visibility = View.GONE
+                    sourceLayout.layoutHomeExpanded.visibility = View.VISIBLE
+                } else if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                    sourceLayout.layoutHomeDefault.visibility = View.VISIBLE
+                    sourceLayout.cardviewMylocationHome.visibility = View.VISIBLE
+                    sourceLayout.layoutHomeExpanded.visibility = View.GONE
+                } else if (newState == BottomSheetBehavior.STATE_DRAGGING) {
+                    sourceLayout.layoutHomeDefault.visibility = View.GONE
+                    sourceLayout.cardviewMylocationHome.visibility = View.GONE
+                    sourceLayout.layoutHomeExpanded.visibility = View.VISIBLE
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+            }
+        })
+
+    }
+
+    private fun onGoingLayout() {
+        sourceLayout.layoutHomeDefault.visibility = View.VISIBLE
+        if (bottom_sheet_homebehavior != null) {
+            bottom_sheet_homebehavior!!.state = BottomSheetBehavior.STATE_COLLAPSED
         }
     }
 }
