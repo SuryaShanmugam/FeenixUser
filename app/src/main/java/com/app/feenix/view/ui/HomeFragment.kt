@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.cardview.widget.CardView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.app.ActivityCompat
@@ -52,6 +53,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback, View.OnClickListener {
         initCallbacks()
         initMaps()
         initBottomSheetAnimations()
+        backpressHandler()
+
         return binding.root
     }
 
@@ -178,7 +181,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback, View.OnClickListener {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 if (newState == BottomSheetBehavior.STATE_EXPANDED) {
                     bottom_sheet_homenew.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
-
                     sourceLayout.layoutHomeDefault.visibility = View.GONE
                     sourceLayout.cardviewMylocationHome.visibility = View.GONE
                     sourceLayout.layoutHomeExpanded.visibility = View.VISIBLE
@@ -204,5 +206,22 @@ class HomeFragment : Fragment(), OnMapReadyCallback, View.OnClickListener {
         if (bottom_sheet_homebehavior != null) {
             bottom_sheet_homebehavior!!.state = BottomSheetBehavior.STATE_COLLAPSED
         }
+    }
+
+    private fun backpressHandler() {
+        activity?.onBackPressedDispatcher?.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (bottom_sheet_homebehavior != null) {
+                        if (bottom_sheet_homebehavior!!.state == BottomSheetBehavior.STATE_EXPANDED) {
+                            bottom_sheet_homebehavior!!.setState(BottomSheetBehavior.STATE_COLLAPSED)
+
+                        } else {
+                        }
+                    }
+                }
+            })
+
     }
 }
