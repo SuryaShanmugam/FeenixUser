@@ -1,7 +1,10 @@
 package com.app.feenix.view.ui
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.IntentSender.SendIntentException
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -12,16 +15,19 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import cbs.com.bmr.Utilities.MyActivity
 import cbs.com.bmr.Utilities.MyActivity.launchWithBundle
 import com.app.feenix.BuildConfig
 import com.app.feenix.R
+import com.app.feenix.app.AppController
 import com.app.feenix.app.MyPreference
 import com.app.feenix.databinding.ActivityHomeBinding
 import com.app.feenix.feature.internet.LocationConnectivityCallback
 import com.app.feenix.feature.internet.LocationConnectivityManager
+import com.app.feenix.feature.internet.LocationStateManager
 import com.app.feenix.handler.AlertDialogHandler
 import com.app.feenix.utils.Log
 import com.app.feenix.utils.PermissionHandler
@@ -33,17 +39,23 @@ import com.app.feenix.view.ui.referAndearn.ReferAndEarnActivity
 import com.app.feenix.view.ui.tripdetails.YourTripsActivity
 import com.app.feenix.view.ui.wallet.WalletActivity
 import com.bumptech.glide.Glide
+import com.google.android.gms.common.api.GoogleApiClient
+import com.google.android.gms.location.*
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.material.navigation.NavigationView
 import io.intercom.android.sdk.Intercom
 import io.intercom.android.sdk.UserAttributes
 import io.intercom.android.sdk.identity.Registration
 
-class HomeActivity : BaseActivity(), View.OnClickListener, OnMapReadyCallback,
-    LocationConnectivityCallback {
+class HomeActivity : BaseActivity(), View.OnClickListener, LocationConnectivityCallback,
+    OnMapReadyCallback {
+
 
     private lateinit var binding: ActivityHomeBinding
 
@@ -66,6 +78,11 @@ class HomeActivity : BaseActivity(), View.OnClickListener, OnMapReadyCallback,
     lateinit var bottomDrawer: LinearLayout
     lateinit var profileDrawer: TextView
     lateinit var locationConnectivityManager: LocationConnectivityManager
+    private lateinit var locationStateManager: LocationStateManager
+    private var mGoogleApiClient: GoogleApiClient? = null
+    private val REQUEST_CHECK_SETTINGS = 1212
+
+    private var alertDialog: AlertDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,10 +108,48 @@ class HomeActivity : BaseActivity(), View.OnClickListener, OnMapReadyCallback,
         }
     }
 
-    private var alertDialog: AlertDialog? = null
+    // Enable GPS LOcation to get Current Location
+    private fun enableLoc() {
+        mGoogleApiClient = GoogleApiClient.Builder(this@HomeActivity)
+            .addApi(LocationServices.API)
+            .addConnectionCallbacks(object : GoogleApiClient.ConnectionCallbacks {
+                override fun onConnected(bundle: Bundle?) {}
+                override fun onConnectionSuspended(i: Int) {
+                    mGoogleApiClient!!.connect()
+                }
+            })
+            .addOnConnectionFailedListener { connectionResult ->
+                Log.d("Location error", "Location error " + connectionResult.errorCode)
+            }.build()
+        mGoogleApiClient!!.connect()
+        val locationRequest = LocationRequest.create()
+        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        locationRequest.interval = (30 * 1000).toLong()
+        locationRequest.fastestInterval = (5 * 1000).toLong()
+        val builder = LocationSettingsRequest.Builder()
+            .addLocationRequest(locationRequest)
+        builder.setAlwaysShow(true)
+
+        val result = LocationServices.SettingsApi.checkLocationSettings(
+            mGoogleApiClient!!, builder.build()
+        )
+        result.setResultCallback { result ->
+            val status = result.status
+            when (status.statusCode) {
+                LocationSettingsStatusCodes.RESOLUTION_REQUIRED -> try {
+                    if (mMap != null) {
+                        setupMap()
+                    }
+                    status.startResolutionForResult(this@HomeActivity, REQUEST_CHECK_SETTINGS)
+                } catch (e: SendIntentException) {
+                }
+            }
+        }
+    }
 
     private fun showLocationDisclosureAlert() {
-        alertDialog = AlertDialogHandler.showAlertDialog(this,
+        alertDialog = AlertDialogHandler.showAlertDialog(
+            this,
             AlertDialog.Builder(this).setTitle(R.string.location_disclosure_title)
                 .setMessage(R.string.location_disclosure_content).setPositiveButton(
                     R.string.dialog_ok
@@ -169,6 +224,7 @@ class HomeActivity : BaseActivity(), View.OnClickListener, OnMapReadyCallback,
         Intercom.client().registerIdentifiedUser(registration)
 
         sendCustomDetails()
+        locationStateManager = AppController.applicationInstance.locationStateManager()
     }
 
     // Send Custom details via Intercom
@@ -293,7 +349,7 @@ class HomeActivity : BaseActivity(), View.OnClickListener, OnMapReadyCallback,
         }
 
         if (mMap != null) {
-//            setupMap()
+            setupMap()
         }
     }
 
@@ -312,12 +368,47 @@ class HomeActivity : BaseActivity(), View.OnClickListener, OnMapReadyCallback,
     }
 
     override fun onMapReady(p0: GoogleMap) {
-
         mMap = p0
         val style = MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style)
         mMap?.setMapStyle(style)
+        setupMap()
     }
 
+    private var isCalledLocationChange = 0
+    private fun setupMap() {
+
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+        mMap?.isMyLocationEnabled = true
+        mMap?.isBuildingsEnabled = true
+        mMap?.uiSettings?.isMyLocationButtonEnabled = false
+        mMap?.uiSettings?.isZoomControlsEnabled = true
+        mMap?.uiSettings?.isMapToolbarEnabled = false
+        mMap?.uiSettings?.isCompassEnabled = false
+        mMap!!.setOnMyLocationChangeListener { location ->
+            if (isCalledLocationChange == 0) {
+                val myLocation = LatLng(location.latitude, location.longitude)
+                if (myPreference?.CurrentRequestId.isNullOrBlank()) {
+                    animateCamera(myLocation)
+                }
+            }
+
+            isCalledLocationChange++
+        }
+    }
+
+    private fun animateCamera(latLng: LatLng) {
+        val cameraPosition = CameraPosition.Builder().target(latLng).zoom(15.5f).build()
+        mMap!!.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+    }
 
     override fun onShowLocationPermissionDialog(permissions: Array<String>) {
         if (alertDialog == null) {
@@ -355,6 +446,7 @@ class HomeActivity : BaseActivity(), View.OnClickListener, OnMapReadyCallback,
 
     override fun showLocationErrorAlert() {
         alertDialog = null
+        enableLoc()
     }
 
     override fun hasOtherPermissions() {

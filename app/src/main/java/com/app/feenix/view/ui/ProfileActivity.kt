@@ -218,7 +218,7 @@ class ProfileActivity : BaseActivity(), View.OnClickListener, IUpdateProfile,IGe
             myPreference?.mobile = updateProfileMobileResponse.data?.mobile
             myPreference?.countryCode = updateProfileMobileResponse.data?.country_code
             myPreference?.profilePic = updateProfileMobileResponse.data?.picture
-
+            myPreference?.CurrentRequestId = updateProfileMobileResponse.data?.active_request_id
             binding.editFirstname.setText(updateProfileMobileResponse.data?.first_name)
             binding.editLastname.setText(updateProfileMobileResponse.data?.last_name)
             binding.editEmail.setText(updateProfileMobileResponse.data?.email)

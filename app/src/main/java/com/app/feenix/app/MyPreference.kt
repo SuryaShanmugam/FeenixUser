@@ -106,6 +106,10 @@ class MyPreference(context: Context) {
         set(CompletedRequest) = mPreferencesUser.edit()
             .putString(encode(LAST_BOOKING_STATUS), CompletedRequest).apply()
 
+    var CurrentRequestId: String?
+        get() = mPreferencesUser.getString(encode(CURRENT_REQUEST_ID), null)
+        set(CurrentRequestId) = mPreferencesUser.edit()
+            .putString(encode(CURRENT_REQUEST_ID), CurrentRequestId).apply()
 
     fun clearUser() {
 
@@ -141,5 +145,6 @@ class MyPreference(context: Context) {
         private const val COMPLETED_REQUEST = "completed_request"
         private const val LAST_BOOKING_DATE = "LastBooking_date"
         private const val LAST_BOOKING_STATUS = "LastBooking_status"
+        private const val CURRENT_REQUEST_ID = "current_requestId"
     }
 }

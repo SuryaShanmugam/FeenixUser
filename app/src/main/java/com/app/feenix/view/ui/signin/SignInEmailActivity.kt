@@ -103,6 +103,7 @@ class SignInEmailActivity : BaseActivity(), IUpdateProfile, View.OnClickListener
             myPreference?.CancelledRequest = updateProfileMobileResponse.data.cancelled_request
             myPreference?.CompletedRequest = updateProfileMobileResponse.data.completed_request
             myPreference?.LastBookingStatus = updateProfileMobileResponse.data.last_trip_status
+            myPreference?.CurrentRequestId = updateProfileMobileResponse.data.active_request_id
            // myPreference?.LastBookingDate = updateProfileMobileResponse.data.last_booking_date?.date
             moveHomeActivity(
                 updateProfileMobileResponse.data.active_request_flow,
