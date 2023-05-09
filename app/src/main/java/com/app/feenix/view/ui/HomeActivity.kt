@@ -42,8 +42,6 @@ import com.app.feenix.viewmodel.FragmentCallback
 import com.bumptech.glide.Glide
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.*
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.material.navigation.NavigationView
 import io.intercom.android.sdk.Intercom
 import io.intercom.android.sdk.UserAttributes
@@ -81,8 +79,7 @@ class HomeActivity : BaseActivity(), View.OnClickListener, LocationConnectivityC
 
     private var alertDialog: AlertDialog? = null
 
-    private var mMap: GoogleMap? = null
-    private var mapFragment: SupportMapFragment? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -212,6 +209,7 @@ class HomeActivity : BaseActivity(), View.OnClickListener, LocationConnectivityC
             }
             R.id.homeDrawer -> {
                 drawerLayout?.closeDrawer(GravityCompat.START)
+                launchFragment(HomeFragment(), false)
             }
             R.id.your_trips_Drawer -> {
                 drawerLayout?.closeDrawer(GravityCompat.START)

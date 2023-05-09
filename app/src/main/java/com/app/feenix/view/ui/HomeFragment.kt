@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.app.feenix.R
@@ -24,12 +25,13 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
-class HomeFragment : Fragment(), OnMapReadyCallback {
+class HomeFragment : Fragment(), OnMapReadyCallback, View.OnClickListener {
     private var mContext: Context? = null
     private lateinit var binding: FragmentHomeBinding
     private lateinit var myPreference: MyPreference
     private var mMap: GoogleMap? = null
     private var mapFragment: SupportMapFragment? = null
+    private lateinit var mylocationButton: CardView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,14 +40,21 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         initObjects()
+        initCallbacks()
         initMaps()
         return binding.root
+    }
+
+    private fun initCallbacks() {
+
+        mylocationButton.setOnClickListener(this)
     }
 
 
     private fun initObjects() {
         mContext = activity
         myPreference = MyPreference(mContext!!)
+        mylocationButton = binding.sourceLayout.cardviewMylocationHome
     }
 
     private fun initMaps() {
@@ -90,12 +99,18 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             if (isCalledLocationChange == 0) {
                 val myLocation = LatLng(location.latitude, location.longitude)
                 if (myPreference.CurrentRequestId.isNullOrBlank()) {
+                    moveCamera(myLocation)
                     animateCamera(myLocation)
+
                 }
             }
 
             isCalledLocationChange++
         }
+    }
+
+    private fun moveCamera(latLng: LatLng) {
+        mMap!!.moveCamera(CameraUpdateFactory.newLatLng(latLng))
     }
 
     private fun animateCamera(latLng: LatLng) {
@@ -119,5 +134,15 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             initMaps()
         }
 
+    }
+
+    override fun onClick(p0: View?) {
+        val id = p0?.id
+        when (id) {
+            R.id.cardview_mylocation_home -> {
+                val latLng = LatLng(mMap!!.myLocation.latitude, mMap!!.myLocation.longitude)
+                animateCamera(latLng)
+            }
+        }
     }
 }
