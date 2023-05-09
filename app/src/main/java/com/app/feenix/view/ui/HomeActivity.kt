@@ -1,10 +1,8 @@
 package com.app.feenix.view.ui
 
-import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender.SendIntentException
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -15,9 +13,10 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
-import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import cbs.com.bmr.Utilities.MyActivity
 import cbs.com.bmr.Utilities.MyActivity.launchWithBundle
 import com.app.feenix.BuildConfig
@@ -25,6 +24,7 @@ import com.app.feenix.R
 import com.app.feenix.app.AppController
 import com.app.feenix.app.MyPreference
 import com.app.feenix.databinding.ActivityHomeBinding
+import com.app.feenix.eventbus.OnHomeLocationEnableModel
 import com.app.feenix.feature.internet.LocationConnectivityCallback
 import com.app.feenix.feature.internet.LocationConnectivityManager
 import com.app.feenix.feature.internet.LocationStateManager
@@ -38,23 +38,20 @@ import com.app.feenix.view.ui.promotions.PromotionsActivity
 import com.app.feenix.view.ui.referAndearn.ReferAndEarnActivity
 import com.app.feenix.view.ui.tripdetails.YourTripsActivity
 import com.app.feenix.view.ui.wallet.WalletActivity
+import com.app.feenix.viewmodel.FragmentCallback
 import com.bumptech.glide.Glide
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.*
-import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.material.navigation.NavigationView
 import io.intercom.android.sdk.Intercom
 import io.intercom.android.sdk.UserAttributes
 import io.intercom.android.sdk.identity.Registration
+import org.greenrobot.eventbus.EventBus
 
 class HomeActivity : BaseActivity(), View.OnClickListener, LocationConnectivityCallback,
-    OnMapReadyCallback {
+    FragmentCallback {
 
 
     private lateinit var binding: ActivityHomeBinding
@@ -84,6 +81,9 @@ class HomeActivity : BaseActivity(), View.OnClickListener, LocationConnectivityC
 
     private var alertDialog: AlertDialog? = null
 
+    private var mMap: GoogleMap? = null
+    private var mapFragment: SupportMapFragment? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
@@ -97,83 +97,6 @@ class HomeActivity : BaseActivity(), View.OnClickListener, LocationConnectivityC
 
     }
 
-    private fun setupLocationPermission() {
-
-        LocationConnectivityManager.getInstance().let {
-            locationConnectivityManager = it
-            it.setLocationConnectivityCallback(this@HomeActivity)
-            if (!it.isBeaconLocationPermissionGranted()) {
-                showLocationDisclosureAlert()
-            }
-        }
-    }
-
-    // Enable GPS LOcation to get Current Location
-    private fun enableLoc() {
-        mGoogleApiClient = GoogleApiClient.Builder(this@HomeActivity)
-            .addApi(LocationServices.API)
-            .addConnectionCallbacks(object : GoogleApiClient.ConnectionCallbacks {
-                override fun onConnected(bundle: Bundle?) {}
-                override fun onConnectionSuspended(i: Int) {
-                    mGoogleApiClient!!.connect()
-                }
-            })
-            .addOnConnectionFailedListener { connectionResult ->
-                Log.d("Location error", "Location error " + connectionResult.errorCode)
-            }.build()
-        mGoogleApiClient!!.connect()
-        val locationRequest = LocationRequest.create()
-        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        locationRequest.interval = (30 * 1000).toLong()
-        locationRequest.fastestInterval = (5 * 1000).toLong()
-        val builder = LocationSettingsRequest.Builder()
-            .addLocationRequest(locationRequest)
-        builder.setAlwaysShow(true)
-
-        val result = LocationServices.SettingsApi.checkLocationSettings(
-            mGoogleApiClient!!, builder.build()
-        )
-        result.setResultCallback { result ->
-            val status = result.status
-            when (status.statusCode) {
-                LocationSettingsStatusCodes.RESOLUTION_REQUIRED -> try {
-                    if (mMap != null) {
-                        setupMap()
-                    }
-                    status.startResolutionForResult(this@HomeActivity, REQUEST_CHECK_SETTINGS)
-                } catch (e: SendIntentException) {
-                }
-            }
-        }
-    }
-
-    private fun showLocationDisclosureAlert() {
-        alertDialog = AlertDialogHandler.showAlertDialog(
-            this,
-            AlertDialog.Builder(this).setTitle(R.string.location_disclosure_title)
-                .setMessage(R.string.location_disclosure_content).setPositiveButton(
-                    R.string.dialog_ok
-                ) { dialog, _ ->
-                    dialog.dismiss()
-                    alertDialog = null
-                    locationConnectivityManager.checkHasRequiredPermission(this@HomeActivity)
-                }
-                .setCancelable(false))
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        locationConnectivityManager.onRequestPermissionsResult(
-            this,
-            requestCode,
-            permissions,
-            grantResults
-        )
-    }
 
     private fun initSetHomeProfile() {
         Glide.with(mContext!!).load(myPreference?.profilePic).into(binding.navviewLayout.userPic)
@@ -225,6 +148,8 @@ class HomeActivity : BaseActivity(), View.OnClickListener, LocationConnectivityC
 
         sendCustomDetails()
         locationStateManager = AppController.applicationInstance.locationStateManager()
+
+        launchFragment(HomeFragment(), false)
     }
 
     // Send Custom details via Intercom
@@ -336,22 +261,9 @@ class HomeActivity : BaseActivity(), View.OnClickListener, LocationConnectivityC
     override fun onResume() {
         super.onResume()
         Intercom.client().handlePushMessage()
-        initMaps()
     }
 
-    private var mMap: GoogleMap? = null
-    private var mapFragment: SupportMapFragment? = null
-    private fun initMaps() {
-        if (mMap == null) {
-            val fm = supportFragmentManager
-            mapFragment = fm.findFragmentById(R.id.map) as SupportMapFragment?
-            mapFragment?.getMapAsync(this@HomeActivity)
-        }
 
-        if (mMap != null) {
-            setupMap()
-        }
-    }
 
     private fun helpDesk() {
 
@@ -367,47 +279,93 @@ class HomeActivity : BaseActivity(), View.OnClickListener, LocationConnectivityC
         }
     }
 
-    override fun onMapReady(p0: GoogleMap) {
-        mMap = p0
-        val style = MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style)
-        mMap?.setMapStyle(style)
-        setupMap()
+    // Enable GPS LOcation &  Location permission Codes
+    private fun setupLocationPermission() {
+
+        LocationConnectivityManager.getInstance().let {
+            locationConnectivityManager = it
+            it.setLocationConnectivityCallback(this@HomeActivity)
+            if (!it.isBeaconLocationPermissionGranted()) {
+                showLocationDisclosureAlert()
+            } else if (!locationStateManager.isLocationServicesEnabled()) {
+                enableLoc()
+            }
+        }
+
     }
 
-    private var isCalledLocationChange = 0
-    private fun setupMap() {
+    override fun onDestroy() {
+        super.onDestroy()
+        alertDialog?.dismiss()
+        alertDialog = null
+    }
 
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            return
-        }
-        mMap?.isMyLocationEnabled = true
-        mMap?.isBuildingsEnabled = true
-        mMap?.uiSettings?.isMyLocationButtonEnabled = false
-        mMap?.uiSettings?.isZoomControlsEnabled = true
-        mMap?.uiSettings?.isMapToolbarEnabled = false
-        mMap?.uiSettings?.isCompassEnabled = false
-        mMap!!.setOnMyLocationChangeListener { location ->
-            if (isCalledLocationChange == 0) {
-                val myLocation = LatLng(location.latitude, location.longitude)
-                if (myPreference?.CurrentRequestId.isNullOrBlank()) {
-                    animateCamera(myLocation)
+    private fun enableLoc() {
+        mGoogleApiClient = GoogleApiClient.Builder(this@HomeActivity)
+            .addApi(LocationServices.API)
+            .addConnectionCallbacks(object : GoogleApiClient.ConnectionCallbacks {
+                override fun onConnected(bundle: Bundle?) {}
+                override fun onConnectionSuspended(i: Int) {
+                    mGoogleApiClient!!.connect()
+                }
+            })
+            .addOnConnectionFailedListener { connectionResult ->
+                Log.d("Location error", "Location error " + connectionResult.errorCode)
+            }.build()
+        mGoogleApiClient!!.connect()
+        val locationRequest = LocationRequest.create()
+        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        locationRequest.interval = (30 * 1000).toLong()
+        locationRequest.fastestInterval = (5 * 1000).toLong()
+        val builder = LocationSettingsRequest.Builder()
+            .addLocationRequest(locationRequest)
+        builder.setAlwaysShow(true)
+
+        val result = LocationServices.SettingsApi.checkLocationSettings(
+            mGoogleApiClient!!, builder.build()
+        )
+        result.setResultCallback { result ->
+            val status = result.status
+            when (status.statusCode) {
+                LocationSettingsStatusCodes.RESOLUTION_REQUIRED -> try {
+                    EventBus.getDefault().postSticky(
+                        OnHomeLocationEnableModel(
+                            true
+                        )
+                    )
+                    status.startResolutionForResult(this@HomeActivity, REQUEST_CHECK_SETTINGS)
+                } catch (e: SendIntentException) {
                 }
             }
-
-            isCalledLocationChange++
         }
     }
 
-    private fun animateCamera(latLng: LatLng) {
-        val cameraPosition = CameraPosition.Builder().target(latLng).zoom(15.5f).build()
-        mMap!!.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+    private fun showLocationDisclosureAlert() {
+        alertDialog = AlertDialogHandler.showAlertDialog(
+            this,
+            AlertDialog.Builder(this).setTitle(R.string.location_disclosure_title)
+                .setMessage(R.string.location_disclosure_content).setPositiveButton(
+                    R.string.dialog_ok
+                ) { dialog, _ ->
+                    dialog.dismiss()
+                    alertDialog = null
+                    locationConnectivityManager.checkHasRequiredPermission(this@HomeActivity)
+                }
+                .setCancelable(false))
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        locationConnectivityManager.onRequestPermissionsResult(
+            this,
+            requestCode,
+            permissions,
+            grantResults
+        )
     }
 
     override fun onShowLocationPermissionDialog(permissions: Array<String>) {
@@ -450,9 +408,14 @@ class HomeActivity : BaseActivity(), View.OnClickListener, LocationConnectivityC
     }
 
     override fun hasOtherPermissions() {
-
-
     }
 
+    override fun launchFragment(fragment: Fragment, addToBackStack: Boolean) {
+
+        val fragmentTransaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.layout_homecontainer, fragment)
+        if (addToBackStack) fragmentTransaction.addToBackStack(null)
+        fragmentTransaction.commit()
+    }
 
 }

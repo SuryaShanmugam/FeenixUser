@@ -15,25 +15,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
         <!--Heading Layout-->
-
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/map"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/duplex"
-            android:orientation="horizontal">
-
             <androidx.cardview.widget.CardView
                 android:id="@+id/navigation_icon_cardview"
                 android:layout_width="38dp"
                 android:layout_height="38dp"
                 android:layout_marginTop="@dimen/extra_duplex"
+                android:layout_marginStart="@dimen/primary"
                 app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="@dimen/duplex"
                 app:cardElevation="@dimen/primary">
@@ -55,55 +42,11 @@
             </androidx.cardview.widget.CardView>
 
 
-            <LinearLayout
-                android:id="@+id/layout_sos"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="end"
-                android:visibility="gone">
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="38dp"
-                    android:layout_height="38dp"
-                    android:layout_marginTop="@dimen/extra_duplex"
-                    app:cardBackgroundColor="@color/white"
-                    app:cardCornerRadius="@dimen/duplex"
-                    app:cardElevation="@dimen/primary">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:padding="@dimen/mini">
-
-                        <ImageView
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
-                            android:adjustViewBounds="true"
-                            android:scaleType="fitCenter"
-                            app:srcCompat="@drawable/img_menu_sos"
-                            tools:ignore="ContentDescription" />
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-            </LinearLayout>
-
-
-        </LinearLayout>
-
-        <!--Source Layout-->
-
-
-        <include
-            android:id="@+id/sourceLayout"
-            layout="@layout/layout_home_bottom"
+        <FrameLayout
+            android:id="@+id/layout_homecontainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </RelativeLayout>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
