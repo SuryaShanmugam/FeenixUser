@@ -68,7 +68,16 @@
             android:id="@+id/sourceLayout"
             layout="@layout/layout_home_bottom"
             android:layout_width="match_parent"
+            android:visibility="visible"
             android:layout_height="match_parent" />
+
+        <!--Select SubService Layout-->
+        <include
+            android:id="@+id/servicetypeLayout"
+            layout="@layout/layout_home_service_type"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
     </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

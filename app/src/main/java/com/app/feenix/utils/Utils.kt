@@ -1,5 +1,7 @@
 package com.app.feenix.utils
 
+import android.animation.ValueAnimator
+import android.view.animation.LinearInterpolator
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -48,5 +50,19 @@ object Utils {
         return createdOn
     }
 
+
+    open fun polyLineAnimator(): ValueAnimator? {
+        val valueAnimator = ValueAnimator.ofInt(0, 100)
+        valueAnimator.interpolator = LinearInterpolator()
+        valueAnimator.duration = 2000
+        return valueAnimator
+    }
+
+    open fun cabAnimator(): ValueAnimator? {
+        val valueAnimator = ValueAnimator.ofFloat(0f, 1f)
+        valueAnimator.interpolator = LinearInterpolator()
+        valueAnimator.duration = 3000
+        return valueAnimator
+    }
 
 }

@@ -1,11 +1,18 @@
 package com.app.feenix.view.ui
 
 import android.Manifest
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
+import android.location.Location
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -19,24 +26,23 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import cbs.com.bmr.Utilities.MyActivity
 import com.app.feenix.R
+import com.app.feenix.app.Constant
 import com.app.feenix.app.MyPreference
 import com.app.feenix.databinding.FragmentHomeBinding
 import com.app.feenix.databinding.LayoutHomeBottomBinding
+import com.app.feenix.databinding.LayoutHomeServiceTypeBinding
 import com.app.feenix.eventbus.MenuIconDisableModel
 import com.app.feenix.eventbus.OnHomeLocationEnableModel
 import com.app.feenix.model.response.GetLocationData
 import com.app.feenix.model.response.GetLocationResponse
 import com.app.feenix.model.response.RecentDestLocationData
+import com.app.feenix.utils.Utils
 import com.app.feenix.view.adapter.RecentDestLocationAdapter
 import com.app.feenix.viewmodel.IBookingRides
 import com.app.feenix.webservices.bookingride.BookingRideService
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MapStyleOptions
+import com.directions.route.*
+import com.google.android.gms.maps.*
+import com.google.android.gms.maps.model.*
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -46,7 +52,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
 class HomeFragment : Fragment(), OnMapReadyCallback, View.OnClickListener, IBookingRides,
-    RecentDestLocationAdapter.RecentDestItemClickCallback {
+    RecentDestLocationAdapter.RecentDestItemClickCallback, RoutingListener {
     private var mContext: Context? = null
     private lateinit var binding: FragmentHomeBinding
     private lateinit var myPreference: MyPreference
@@ -58,6 +64,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, View.OnClickListener, IBook
     // Places Initialise
     var placesClient: PlacesClient? = null
     lateinit var sourceLayout: LayoutHomeBottomBinding
+    lateinit var servicetypeLayout: LayoutHomeServiceTypeBinding
 
 
     var current_lat: Double? = null
@@ -84,6 +91,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, View.OnClickListener, IBook
         mContext = activity
         myPreference = MyPreference(mContext!!)
         sourceLayout = binding.sourceLayout
+        servicetypeLayout = binding.servicetypeLayout
         mylocationButton = sourceLayout.cardviewMylocationHome
         Places.initialize(mContext!!, myPreference.dynamicMapkey!!)
         placesClient = Places.createClient(mContext!!)
@@ -308,12 +316,14 @@ class HomeFragment : Fragment(), OnMapReadyCallback, View.OnClickListener, IBook
 
     lateinit var locationHomeArray: ArrayList<GetLocationData>
     lateinit var locationWorkArray: ArrayList<GetLocationData>
+    lateinit var locationrecentDestList: MutableList<RecentDestLocationData>
 
     @SuppressLint("SetTextI18n")
     override fun ongetSavedLocationsHome(getLocationResponse: GetLocationResponse) {
         Log.e("reasseow", "" + getLocationResponse.toString())
         locationHomeArray = arrayListOf()
         locationWorkArray = arrayListOf()
+
         if (getLocationResponse.locations != null) {
             for (locationdata in getLocationResponse.locations) {
                 if (locationdata.type.equals("Home") && locationdata.is_default == 1) {
@@ -341,6 +351,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback, View.OnClickListener, IBook
         if (recentDestination!!.size > 0) {
             sourceLayout.layoutHomeAddress.searchResultView.visibility = View.VISIBLE
             sourceLayout.layoutHomeAddress.txtEmptyLocationsFound.visibility = View.GONE
+            locationrecentDestList = mutableListOf()
+            locationrecentDestList = recentDestination.take(5).toMutableList()
             val historyAdapter = RecentDestLocationAdapter(
                 mContext!!,
                 recentDestination.take(5).toMutableList(),
@@ -355,13 +367,221 @@ class HomeFragment : Fragment(), OnMapReadyCallback, View.OnClickListener, IBook
             sourceLayout.layoutHomeAddress.txtEmptyLocationsFound.visibility = View.VISIBLE
         }
 
-
     }
+
 
     override fun onRecentDestItemClick(position: Int) {
-
+        val recentlist = locationrecentDestList.get(position)
+        Constant.DEST_LAT = recentlist.d_latitude!!
+        Constant.DEST_LNG = recentlist.d_longitude!!
+        Constant.DEST_ADDRESS = recentlist.d_address!!
+        Constant.DEST_TITLE = recentlist.d_title!!
+        getServiceTypeView()
 
     }
+
+    // Create Service Type Screen
+    private fun getServiceTypeView() {
+        sourceLayout.coordinatorLayoutHome.visibility = View.GONE
+        sourceLayout.cardviewMylocationHome.visibility = View.GONE
+        generateRoute()
+    }
+
+
+    // Route Generation
+    var sourceMarker: Drawable? = null
+    var destinationMarker: Drawable? = null
+
+    open fun generateRoute() {
+        sourceMarker = mContext!!.resources.getDrawable(R.drawable.img_source_address)
+        destinationMarker = mContext!!.resources.getDrawable(R.drawable.img_destination_address)
+
+        try {
+            val s_lat: Double = Constant.SOURCE_LAT
+            val s_lng: Double = Constant.SOURCE_LNG
+            val d_lat: Double = Constant.DEST_LAT
+            val d_lng: Double = Constant.DEST_LNG
+            val start = LatLng(s_lat, s_lng)
+            val end = LatLng(d_lat, d_lng)
+            if (s_lat > 0 && s_lng > 0 && d_lat > 0 && d_lng > 0) {
+                val myLocation = LatLng(start.latitude, start.longitude)
+                val cameraPosition = CameraPosition.Builder().target(myLocation).zoom(12f).build()
+                mMap?.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+                val route: MutableList<LatLng> = ArrayList()
+                route.add(LatLng(s_lat, s_lng))
+                //   zoomRoute(mMap, route);
+            }
+            val routing: Routing = Routing.Builder()
+                .key(myPreference.dynamicMapkey)
+                .travelMode(AbstractRouting.TravelMode.DRIVING)
+                .alternativeRoutes(false)
+                .withListener(this)
+                .waypoints(start, end)
+                .build()
+            routing.execute()
+        } catch (e: Exception) {
+        }
+    }
+
+
+    override fun onRoutingFailure(p0: RouteException?) {
+        Log.e("onRoutingFailure: ", "" + p0?.message)
+    }
+
+    override fun onRoutingStart() {
+        TODO("Not yet implemented")
+    }
+
+    private var polylines: ArrayList<Polyline> = arrayListOf()
+    private var polylinesValues: ArrayList<LatLng>? = null
+    private var greyPolyLine: Polyline? = null
+    private var blackPolyline: Polyline? = null
+
+    override fun onRoutingSuccess(route: java.util.ArrayList<Route>?, p1: Int) {
+        mMap?.clear()
+
+        val start = LatLng(Constant.SOURCE_LAT, Constant.SOURCE_LNG)
+        val end = LatLng(Constant.DEST_LAT, Constant.DEST_LNG)
+        val builder = LatLngBounds.Builder()
+        //the include method will calculate the min and max bound.
+        builder.include(start)
+        builder.include(end)
+        val bounds = builder.build()
+        if (getDistance(start.latitude, start.longitude, end.latitude, end.longitude) < 2) {
+            val cu = CameraUpdateFactory.newLatLngBounds(bounds, 100)
+            mMap!!.animateCamera(cu)
+            Log.e("getDistancelocal<2:", "Success")
+            mapExpand()
+        } else if (getDistance(
+                start.latitude,
+                start.longitude,
+                end.latitude,
+                end.longitude
+            ) > 2 && getDistance(start.latitude, start.longitude, end.latitude, end.longitude) < 5
+        ) {
+            val cu = CameraUpdateFactory.newLatLngBounds(bounds, 150)
+            mMap!!.animateCamera(cu)
+            mapExpand()
+            Log.e("getDistancelocal>2<5:", "Success")
+        } else if (getDistance(
+                start.latitude,
+                start.longitude,
+                end.latitude,
+                end.longitude
+            ) > 5 && getDistance(start.latitude, start.longitude, end.latitude, end.longitude) < 10
+        ) {
+            val cu = CameraUpdateFactory.newLatLngBounds(bounds, 200)
+            mMap!!.animateCamera(cu)
+            mapExpand()
+            Log.e("getDistancelocal>5<10:", "Success")
+        } else if (getDistance(
+                start.latitude,
+                start.longitude,
+                end.latitude,
+                end.longitude
+            ) > 10 && getDistance(start.latitude, start.longitude, end.latitude, end.longitude) < 15
+        ) {
+            val cu = CameraUpdateFactory.newLatLngBounds(bounds, 250)
+            mMap!!.animateCamera(cu)
+            mapExpand()
+            Log.e("getDistancelocal>10<15:", "Success")
+        } else {
+            Log.e("getDistancelocal>15:", "Success")
+            val cu = CameraUpdateFactory.newLatLngBounds(bounds, 300)
+            mMap!!.animateCamera(cu)
+            mapExpand()
+        }
+        if (polylines.size > 0) {
+            for (poly in polylines) {
+                poly.remove()
+            }
+        }
+
+        polylines = arrayListOf()
+        polylinesValues = arrayListOf()
+        for (i in route!!.indices) {
+            val polyOptions = PolylineOptions()
+            polyOptions.color(Color.GRAY)
+            polyOptions.width(6f)
+            polyOptions.addAll(route.get(i)!!.points)
+            greyPolyLine = mMap!!.addPolyline(polyOptions)
+            polylines.add(greyPolyLine!!)
+            polylinesValues?.addAll(route.get(i)!!.points)
+            val blackPolylineOptions = PolylineOptions()
+            blackPolylineOptions.width(6f)
+            blackPolylineOptions.color(Color.BLACK)
+            blackPolyline = mMap!!.addPolyline(blackPolylineOptions)
+        }
+        if (myPreference.CurrentRequestId.isNullOrEmpty()
+        ) {
+            // sharedHelper.setLocationRoute(polylinesValues)
+        }
+        val polylineAnimator: ValueAnimator = Utils.polyLineAnimator()!!
+        polylineAnimator.addUpdateListener { animation ->
+            val percentValue = animation.animatedValue as Int
+            val index: Int = (greyPolyLine?.points!!.size * (percentValue / 100.0f)).toInt()
+            blackPolyline?.points = greyPolyLine?.points!!.subList(0, index)
+        }
+        polylineAnimator.start()
+
+        val height = 70
+        val width = 70
+
+        //source marker
+
+        //source marker
+        val bitmapdraw = sourceMarker as BitmapDrawable
+        val b = bitmapdraw.bitmap
+        val smallMarker = Bitmap.createScaledBitmap(b, width, height, false)
+
+
+        //desti_marker
+
+
+        //desti_marker
+        val destiIcon = destinationMarker as BitmapDrawable
+        val bDest = destiIcon.bitmap
+        val smallMarkerDest = Bitmap.createScaledBitmap(bDest, width, height, false)
+        // Start marker
+        // Start marker
+        var options = MarkerOptions()
+        if (myPreference.CurrentRequestId.isNullOrEmpty()) {
+            options.position(start)
+            options.icon(BitmapDescriptorFactory.fromBitmap(smallMarker))
+            mMap!!.addMarker(options)
+        }
+        // End marker
+        // End marker
+        options = MarkerOptions()
+        options.position(end)
+        options.icon(BitmapDescriptorFactory.fromBitmap(smallMarkerDest))
+        mMap!!.addMarker(options)
+    }
+
+    override fun onRoutingCancelled() {
+    }
+
+    private fun mapExpand() {
+        if (mapFragment != null) {
+            val displaymetrics = DisplayMetrics()
+            activity?.windowManager?.defaultDisplay?.getMetrics(displaymetrics)
+            val height = displaymetrics.heightPixels
+            val params = mapFragment!!.requireView().layoutParams
+            params.height = height / 2 + 350
+            mapFragment!!.requireView().layoutParams = params
+        }
+    }
+
+    fun getDistance(s_lat: Double, s_lng: Double, d_lat: Double, d_lng: Double): Double {
+        val startPoint = Location("locationA")
+        startPoint.latitude = s_lat
+        startPoint.longitude = s_lng
+        val endPoint = Location("locationA")
+        endPoint.latitude = d_lat
+        endPoint.longitude = d_lng
+        return startPoint.distanceTo(endPoint).toDouble() / 1000
+    }
+
 
     // OnBackPressHandler
 
