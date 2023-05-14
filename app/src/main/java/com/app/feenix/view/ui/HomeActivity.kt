@@ -13,6 +13,7 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
+import androidx.cardview.widget.CardView
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -24,6 +25,7 @@ import com.app.feenix.R
 import com.app.feenix.app.AppController
 import com.app.feenix.app.MyPreference
 import com.app.feenix.databinding.ActivityHomeBinding
+import com.app.feenix.eventbus.MenuIconDisableModel
 import com.app.feenix.eventbus.OnHomeLocationEnableModel
 import com.app.feenix.feature.internet.LocationConnectivityCallback
 import com.app.feenix.feature.internet.LocationConnectivityManager
@@ -47,6 +49,8 @@ import io.intercom.android.sdk.Intercom
 import io.intercom.android.sdk.UserAttributes
 import io.intercom.android.sdk.identity.Registration
 import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 class HomeActivity : BaseActivity(), View.OnClickListener, LocationConnectivityCallback,
     FragmentCallback {
@@ -61,6 +65,7 @@ class HomeActivity : BaseActivity(), View.OnClickListener, LocationConnectivityC
     var drawerLayout: DrawerLayout? = null
     var navView: NavigationView? = null
     var ic_menu: ImageView? = null
+    var navigation_icon_cardview: CardView? = null
     lateinit var homeDrawer: LinearLayout
     lateinit var yourTripsDrawer: LinearLayout
     lateinit var communityDrawer: LinearLayout
@@ -122,6 +127,7 @@ class HomeActivity : BaseActivity(), View.OnClickListener, LocationConnectivityC
         drawerLayout = binding.drawerLayout
         navView = binding.navView
         ic_menu = binding.menuLayout.imgHomeMenu
+        navigation_icon_cardview = binding.menuLayout.navigationIconCardview
         homeDrawer = binding.navviewLayout.homeDrawer
         yourTripsDrawer = binding.navviewLayout.yourTripsDrawer
         communityDrawer = binding.navviewLayout.communityDrawer
@@ -145,7 +151,7 @@ class HomeActivity : BaseActivity(), View.OnClickListener, LocationConnectivityC
 
         sendCustomDetails()
         locationStateManager = AppController.applicationInstance.locationStateManager()
-
+        Log.d("LocPer", "" + myPreference?.token)
         launchFragment(HomeFragment(), false)
     }
 
@@ -277,10 +283,9 @@ class HomeActivity : BaseActivity(), View.OnClickListener, LocationConnectivityC
             super.onBackPressed()
         }
 
-
     }
 
-    // Enable GPS LOcation &  Location permission Codes
+    // Enable GPS Location &  Location permission Codes
     private fun setupLocationPermission() {
 
         LocationConnectivityManager.getInstance().let {
@@ -385,7 +390,7 @@ class HomeActivity : BaseActivity(), View.OnClickListener, LocationConnectivityC
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun requestBackgroundLocationUserConsent() {
         if (alertDialog == null) {
-            Log.d("LocPer", "requestBackgroundLocationUserConsent")
+
             alertDialog = AlertDialogHandler.showAlertDialog(this,
                 AlertDialog.Builder(this).setTitle(R.string.bg_location_title)
                     .setMessage(R.string.bg_location_user_consent_msg).setPositiveButton(
@@ -409,6 +414,11 @@ class HomeActivity : BaseActivity(), View.OnClickListener, LocationConnectivityC
     }
 
     override fun hasOtherPermissions() {
+        EventBus.getDefault().postSticky(
+            OnHomeLocationEnableModel(
+                true
+            )
+        )
     }
 
     override fun launchFragment(fragment: Fragment, addToBackStack: Boolean) {
@@ -419,4 +429,24 @@ class HomeActivity : BaseActivity(), View.OnClickListener, LocationConnectivityC
         fragmentTransaction.commit()
     }
 
+
+    override fun onStart() {
+        super.onStart()
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this)
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: MenuIconDisableModel) {
+        if (event.isEnabled) {
+            navigation_icon_cardview?.visibility = View.GONE
+        } else {
+            navigation_icon_cardview?.visibility = View.VISIBLE
+        }
+
+    }
 }

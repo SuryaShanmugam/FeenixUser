@@ -55,7 +55,7 @@ object MyActivity {
         fragment.startActivityForResult(intent, requestCode)
     }
 
-    fun launchWithBundleResult(
+    fun launchWithBundleResultActivity(
         activity: Activity,
         cls: Class<*>,
         bundle: Bundle,

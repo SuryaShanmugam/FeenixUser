@@ -101,7 +101,7 @@
                     tools:ignore="HardcodedText,MissingPrefix" />
 
                 <EditText
-                    android:id="@+id/destinationText"
+                    android:id="@+id/edit_home_bottom_searchdest"
                     fontPath="fonts/Graphik-Regular.ttf"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -160,7 +160,7 @@
                                 tools:ignore="HardcodedText,MissingPrefix" />
 
                             <LinearLayout
-                                android:id="@+id/home_recyclerview_layout"
+                                android:id="@+id/bottom_homeaddress_layout"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_margin="@dimen/duplex"
@@ -235,7 +235,7 @@
                                 tools:ignore="HardcodedText,MissingPrefix" />
 
                             <LinearLayout
-                                android:id="@+id/work_recyclerview_layout"
+                                android:id="@+id/bottom_workaddress_layout"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_margin="@dimen/duplex">
@@ -295,6 +295,7 @@
                 android:visibility="gone">
 
                 <include
+                    android:id="@+id/layout_home_address"
                     layout="@layout/layout_home_bottom_address"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

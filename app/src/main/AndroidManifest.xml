@@ -102,9 +102,12 @@
             android:name=".view.ui.notification.NotificationActivity"
             android:exported="false"
             android:screenOrientation="fullSensor" />
-
         <activity
             android:name=".view.ui.referAndearn.ReferAndEarnActivity"
+            android:exported="false"
+            android:screenOrientation="fullSensor" />
+        <activity
+            android:name=".view.ui.SetLocationSearchActivity"
             android:exported="false"
             android:screenOrientation="fullSensor" />
 

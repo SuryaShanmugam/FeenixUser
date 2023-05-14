@@ -34,5 +34,7 @@
     <color name="your_trips_textcolor">#777777</color>
     <color name="trip_cancelled">#FA376B</color>
 
+    <color name="error">#D93025</color>
+
 
 </resources>

@@ -140,4 +140,16 @@
     <string name="dialog_continue">Continue</string>
 
 
+    <!--    Booking Modules-->
+
+
+    <string name="moto_taxi">Taxi</string>
+    <string name="moto_frete">Delivery</string>
+
+    <string name="service_type_model">Service Type Model</string>
+    <string name="eta">ETA</string>
+    <string name="schedule">Schedule</string>
+    <string name="estimated_price">Estimated Fare </string>
+    <string name="book_now">Book Now</string>
+
 </resources>

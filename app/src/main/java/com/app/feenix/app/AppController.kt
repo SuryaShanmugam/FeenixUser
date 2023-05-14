@@ -3,6 +3,9 @@ package com.app.feenix.app
 import android.app.Application
 import android.content.Context
 import android.content.ContextWrapper
+import com.android.volley.Request
+import com.android.volley.RequestQueue
+import com.android.volley.toolbox.Volley
 import com.app.feenix.R
 import com.app.feenix.feature.internet.ConnectivityTriggerHandler
 import com.app.feenix.feature.internet.InternetConnectionManager
@@ -65,4 +68,17 @@ class AppController : Application() {
         return locationStateManager!!
     }
 
+    private val TAG = AppController::class.java.simpleName
+    private var mRequestQueue: RequestQueue? = null
+    fun <T> addToRequestQueue(req: Request<T>) {
+        req.tag = TAG
+        getRequestQueue()?.add<T>(req)
+    }
+
+    fun getRequestQueue(): RequestQueue? {
+        if (mRequestQueue == null) {
+            mRequestQueue = Volley.newRequestQueue(applicationContext)
+        }
+        return mRequestQueue
+    }
 }

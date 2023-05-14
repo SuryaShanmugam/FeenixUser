@@ -14,7 +14,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-        <!--Heading Layout-->
+
+    <!--Heading Layout-->
             <androidx.cardview.widget.CardView
                 android:id="@+id/navigation_icon_cardview"
                 android:layout_width="38dp"
