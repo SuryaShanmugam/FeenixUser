@@ -2,6 +2,7 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_root_servicetype"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
@@ -211,13 +212,12 @@
                         android:weightSum="3">
 
                         <LinearLayout
-                            android:id="@+id/serviceTypeOne"
+                            android:id="@+id/layout_servicetype_ride"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1">
 
                             <TextView
-                                android:id="@+id/serviceOneText"
                                 fontPath="fonts/CircularStd-Bold.ttf"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -230,8 +230,9 @@
                         </LinearLayout>
 
                         <LinearLayout
-                            android:id="@+id/serviceTypeTwo"
+                            android:id="@+id/layout_servicetype_delivery"
                             android:layout_width="0dp"
+                            android:visibility="gone"
                             android:layout_height="match_parent"
                             android:layout_weight="1">
 

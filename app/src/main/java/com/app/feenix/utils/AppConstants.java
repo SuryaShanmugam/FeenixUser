@@ -6,9 +6,5 @@ package com.app.feenix.utils;
 
 public class AppConstants {
 
-    public static final String SP_NAME = "movies_pref";
 
-    private AppConstants() {
-        // This utility class is not publicly instantiable
-    }
 }

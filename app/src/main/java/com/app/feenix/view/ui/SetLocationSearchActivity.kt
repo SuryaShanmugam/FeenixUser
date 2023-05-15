@@ -85,7 +85,12 @@ class SetLocationSearchActivity : BaseActivity(), View.OnClickListener, IBooking
             override fun afterTextChanged(sValue: Editable) {
                 if (sValue.toString().length > 0) {
                     binding.listviewAutocompelete.visibility = View.VISIBLE
-                    searchPlaces(sValue.toString())
+                    CustomAutoCompleteListView.getInstance(mContext!!).searchPlaces(
+                        sValue.toString(),
+                        mContext!!, current_lat, current_lng, myPreference.dynamicMapkey!!,
+                        binding.listviewAutocompelete
+                    )
+
                 } else {
                     binding.listviewAutocompelete.visibility = View.GONE
                 }
