@@ -274,7 +274,7 @@
                             tools:ignore="HardcodedText,MissingPrefix" />
 
                         <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/serviceType"
+                            android:id="@+id/rv_serviceType"
                             android:layout_width="match_parent"
                             android:layout_height="220dp"
                             android:layout_below="@+id/no_delivery_service"
@@ -289,7 +289,7 @@
                             fontPath="fonts/CircularStd-Medium.ttf"
                             android:layout_width="match_parent"
                             android:layout_height="56dp"
-                            android:layout_below="@+id/serviceType"
+                            android:layout_below="@+id/rv_serviceType"
                             android:layout_gravity="center"
                             android:layout_margin="@dimen/primary"
                             android:background="@drawable/bg_rect_primary"

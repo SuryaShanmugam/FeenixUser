@@ -3,6 +3,7 @@ package com.app.feenix.webservices.bookingride
 
 import com.app.feenix.model.request.*
 import com.app.feenix.model.response.GetLocationResponse
+import com.app.feenix.model.response.GetServiceEstimationResponse
 import io.reactivex.Observable
 import retrofit2.http.*
 
@@ -21,5 +22,13 @@ interface BookingRideInterface {
         @Header("Authorization") strToken: String?,
         @Body addLocation: AddLocation
     ): Observable<GetLocationResponse>
+
+    // Get Service Estimation
+    @POST("service_estimate")
+    fun getServiceEstiamtion(
+        @Header("X-Requested-With") xmlRequest: String,
+        @Header("Authorization") strToken: String?,
+        @Body getServiceEstimationRequest: GetServiceEstimationRequest
+    ): Observable<GetServiceEstimationResponse>
 
 }

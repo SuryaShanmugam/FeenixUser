@@ -18,6 +18,7 @@ import com.app.feenix.app.MyPreference
 import com.app.feenix.databinding.ActivitySetLocationSearchBinding
 import com.app.feenix.model.request.AddLocation
 import com.app.feenix.model.response.GetLocationResponse
+import com.app.feenix.model.response.GetServiceEstimationResponse
 import com.app.feenix.utils.customcomponents.CustomAutoCompleteListView
 import com.app.feenix.utils.customcomponents.PlacePredictions
 import com.app.feenix.view.adapter.AutoCompleteAdapter
@@ -193,6 +194,10 @@ class SetLocationSearchActivity : BaseActivity(), View.OnClickListener, IBooking
             ToastBuilder.build(mContext!!, "Location Added Successfully")
             finishIntent(this)
         }
+    }
+
+    override fun onGetServiceTypeEstimation(getServiceEstimationResponse: GetServiceEstimationResponse) {
+
     }
 
     fun finishIntent(activity: Activity) {

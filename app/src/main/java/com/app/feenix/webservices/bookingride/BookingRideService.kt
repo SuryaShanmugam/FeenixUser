@@ -5,7 +5,9 @@ import android.content.Context
 import android.util.Log
 import com.app.feenix.app.MyPreference
 import com.app.feenix.model.request.AddLocation
+import com.app.feenix.model.request.GetServiceEstimationRequest
 import com.app.feenix.model.response.GetLocationResponse
+import com.app.feenix.model.response.GetServiceEstimationResponse
 import com.app.feenix.utils.CustomProgressBar
 import com.app.feenix.viewmodel.IBookingRides
 import com.app.feenix.webservices.ApiClient
@@ -105,4 +107,48 @@ class BookingRideService {
                 }
             })
     }
+
+    // Get ServiceType Estimation
+    private var getServiceEstimationResponse: GetServiceEstimationResponse? = null
+
+    fun getServiceTypeEstimation(
+        iBookingRides: IBookingRides,
+        getServiceEstimationRequest: GetServiceEstimationRequest
+    ) {
+        IBookingRides = iBookingRides
+        CustomeProgressDialog!!.showDialog(mContext)
+        val authService: BookingRideInterface =
+            ApiClient.clientportal.create(BookingRideInterface::class.java)
+
+        val testObservable1 = authService.getServiceEstiamtion(
+            "XMLHttpRequest",
+            myPreference?.userToken!!,
+            getServiceEstimationRequest
+        )
+
+        testObservable1.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Observer<GetServiceEstimationResponse> {
+                override fun onSubscribe(d: Disposable) {
+                }
+
+                override fun onNext(loginresponse: GetServiceEstimationResponse) {
+
+                    getServiceEstimationResponse = loginresponse
+
+                }
+
+                override fun onError(e: Throwable) {
+                    CustomeProgressDialog!!.hideDialog()
+                    Log.e("gete4", "" + e.toString())
+                    ErrorHandler.handle(e.toString())
+                }
+
+                override fun onComplete() {
+                    CustomeProgressDialog!!.hideDialog()
+                    getServiceEstimationResponse?.let { IBookingRides?.onGetServiceTypeEstimation(it) }
+
+                }
+            })
+    }
+
 }

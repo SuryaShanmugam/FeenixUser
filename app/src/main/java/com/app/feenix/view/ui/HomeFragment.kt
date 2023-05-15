@@ -41,14 +41,14 @@ import com.app.feenix.databinding.LayoutHomeBottomBinding
 import com.app.feenix.databinding.LayoutHomeServiceTypeBinding
 import com.app.feenix.eventbus.MenuIconDisableModel
 import com.app.feenix.eventbus.OnHomeLocationEnableModel
-import com.app.feenix.model.response.GetLocationData
-import com.app.feenix.model.response.GetLocationResponse
-import com.app.feenix.model.response.RecentDestLocationData
+import com.app.feenix.model.request.GetServiceEstimationRequest
+import com.app.feenix.model.response.*
 import com.app.feenix.utils.Utils
 import com.app.feenix.utils.customcomponents.CustomAutoCompleteListView
 import com.app.feenix.utils.customcomponents.PlacePredictions
 import com.app.feenix.view.adapter.AutoCompleteAdapter
 import com.app.feenix.view.adapter.RecentDestLocationAdapter
+import com.app.feenix.view.adapter.ServiceTypeOptionAdapter
 import com.app.feenix.viewmodel.IBookingRides
 import com.app.feenix.webservices.bookingride.BookingRideService
 import com.directions.route.*
@@ -71,7 +71,8 @@ import java.util.*
 
 
 class HomeFragment : Fragment(), OnMapReadyCallback, View.OnClickListener, IBookingRides,
-    RecentDestLocationAdapter.RecentDestItemClickCallback, RoutingListener {
+    RecentDestLocationAdapter.RecentDestItemClickCallback, RoutingListener,
+    ServiceTypeOptionAdapter.ServiceTypeItemClickCallback {
     private var mContext: Context? = null
     private lateinit var binding: FragmentHomeBinding
     private lateinit var myPreference: MyPreference
@@ -142,6 +143,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback, View.OnClickListener, IBook
 
     }
 
+    // Setup Map
+    var value: Int = 0
     private fun setupMap() {
         Log.e("setupMap", "called")
         if (ActivityCompat.checkSelfPermission(
@@ -162,11 +165,13 @@ class HomeFragment : Fragment(), OnMapReadyCallback, View.OnClickListener, IBook
         mMap?.uiSettings?.isCompassEnabled = false
         mMap!!.setOnMyLocationChangeListener { location ->
             val myLocation = LatLng(location.latitude, location.longitude)
+            if (value == 0) {
+                if (myPreference.CurrentRequestId.isNullOrBlank()) {
+                    moveCamera(myLocation)
+                    animateCamera(myLocation)
 
-            if (myPreference.CurrentRequestId.isNullOrBlank()) {
-                moveCamera(myLocation)
-                animateCamera(myLocation)
-
+                }
+                value++
             }
 
             current_lat = myLocation.latitude
@@ -349,7 +354,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, View.OnClickListener, IBook
             bookingRideService?.getSavedLocations(this)
         } else if (requestCode == 2003) {
             Constant.DEST_LAT = data?.getDoubleExtra("d_lat", 0.0)!!
-            Constant.DEST_LNG = data.getDoubleExtra("d_lng", 0.0)!!
+            Constant.DEST_LNG = data.getDoubleExtra("d_lng", 0.0)
             Constant.DEST_ADDRESS = data.getStringExtra("daddress")!!
             Constant.DEST_TITLE = data.getStringExtra("dtitle")!!
             getSourceAddressHome()
@@ -357,7 +362,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, View.OnClickListener, IBook
         }
     }
 
-    //BottomSheetFunctions
+    //BottomSheetFunctions & Home Address Search Layout
     var coordinator_layout_home: CoordinatorLayout? = null
     var bottom_sheet_homebehavior: BottomSheetBehavior<*>? = null
     var searchtyping = 0
@@ -556,6 +561,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, View.OnClickListener, IBook
         initRecentDestionLocationList(getLocationResponse.recent_destination)
     }
 
+
     private fun initRecentDestionLocationList(recentDestination: MutableList<RecentDestLocationData>?) {
         if (recentDestination!!.size > 0) {
             sourceLayout.layoutHomeAddress.searchResultView.visibility = View.VISIBLE
@@ -607,21 +613,37 @@ class HomeFragment : Fragment(), OnMapReadyCallback, View.OnClickListener, IBook
 
     }
 
+
     // Create Service Type Screen
+    private var polylines: ArrayList<Polyline> = arrayListOf()
+    private var polylinesValues: ArrayList<LatLng>? = null
+    private var greyPolyLine: Polyline? = null
+    private var blackPolyline: Polyline? = null
+    var sourceMarker: Drawable? = null
+    var destinationMarker: Drawable? = null
+
     private fun getServiceTypeView() {
         sourceLayout.coordinatorLayoutHome.visibility = View.GONE
         sourceLayout.cardviewMylocationHome.visibility = View.GONE
         servicetypeLayout.layoutRootServicetype.visibility = View.VISIBLE
         servicetypeLayout.txtLableDestination.text = Constant.DEST_TITLE
         EventBus.getDefault().postSticky(MenuIconDisableModel(true))
+        Log.e("SourceLat", "" + Constant.SOURCE_LAT)
+        Log.e("SourceLat", "" + Constant.SOURCE_LNG)
+        Log.e("DEST_LAT", "" + Constant.DEST_LAT)
+        Log.e("DEST_LNG", "" + Constant.DEST_LNG)
         generateRoute()
+        bookingRideService?.getServiceTypeEstimation(
+            this,
+            GetServiceEstimationRequest(
+                Constant.SOURCE_LAT,
+                Constant.SOURCE_LNG,
+                Constant.DEST_LAT,
+                Constant.DEST_LNG
+            )
+        )
     }
-
-
     // Route Generation
-    var sourceMarker: Drawable? = null
-    var destinationMarker: Drawable? = null
-
     open fun generateRoute() {
         sourceMarker = mContext!!.resources.getDrawable(R.drawable.img_source_address)
         destinationMarker = mContext!!.resources.getDrawable(R.drawable.img_destination_address)
@@ -652,8 +674,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback, View.OnClickListener, IBook
         } catch (e: Exception) {
         }
     }
-
-
     override fun onRoutingFailure(p0: RouteException?) {
         Log.e("onRoutingFailure: ", "" + p0?.message)
     }
@@ -661,14 +681,10 @@ class HomeFragment : Fragment(), OnMapReadyCallback, View.OnClickListener, IBook
     override fun onRoutingStart() {
     }
 
-    private var polylines: ArrayList<Polyline> = arrayListOf()
-    private var polylinesValues: ArrayList<LatLng>? = null
-    private var greyPolyLine: Polyline? = null
-    private var blackPolyline: Polyline? = null
+
 
     override fun onRoutingSuccess(route: ArrayList<Route>?, p1: Int) {
         mMap?.clear()
-
         val start = LatLng(Constant.SOURCE_LAT, Constant.SOURCE_LNG)
         val end = LatLng(Constant.DEST_LAT, Constant.DEST_LNG)
         val builder = LatLngBounds.Builder()
@@ -827,6 +843,32 @@ class HomeFragment : Fragment(), OnMapReadyCallback, View.OnClickListener, IBook
         return startPoint.distanceTo(endPoint).toDouble() / 1000
     }
 
+    private var mServiceTypeList: MutableList<ServiceEstimationData> = mutableListOf()
+    override fun onGetServiceTypeEstimation(getServiceEstimationResponse: GetServiceEstimationResponse) {
+        if (getServiceEstimationResponse.success) {
+            mServiceTypeList.clear()
+
+            for (dede in getServiceEstimationResponse.services!!) {
+                if (dede.is_delivery == 0) {
+                    mServiceTypeList.add(dede)
+                    mServiceTypeList.get(0).isSelected = true
+                }
+            }
+
+            val madapter = ServiceTypeOptionAdapter(mContext!!, mServiceTypeList, this)
+            servicetypeLayout.rvServiceType.layoutManager = LinearLayoutManager(mContext!!)
+            servicetypeLayout.rvServiceType.setHasFixedSize(true)
+            servicetypeLayout.rvServiceType.adapter = madapter
+        }
+    }
+
+    override fun onServiceTypeSelectItemClick(position: Int) {
+        val selectservicetype = mServiceTypeList.get(position)
+        for (dara in mServiceTypeList) {
+            dara.isSelected = dara.id == selectservicetype.id
+            servicetypeLayout.rvServiceType.adapter?.notifyDataSetChanged()
+        }
+    }
 
     // OnBackPressHandler
 
