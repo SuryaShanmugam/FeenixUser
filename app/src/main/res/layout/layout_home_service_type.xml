@@ -285,13 +285,16 @@
                         </androidx.recyclerview.widget.RecyclerView>
 
                         <Button
-                            android:id="@+id/getPricingButton"
+                            android:id="@+id/btn_servicetype_confirm"
                             fontPath="fonts/CircularStd-Medium.ttf"
                             android:layout_width="match_parent"
                             android:layout_height="56dp"
                             android:layout_below="@+id/rv_serviceType"
                             android:layout_gravity="center"
-                            android:layout_margin="@dimen/primary"
+                            android:layout_marginStart="@dimen/primary"
+                            android:layout_marginTop="@dimen/primary"
+                            android:layout_marginEnd="@dimen/primary"
+                            android:layout_marginBottom="@dimen/primary"
                             android:background="@drawable/bg_rect_primary"
                             android:text="Select"
                             android:textAllCaps="false"

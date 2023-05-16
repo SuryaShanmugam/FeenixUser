@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/LinearLayoutOfList"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:background="@color/white"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/cardLayout"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+
+        <RadioButton
+            android:id="@+id/radioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="#C3C1CB"
+            tools:ignore="UnusedAttribute" />
+
+        <CheckBox
+            android:id="@+id/checkBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="#C3C1CB"
+            android:visibility="gone" />
+
+
+        <ImageView
+            android:id="@+id/serviceImg"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/primary"
+            android:gravity="center_vertical"
+            app:srcCompat="@drawable/ic_payment_card" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/serviceItem"
+                fontPath="fonts/Graphik-Regular.ttf"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/primary"
+                android:gravity="center_vertical"
+                android:text="@string/card_payment_type"
+                android:textColor="#595960"
+                android:textSize="@dimen/default_txt1"
+                tools:ignore="MissingPrefix" />
+
+            <TextView
+                android:id="@+id/cardNumber"
+                fontPath="fonts/Graphik-Regular.ttf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/serviceItem"
+                android:layout_marginStart="@dimen/primary"
+                android:textColor="@color/grey"
+                android:textSize="13sp"
+                android:visibility="gone"
+                tools:ignore="MissingPrefix" />
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+
+</RelativeLayout>

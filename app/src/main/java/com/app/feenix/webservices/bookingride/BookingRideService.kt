@@ -5,8 +5,10 @@ import android.content.Context
 import android.util.Log
 import com.app.feenix.app.MyPreference
 import com.app.feenix.model.request.AddLocation
+import com.app.feenix.model.request.GetPriceEstimationRequest
 import com.app.feenix.model.request.GetServiceEstimationRequest
 import com.app.feenix.model.response.GetLocationResponse
+import com.app.feenix.model.response.GetPriceEstimationResponse
 import com.app.feenix.model.response.GetServiceEstimationResponse
 import com.app.feenix.utils.CustomProgressBar
 import com.app.feenix.viewmodel.IBookingRides
@@ -146,6 +148,50 @@ class BookingRideService {
                 override fun onComplete() {
                     CustomeProgressDialog!!.hideDialog()
                     getServiceEstimationResponse?.let { IBookingRides?.onGetServiceTypeEstimation(it) }
+
+                }
+            })
+    }
+
+    // Get Price Estimation
+
+    private var getPriceEstimationResponse: GetPriceEstimationResponse? = null
+
+    fun getPriceEstimationRide(
+        iBookingRides: IBookingRides,
+        getPriceEstimationRequest: GetPriceEstimationRequest
+    ) {
+        IBookingRides = iBookingRides
+        CustomeProgressDialog!!.showDialog(mContext)
+        val authService: BookingRideInterface =
+            ApiClient.clientportal.create(BookingRideInterface::class.java)
+
+        val testObservable1 = authService.getPriceEstiamtion(
+            "XMLHttpRequest",
+            myPreference?.userToken!!,
+            getPriceEstimationRequest
+        )
+
+        testObservable1.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Observer<GetPriceEstimationResponse> {
+                override fun onSubscribe(d: Disposable) {
+                }
+
+                override fun onNext(loginresponse: GetPriceEstimationResponse) {
+
+                    getPriceEstimationResponse = loginresponse
+
+                }
+
+                override fun onError(e: Throwable) {
+                    CustomeProgressDialog!!.hideDialog()
+                    Log.e("gete4", "" + e.toString())
+                    ErrorHandler.handle(e.toString())
+                }
+
+                override fun onComplete() {
+                    CustomeProgressDialog!!.hideDialog()
+                    getPriceEstimationResponse?.let { IBookingRides?.onGetPriceEstimation(it) }
 
                 }
             })

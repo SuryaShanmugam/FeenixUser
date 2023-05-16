@@ -18,6 +18,7 @@ import com.app.feenix.app.MyPreference
 import com.app.feenix.databinding.ActivitySetLocationSearchBinding
 import com.app.feenix.model.request.AddLocation
 import com.app.feenix.model.response.GetLocationResponse
+import com.app.feenix.model.response.GetPriceEstimationResponse
 import com.app.feenix.model.response.GetServiceEstimationResponse
 import com.app.feenix.utils.customcomponents.CustomAutoCompleteListView
 import com.app.feenix.utils.customcomponents.PlacePredictions
@@ -197,6 +198,11 @@ class SetLocationSearchActivity : BaseActivity(), View.OnClickListener, IBooking
     }
 
     override fun onGetServiceTypeEstimation(getServiceEstimationResponse: GetServiceEstimationResponse) {
+
+    }
+
+    override fun onGetPriceEstimation(getPriceEstimationResponse: GetPriceEstimationResponse) {
+
 
     }
 

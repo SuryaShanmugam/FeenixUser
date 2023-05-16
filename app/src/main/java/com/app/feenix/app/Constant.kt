@@ -21,8 +21,12 @@ object Constant {
     // Source
     var SOURCE_LNG = 0.0
     var SOURCE_LAT = 0.0
-    var SOURCE_ADDRESS = "DestinationAddress"
-    var SOURCE_TITLE = "DestinationTitle"
+    var SOURCE_ADDRESS = "SourceAddress"
+    var SOURCE_TITLE = "SourceTitle"
 
+//    PaymentMode
+
+    var PAYMENT_MODE = "paymentMode"
+    var IS_SELECTED_WALLET = 0
 
 }

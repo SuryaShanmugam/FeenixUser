@@ -26,31 +26,40 @@ import androidx.activity.OnBackPressedCallback
 import androidx.cardview.widget.CardView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.app.ActivityCompat
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import cbs.com.bmr.Utilities.MyActivity
 import cbs.com.bmr.Utilities.ToastBuilder
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
+import com.app.biu.model.ResponseModel.AddPromocodeResponse
+import com.app.biu.model.ResponseModel.PromotionResponse
 import com.app.feenix.R
 import com.app.feenix.app.AppController
 import com.app.feenix.app.Constant
 import com.app.feenix.app.MyPreference
 import com.app.feenix.databinding.FragmentHomeBinding
 import com.app.feenix.databinding.LayoutHomeBottomBinding
+import com.app.feenix.databinding.LayoutHomePriceEstimationRideBinding
 import com.app.feenix.databinding.LayoutHomeServiceTypeBinding
 import com.app.feenix.eventbus.MenuIconDisableModel
 import com.app.feenix.eventbus.OnHomeLocationEnableModel
+import com.app.feenix.model.PaymentTypeModel
+import com.app.feenix.model.request.AddPromocode
+import com.app.feenix.model.request.GetPriceEstimationRequest
 import com.app.feenix.model.request.GetServiceEstimationRequest
 import com.app.feenix.model.response.*
 import com.app.feenix.utils.Utils
 import com.app.feenix.utils.customcomponents.CustomAutoCompleteListView
 import com.app.feenix.utils.customcomponents.PlacePredictions
 import com.app.feenix.view.adapter.AutoCompleteAdapter
+import com.app.feenix.view.adapter.PaymentTypeAdapter
 import com.app.feenix.view.adapter.RecentDestLocationAdapter
 import com.app.feenix.view.adapter.ServiceTypeOptionAdapter
+import com.app.feenix.view.ui.base.BaseFragment
 import com.app.feenix.viewmodel.IBookingRides
+import com.app.feenix.viewmodel.IPromotionData
 import com.app.feenix.webservices.bookingride.BookingRideService
+import com.app.feenix.webservices.promotionsAndReferals.PromotionService
 import com.directions.route.*
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.maps.*
@@ -62,17 +71,20 @@ import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.google.gson.Gson
+import com.hellotirupathur.utils.TextChangedListener
 import io.intercom.android.sdk.utilities.KeyboardUtils
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.json.JSONObject
 import java.util.*
+import kotlin.math.roundToInt
 
 
-class HomeFragment : Fragment(), OnMapReadyCallback, View.OnClickListener, IBookingRides,
+class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, IBookingRides,
     RecentDestLocationAdapter.RecentDestItemClickCallback, RoutingListener,
-    ServiceTypeOptionAdapter.ServiceTypeItemClickCallback {
+    ServiceTypeOptionAdapter.ServiceTypeItemClickCallback, IPromotionData,
+    PaymentTypeAdapter.PaymentTypeClickCallback {
     private var mContext: Context? = null
     private lateinit var binding: FragmentHomeBinding
     private lateinit var myPreference: MyPreference
@@ -85,7 +97,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback, View.OnClickListener, IBook
     var placesClient: PlacesClient? = null
     lateinit var sourceLayout: LayoutHomeBottomBinding
     lateinit var servicetypeLayout: LayoutHomeServiceTypeBinding
-
+    lateinit var priceestimationLayout: LayoutHomePriceEstimationRideBinding
+    lateinit var promotionService: PromotionService
 
     var current_lat: Double? = null
     var current_lng: Double? = null
@@ -105,19 +118,19 @@ class HomeFragment : Fragment(), OnMapReadyCallback, View.OnClickListener, IBook
     }
 
 
-
-
     private fun initObjects() {
         mContext = activity
         myPreference = MyPreference(mContext!!)
         sourceLayout = binding.sourceLayout
         servicetypeLayout = binding.servicetypeLayout
+        priceestimationLayout = binding.priceestimationLayout
         mylocationButton = sourceLayout.cardviewMylocationHome
         Places.initialize(mContext!!, myPreference.dynamicMapkey!!)
         placesClient = Places.createClient(mContext!!)
         bookingRideService = BookingRideService()
         bookingRideService?.BookingRideService(mContext!!)
-
+        promotionService = PromotionService()
+        promotionService.PromotionService(mContext!!)
     }
 
 
@@ -221,6 +234,10 @@ class HomeFragment : Fragment(), OnMapReadyCallback, View.OnClickListener, IBook
         sourceLayout.layoutHomeAddress.homeAddressLayout.setOnClickListener(this)
         sourceLayout.layoutHomeAddress.workAddressLayout.setOnClickListener(this)
         sourceLayout.layoutHomeAddress.txtSetonmap.setOnClickListener(this)
+        servicetypeLayout.btnServicetypeConfirm.setOnClickListener(this)
+        priceestimationLayout.priceEstimationBack.setOnClickListener(this)
+        priceestimationLayout.btnPromocodeapply.setOnClickListener(this)
+        priceestimationLayout.btnPriceConfirm.setOnClickListener(this)
     }
 
     override fun onClick(p0: View?) {
@@ -332,6 +349,45 @@ class HomeFragment : Fragment(), OnMapReadyCallback, View.OnClickListener, IBook
                 MyActivity.launchWithBundleResult(this, SetOnMapActivity::class.java, bundle, 2003)
                 searchtyping = 1
             }
+            R.id.btn_servicetype_confirm -> {
+                if (hasInternetConnection()) {
+                    bookingRideService?.getPriceEstimationRide(
+                        this,
+                        GetPriceEstimationRequest(
+                            Constant.SOURCE_LAT,
+                            Constant.SOURCE_LNG,
+                            Constant.DEST_LAT,
+                            Constant.DEST_LNG,
+                            SelectedServiceType?.id!!
+                        )
+                    )
+                } else {
+                    ToastBuilder.build(mContext!!, "No Internet, Please Try Again")
+                }
+
+            }
+            R.id.priceEstimationBack -> {
+                if (priceestimationLayout.layoutRootPriceestimation.visibility == View.VISIBLE) {
+                    priceestimationLayout.layoutRootPriceestimation.visibility = View.GONE
+                    servicetypeLayout.layoutRootServicetype.visibility = View.VISIBLE
+                    EventBus.getDefault().postSticky(MenuIconDisableModel(true))
+                }
+            }
+            R.id.btn_promocodeapply -> {
+                if (priceestimationLayout.editEnterpromoCode.text.toString().length > 0) {
+                    promotionService.AddPromocodes(
+                        this,
+                        AddPromocode(priceestimationLayout.editEnterpromoCode.text.toString(), 0)
+                    )
+                } else {
+                    priceestimationLayout.editEnterpromoCode.requestFocus()
+                    priceestimationLayout.editEnterpromoCode.error = "Enter Promo Code"
+                }
+            }
+            R.id.btn_price_confirm -> {
+                MyActivity.launch(mContext!!, ConfirmPickupLocationActivity::class.java)
+
+            }
 
         }
     }
@@ -417,12 +473,45 @@ class HomeFragment : Fragment(), OnMapReadyCallback, View.OnClickListener, IBook
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
             }
         })
+        sourceLayout.layoutHomeAddress.editSourceAddress.onFocusChangeListener =
+            OnFocusChangeListener { v, hasFocus ->
+                if (hasFocus) {
+                    searchtyping = 2
+                }
+            }
         sourceLayout.layoutHomeAddress.editDestAddress.onFocusChangeListener =
             OnFocusChangeListener { v, hasFocus ->
                 if (!hasFocus) {
                     KeyboardUtils.hideKeyboard(v)
                 }
             }
+
+        sourceLayout.layoutHomeAddress.editSourceAddress.addTextChangedListener(object :
+            TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                if (s.toString().length == 0) {
+                    searchtyping = 2
+                }
+            }
+
+            override fun afterTextChanged(sValue: Editable) {
+                if (sValue.toString().length > 0 && searchtyping == 2) {
+                    SearcyTypeSourceorDest = 0
+                    searchPlaces(sValue.toString())
+                    sourceLayout.layoutHomeAddress.listviewAutocompeleteHome.visibility =
+                        View.VISIBLE
+                    sourceLayout.layoutHomeAddress.searchResultView.visibility = View.GONE
+                    sourceLayout.layoutHomeAddress.txtSetonmap.visibility = View.VISIBLE
+                    sourceLayout.layoutHomeAddress.suggestions.text = "Suggestions"
+                    sourceLayout.layoutHomeAddress.editSourceAddress.setSelection(sValue.toString().length)
+                } else {
+                    sourceLayout.layoutHomeAddress.listviewAutocompeleteHome.visibility = View.GONE
+                    sourceLayout.layoutHomeAddress.searchResultView.visibility = View.VISIBLE
+                    sourceLayout.layoutHomeAddress.suggestions.text = "Recent Locations"
+                }
+            }
+        })
         sourceLayout.layoutHomeAddress.editDestAddress.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -462,13 +551,26 @@ class HomeFragment : Fragment(), OnMapReadyCallback, View.OnClickListener, IBook
                     .build()
                 placesClient!!.fetchPlace(request).addOnSuccessListener { response ->
                     val place = response.place
-                    sourceLayout.layoutHomeAddress.listviewAutocompeleteHome.visibility = View.GONE
-                    Constant.DEST_LAT = place.latLng!!.latitude
-                    Constant.DEST_LNG = place.latLng!!.longitude
-                    Constant.DEST_ADDRESS = place.address!!
-                    Constant.DEST_TITLE = place.name!!
-                    getSourceAddressHome()
-                    getServiceTypeView()
+                    if (SearcyTypeSourceorDest == 1) {
+                        sourceLayout.layoutHomeAddress.listviewAutocompeleteHome.visibility =
+                            View.GONE
+                        Constant.DEST_LAT = place.latLng!!.latitude
+                        Constant.DEST_LNG = place.latLng!!.longitude
+                        Constant.DEST_ADDRESS = place.address!!
+                        Constant.DEST_TITLE = place.name!!
+                        getSourceAddressHome()
+                        getServiceTypeView()
+                    } else if (SearcyTypeSourceorDest == 0) {
+                        Constant.SOURCE_LAT = place.latLng!!.latitude
+                        Constant.SOURCE_LNG = place.latLng!!.longitude
+                        Constant.SOURCE_ADDRESS = place.address!!
+                        Constant.SOURCE_TITLE = place.name!!
+                        sourceLayout.layoutHomeAddress.editSourceAddress.setText(place.name)
+                        searchtyping = 0
+                        sourceLayout.layoutHomeAddress.listviewAutocompeleteHome.visibility =
+                            View.GONE
+                    }
+
                 }.addOnFailureListener { exception ->
                     if (exception is ApiException) {
                         val apiException = exception
@@ -521,12 +623,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback, View.OnClickListener, IBook
         }
     }
 
-    private fun onGoingLayout() {
-        sourceLayout.layoutHomeDefault.visibility = View.VISIBLE
-        if (bottom_sheet_homebehavior != null) {
-            bottom_sheet_homebehavior!!.state = BottomSheetBehavior.STATE_COLLAPSED
-        }
-    }
 
     lateinit var locationHomeArray: ArrayList<GetLocationData>
     lateinit var locationWorkArray: ArrayList<GetLocationData>
@@ -598,10 +694,11 @@ class HomeFragment : Fragment(), OnMapReadyCallback, View.OnClickListener, IBook
 
     private fun getSourceAddressHome() {
         if (current_lat != null && current_lng != null) {
-            Constant.SOURCE_LAT = current_lat!!
-            Constant.SOURCE_LNG = current_lng!!
+
             if (sourceLayout.layoutHomeAddress.editSourceAddress.text.toString().isEmpty()) {
                 servicetypeLayout.txtLableSource.text = "Current Location"
+                Constant.SOURCE_LAT = current_lat!!
+                Constant.SOURCE_LNG = current_lng!!
             } else {
                 servicetypeLayout.txtLableSource.text =
                     sourceLayout.layoutHomeAddress.editSourceAddress.text.toString()
@@ -643,6 +740,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, View.OnClickListener, IBook
             )
         )
     }
+
     // Route Generation
     open fun generateRoute() {
         sourceMarker = mContext!!.resources.getDrawable(R.drawable.img_source_address)
@@ -674,13 +772,13 @@ class HomeFragment : Fragment(), OnMapReadyCallback, View.OnClickListener, IBook
         } catch (e: Exception) {
         }
     }
+
     override fun onRoutingFailure(p0: RouteException?) {
         Log.e("onRoutingFailure: ", "" + p0?.message)
     }
 
     override fun onRoutingStart() {
     }
-
 
 
     override fun onRoutingSuccess(route: ArrayList<Route>?, p1: Int) {
@@ -862,14 +960,140 @@ class HomeFragment : Fragment(), OnMapReadyCallback, View.OnClickListener, IBook
         }
     }
 
+
     override fun onServiceTypeSelectItemClick(position: Int) {
         val selectservicetype = mServiceTypeList.get(position)
+
         for (dara in mServiceTypeList) {
             dara.isSelected = dara.id == selectservicetype.id
-            servicetypeLayout.rvServiceType.adapter?.notifyDataSetChanged()
+
+        }
+        servicetypeLayout.rvServiceType.adapter?.notifyDataSetChanged()
+    }
+
+    var SelectedServiceType: ServiceEstimationData? = null
+    override fun onServiceTypeDefaultSelectItemClick(position: Int) {
+        SelectedServiceType = mServiceTypeList.get(position)
+
+    }
+
+
+    // Price Estimation Layouts
+
+    lateinit var priceEstimationResponse: GetPriceEstimationResponse
+    var paymentTypeList: MutableList<PaymentTypeModel> = mutableListOf()
+    lateinit var mPaymentadapter: PaymentTypeAdapter
+    override fun onGetPriceEstimation(getPriceEstimationResponse: GetPriceEstimationResponse) {
+        if (getPriceEstimationResponse.success) {
+            priceEstimationResponse = getPriceEstimationResponse
+            priceestimationLayout.layoutRootPriceestimation.visibility = View.VISIBLE
+            servicetypeLayout.layoutRootServicetype.visibility = View.GONE
+            EventBus.getDefault().postSticky(MenuIconDisableModel(true))
+            TextChangedListener.onTextPriceEstimationPromocodeChanged(
+                priceestimationLayout.editEnterpromoCode,
+                priceestimationLayout.btnPromocodeapply
+            )
+            priceestimationLayout.serviceTypeNameText.text = SelectedServiceType?.name
+            priceestimationLayout.estimatedTime.text = getPriceEstimationResponse.time
+            initPriceEstimationLayout(
+                getPriceEstimationResponse.estimated_fare!!,
+                getPriceEstimationResponse.discount,
+                false
+            )
         }
     }
 
+    // PromoCodeS Apply
+    override fun ongetPromotionCodes(promotionResponse: PromotionResponse) {
+
+    }
+
+    override fun onAddPromotionCodeRes(addPromocodeResponse: AddPromocodeResponse) {
+        Log.e("kjfnreirb", "" + addPromocodeResponse.toString())
+        if (addPromocodeResponse.success) {
+            ToastBuilder.build(mContext!!, "Promo Code Added Successfully")
+            priceestimationLayout.editEnterpromoCode.setText("")
+            initPriceEstimationLayout(
+                priceEstimationResponse.estimated_fare!!,
+                addPromocodeResponse.discount!!.toDouble(),
+                true
+            )
+        } else {
+            ToastBuilder.build(mContext!!, addPromocodeResponse.message)
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    fun initPriceEstimationLayout(estimatedFare: Double, discount: Double, ispromocalled: Boolean) {
+        if (discount > 0.0) {
+            priceestimationLayout.couponcodeLayout.visibility = View.VISIBLE
+            priceestimationLayout.couponEstimatedOldPrice.visibility = View.VISIBLE
+            val EstimatedFareOld = estimatedFare.plus(discount).roundToInt()
+            priceestimationLayout.couponcodeAmount.text =
+                resources.getString(R.string.money_symbols) + discount.roundToInt()
+            priceestimationLayout.couponEstimatedOldPrice.text =
+                resources.getString(R.string.money_symbols) + EstimatedFareOld
+            if (ispromocalled) {
+                val EstimatedFare = estimatedFare.minus(discount).roundToInt()
+                priceestimationLayout.estimatedPrice.text =
+                    resources.getString(R.string.money_symbols) + EstimatedFare
+            } else {
+                priceestimationLayout.estimatedPrice.text =
+                    resources.getString(R.string.money_symbols) + estimatedFare.roundToInt()
+
+            }
+
+
+        } else {
+            priceestimationLayout.couponcodeLayout.visibility = View.GONE
+            priceestimationLayout.couponEstimatedOldPrice.visibility = View.GONE
+            priceestimationLayout.estimatedPrice.text =
+                resources.getString(R.string.money_symbols) + estimatedFare.roundToInt()
+        }
+        var estimatedFarefinal: Double = 0.0
+        priceestimationLayout.checkboxAddCharityAmount.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                estimatedFarefinal = estimatedFare.plus(2)
+                priceestimationLayout.estimatedPrice.text =
+                    mContext!!.resources.getString(R.string.money_symbols) + estimatedFarefinal.roundToInt()
+            } else {
+                val estimatedFarefinalminus = estimatedFarefinal.minus(2)
+                priceestimationLayout.estimatedPrice.text =
+                    mContext!!.resources.getString(R.string.money_symbols) + estimatedFarefinalminus.roundToInt()
+            }
+        }
+
+        // Payment Types
+
+        paymentTypeList.clear()
+        paymentTypeList.add(PaymentTypeModel("Cash", true, 1))
+        val wallet =
+            "Use Wallet ( " + resources.getString(R.string.money_symbols) + myPreference.walletBal + " )"
+        paymentTypeList.add(PaymentTypeModel(wallet, false, 3))
+        // paymentTypeList.add(PaymentTypeModel("Card Payment",false,2))
+        mPaymentadapter = PaymentTypeAdapter(mContext!!, paymentTypeList, this)
+        priceestimationLayout.rvPaymentType.layoutManager = LinearLayoutManager(mContext!!)
+        priceestimationLayout.rvPaymentType.adapter = mPaymentadapter
+
+
+    }
+
+    override fun onPaymentSelectItemClick(position: Int, isSelectedWallet: Boolean) {
+        val paymentTypeSelectedList = paymentTypeList.get(position)
+        for (dat in paymentTypeList) {
+            dat.isSelected = dat.type == paymentTypeSelectedList.type
+        }
+        priceestimationLayout.rvPaymentType.post { mPaymentadapter.notifyDataSetChanged() }
+
+
+    }
+
+    private fun onGoingLayout() {
+        sourceLayout.layoutHomeDefault.visibility = View.VISIBLE
+        if (bottom_sheet_homebehavior != null) {
+            bottom_sheet_homebehavior!!.state = BottomSheetBehavior.STATE_COLLAPSED
+        }
+    }
     // OnBackPressHandler
 
     private fun backpressHandler() {
@@ -885,6 +1109,12 @@ class HomeFragment : Fragment(), OnMapReadyCallback, View.OnClickListener, IBook
                         EventBus.getDefault().postSticky(MenuIconDisableModel(false))
 
                     }
+
+                    if (priceestimationLayout.layoutRootPriceestimation.visibility == View.VISIBLE) {
+                        priceestimationLayout.layoutRootPriceestimation.visibility = View.GONE
+                        servicetypeLayout.layoutRootServicetype.visibility = View.VISIBLE
+                        EventBus.getDefault().postSticky(MenuIconDisableModel(true))
+                    }
                     if (sourceLayout.coordinatorLayoutHome.visibility == View.VISIBLE) {
                         EventBus.getDefault().postSticky(MenuIconDisableModel(false))
                         mapCollapsed()
@@ -896,8 +1126,14 @@ class HomeFragment : Fragment(), OnMapReadyCallback, View.OnClickListener, IBook
                         }
                     } else {
                         isEnabled = false
-                        activity?.onBackPressed()
+                        if (parentFragmentManager.backStackEntryCount > 0) {
+                            parentFragmentManager.popBackStack()
+                        } else {
+                            activity?.onBackPressed()
+                        }
                     }
+
+
                 }
             })
 

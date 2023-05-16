@@ -2,6 +2,7 @@ package com.app.feenix.webservices.promotionsAndReferals
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import com.app.biu.model.ResponseModel.AddPromocodeResponse
 import com.app.biu.model.ResponseModel.PromotionResponse
 import com.app.feenix.app.MyPreference
@@ -91,6 +92,7 @@ class PromotionService {
                 }
 
                 override fun onError(e: Throwable) {
+                    Log.e("edwe", "" + e.toString())
                     CustomeProgressDialog!!.hideDialog()
                     ErrorHandler.handle(e.toString())
                 }

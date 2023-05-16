@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:fitsSystemWindows="true">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:layout_gravity="bottom"
+        android:background="@drawable/bg_home_bottom"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/primary"
+                android:layout_marginTop="@dimen/lite"
+                android:layout_marginEnd="@dimen/primary"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/drag_me"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/primary"
+                    android:layout_marginBottom="@dimen/lite"
+                    android:orientation="vertical">
+
+                    <View
+                        android:layout_width="50dp"
+                        android:layout_height="5dp"
+                        android:layout_gravity="center"
+                        android:background="#E4E9F2" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/txt_cancel"
+                    fontPath="fonts/CircularStd-Bold.ttf"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/primary"
+                    android:drawableStart="@drawable/ic_close_black"
+                    android:drawablePadding="@dimen/duplex"
+                    android:gravity="start"
+                    android:padding="@dimen/lite"
+                    android:text="For smooth pickup add a note"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/semismall_txt"
+                    tools:ignore="HardcodedText,MissingPrefix,UseCompatTextViewDrawableXml" />
+
+                <TextView
+                    fontPath="fonts/CircularStd-Bold.ttf"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/duplex"
+                    android:padding="@dimen/mini"
+                    android:text="Pickup Note"
+                    android:textColor="#595960"
+                    android:textSize="@dimen/semismall_txt"
+                    android:textStyle="bold"
+                    tools:ignore="HardcodedText,MissingPrefix" />
+
+                <EditText
+                    android:id="@+id/edit_pickUpInstruction"
+                    fontPath="fonts/Graphik-Regular.ttf"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/primary"
+                    android:layout_marginBottom="@dimen/duplex"
+                    android:background="@drawable/bg_edittext_unselected"
+                    android:hint="Pickup note"
+                    android:inputType="text"
+                    android:padding="@dimen/normal"
+                    android:textColor="@color/black"
+                    android:textColorHint="#919191"
+                    android:textSize="@dimen/default_txt"
+                    tools:ignore="Autofill,HardcodedText,MissingPrefix" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/duplex"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
+                    <TextView
+                        android:id="@+id/txt_gatecode"
+                        fontPath="fonts/CircularStd-Bold.ttf"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/duplex"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_pickup_note_unselected"
+                        android:gravity="center"
+                        android:padding="@dimen/extra_lite"
+                        android:text="Gate Code"
+                        android:textColor="#595960"
+                        android:textSize="@dimen/default_txt"
+                        tools:ignore="HardcodedText,MissingPrefix" />
+
+                    <TextView
+                        android:id="@+id/txt_im_wearing"
+                        fontPath="fonts/CircularStd-Bold.ttf"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/duplex"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_pickup_note_unselected"
+                        android:gravity="center"
+                        android:padding="@dimen/extra_lite"
+                        android:text="I'm wearing"
+                        android:textColor="#595960"
+                        android:textSize="@dimen/default_txt"
+                        tools:ignore="HardcodedText,MissingPrefix" />
+
+                    <TextView
+                        android:id="@+id/txt_in_frontof"
+                        fontPath="fonts/CircularStd-Bold.ttf"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/duplex"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_pickup_note_unselected"
+                        android:gravity="center"
+                        android:padding="@dimen/extra_lite"
+                        android:text="In front of"
+                        android:textColor="#595960"
+                        android:textSize="@dimen/default_txt"
+                        tools:ignore="HardcodedText,MissingPrefix" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_done"
+            fontPath="fonts/CircularStd-Medium.ttf"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="@dimen/primary"
+            android:layout_marginTop="@dimen/lite"
+            android:layout_marginEnd="@dimen/primary"
+            android:layout_marginBottom="@dimen/secondary"
+            android:background="@drawable/bg_rect_primary"
+            android:padding="@dimen/duplex"
+            android:text="Add a Note"
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            android:textSize="@dimen/secondary_txt"
+            tools:ignore="MissingPrefix" />
+
+
+    </RelativeLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

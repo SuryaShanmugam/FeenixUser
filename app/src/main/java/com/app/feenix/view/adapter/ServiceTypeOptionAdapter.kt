@@ -67,6 +67,8 @@ class ServiceTypeOptionAdapter(
             if (promotionsData.isSelected) {
                 itemBinding.highlightedLayout.setBackgroundResource(R.drawable.bg_servicetype_selected)
                 itemBinding.serviceSeatCount.compoundDrawablePadding = 8
+                callback.onServiceTypeDefaultSelectItemClick(absoluteAdapterPosition)
+
             } else {
                 itemBinding.serviceTitle.setTextColor(
                     ContextCompat.getColor(
@@ -88,6 +90,7 @@ class ServiceTypeOptionAdapter(
 
     interface ServiceTypeItemClickCallback {
         fun onServiceTypeSelectItemClick(position: Int)
+        fun onServiceTypeDefaultSelectItemClick(position: Int)
     }
 }
 

@@ -155,4 +155,10 @@
     <string name="search_location">Search Location</string>
     <string name="confirm">Confirm</string>
 
+    <string name="card_payment_type">Card</string>
+    <string name="save_for_future">Save For Future</string>
+    <string name="save_this_address">Save This Address for future use</string>
+    <string name="drag_map_or_edit_your_address_to_set_your_pickup_spot">Drag map or edit your address to set your pickup spot</string>
+    <string name="home">Home</string>
+    <string name="work">Work</string>
 </resources>
