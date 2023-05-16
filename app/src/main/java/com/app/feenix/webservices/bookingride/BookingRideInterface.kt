@@ -5,6 +5,7 @@ import com.app.feenix.model.request.*
 import com.app.feenix.model.response.GetLocationResponse
 import com.app.feenix.model.response.GetPriceEstimationResponse
 import com.app.feenix.model.response.GetServiceEstimationResponse
+import com.app.feenix.model.response.SendRideResponse
 import io.reactivex.Observable
 import retrofit2.http.*
 
@@ -39,5 +40,14 @@ interface BookingRideInterface {
         @Header("Authorization") strToken: String?,
         @Body getPriceEstimationRequest: GetPriceEstimationRequest
     ): Observable<GetPriceEstimationResponse>
+
+
+// Send Ride Request
+    @POST("send/request")
+    fun SendRideRequest(
+        @Header("X-Requested-With") xmlRequest: String,
+        @Header("Authorization") strToken: String?,
+        @Body sendRideRequest: SendRideRequest
+    ): Observable<SendRideResponse>
 
 }

@@ -7,11 +7,14 @@ import com.app.feenix.app.MyPreference
 import com.app.feenix.model.request.AddLocation
 import com.app.feenix.model.request.GetPriceEstimationRequest
 import com.app.feenix.model.request.GetServiceEstimationRequest
+import com.app.feenix.model.request.SendRideRequest
 import com.app.feenix.model.response.GetLocationResponse
 import com.app.feenix.model.response.GetPriceEstimationResponse
 import com.app.feenix.model.response.GetServiceEstimationResponse
+import com.app.feenix.model.response.SendRideResponse
 import com.app.feenix.utils.CustomProgressBar
 import com.app.feenix.viewmodel.IBookingRides
+import com.app.feenix.viewmodel.ISendRideRequest
 import com.app.feenix.webservices.ApiClient
 import com.app.feenix.webservices.ErrorHandler
 import io.reactivex.Observer
@@ -192,6 +195,53 @@ class BookingRideService {
                 override fun onComplete() {
                     CustomeProgressDialog!!.hideDialog()
                     getPriceEstimationResponse?.let { IBookingRides?.onGetPriceEstimation(it) }
+
+                }
+            })
+    }
+
+
+
+    // Send Ride Request
+
+    private var sendRideResponse:SendRideResponse? = null
+    private var mSendRideRequest:ISendRideRequest? = null
+
+    fun sendRideRequest(
+        iSendRideRequest: ISendRideRequest,
+        sendRideRequest: SendRideRequest
+    ) {
+        mSendRideRequest = iSendRideRequest
+        CustomeProgressDialog!!.showDialog(mContext)
+        val authService: BookingRideInterface =
+            ApiClient.clientportal.create(BookingRideInterface::class.java)
+
+        val testObservable1 = authService.SendRideRequest(
+            "XMLHttpRequest",
+            myPreference?.userToken!!,
+            sendRideRequest
+        )
+
+        testObservable1.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Observer<SendRideResponse> {
+                override fun onSubscribe(d: Disposable) {
+                }
+
+                override fun onNext(loginresponse: SendRideResponse) {
+
+                    sendRideResponse = loginresponse
+
+                }
+
+                override fun onError(e: Throwable) {
+                    CustomeProgressDialog!!.hideDialog()
+                    Log.e("gete4", "" + e.toString())
+                    ErrorHandler.handle(e.toString())
+                }
+
+                override fun onComplete() {
+                    CustomeProgressDialog!!.hideDialog()
+                    sendRideResponse?.let { mSendRideRequest?.onsendRideResponse(it) }
 
                 }
             })

@@ -24,6 +24,19 @@ object Constant {
     var SOURCE_ADDRESS = "SourceAddress"
     var SOURCE_TITLE = "SourceTitle"
 
+    //    ServiceType
+    var SERVICE_TYPE = 0
+    var ESTIMATED_FARE = 0.0
+    var DISTANCE = "Distance"
+    var DISCOUNT = 0.0
+    var DISTANCE_PRICE = "DistancePrice"
+    var TIME = "Time"
+    var TIME_PRICE = "TimePrice"
+    var TAX_PRICE = "TaxPrice"
+    var BASE_PRICE = "BasePrice"
+    var WALLET_BAL = "walletbalance"
+
+
 //    PaymentMode
 
     var PAYMENT_MODE = "paymentMode"

@@ -351,6 +351,7 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
             }
             R.id.btn_servicetype_confirm -> {
                 if (hasInternetConnection()) {
+                    Constant.SERVICE_TYPE=  SelectedServiceType?.id!!
                     bookingRideService?.getPriceEstimationRide(
                         this,
                         GetPriceEstimationRequest(
@@ -993,8 +994,17 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
                 priceestimationLayout.editEnterpromoCode,
                 priceestimationLayout.btnPromocodeapply
             )
+            Constant.TIME= getPriceEstimationResponse.time
+            Constant.DISTANCE_PRICE= getPriceEstimationResponse.distance_price.toString()
+            Constant.TIME_PRICE= getPriceEstimationResponse.time_price.toString()
+            Constant.TAX_PRICE= getPriceEstimationResponse.tax_price.toString()
+            Constant.BASE_PRICE= getPriceEstimationResponse.base_price.toString()
+            Constant.WALLET_BAL= getPriceEstimationResponse.wallet_balance.toString()
+            Constant.DISTANCE= getPriceEstimationResponse.distance.toString()
             priceestimationLayout.serviceTypeNameText.text = SelectedServiceType?.name
             priceestimationLayout.estimatedTime.text = getPriceEstimationResponse.time
+
+
             initPriceEstimationLayout(
                 getPriceEstimationResponse.estimated_fare!!,
                 getPriceEstimationResponse.discount,
@@ -1029,20 +1039,19 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
             priceestimationLayout.couponcodeLayout.visibility = View.VISIBLE
             priceestimationLayout.couponEstimatedOldPrice.visibility = View.VISIBLE
             val EstimatedFareOld = estimatedFare.plus(discount).roundToInt()
-            priceestimationLayout.couponcodeAmount.text =
-                resources.getString(R.string.money_symbols) + discount.roundToInt()
-            priceestimationLayout.couponEstimatedOldPrice.text =
-                resources.getString(R.string.money_symbols) + EstimatedFareOld
+            priceestimationLayout.couponcodeAmount.text = resources.getString(R.string.money_symbols) + discount.roundToInt()
+            priceestimationLayout.couponEstimatedOldPrice.text = resources.getString(R.string.money_symbols) + EstimatedFareOld
             if (ispromocalled) {
                 val EstimatedFare = estimatedFare.minus(discount).roundToInt()
                 priceestimationLayout.estimatedPrice.text =
                     resources.getString(R.string.money_symbols) + EstimatedFare
+                Constant.ESTIMATED_FARE= EstimatedFare.toDouble()
+
             } else {
                 priceestimationLayout.estimatedPrice.text =
                     resources.getString(R.string.money_symbols) + estimatedFare.roundToInt()
-
+                Constant.ESTIMATED_FARE= estimatedFare
             }
-
 
         } else {
             priceestimationLayout.couponcodeLayout.visibility = View.GONE
@@ -1056,13 +1065,15 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
                 estimatedFarefinal = estimatedFare.plus(2)
                 priceestimationLayout.estimatedPrice.text =
                     mContext!!.resources.getString(R.string.money_symbols) + estimatedFarefinal.roundToInt()
+                Constant.ESTIMATED_FARE= estimatedFarefinal
             } else {
                 val estimatedFarefinalminus = estimatedFarefinal.minus(2)
                 priceestimationLayout.estimatedPrice.text =
                     mContext!!.resources.getString(R.string.money_symbols) + estimatedFarefinalminus.roundToInt()
+                Constant.ESTIMATED_FARE= estimatedFarefinalminus
             }
         }
-
+        Constant.DISCOUNT= discount
         // Payment Types
 
         paymentTypeList.clear()

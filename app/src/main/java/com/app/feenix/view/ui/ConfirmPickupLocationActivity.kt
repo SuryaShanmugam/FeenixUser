@@ -29,8 +29,11 @@ import com.app.feenix.app.AppController
 import com.app.feenix.app.Constant
 import com.app.feenix.app.MyPreference
 import com.app.feenix.databinding.ActivityConfirmPickupLocationBinding
+import com.app.feenix.model.request.SendRideRequest
+import com.app.feenix.model.response.SendRideResponse
 import com.app.feenix.view.ui.base.BaseActivity
 import com.app.feenix.viewmodel.ICallback
+import com.app.feenix.viewmodel.ISendRideRequest
 import com.app.feenix.webservices.bookingride.BookingRideService
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
@@ -50,7 +53,7 @@ import org.json.JSONObject
 
 class ConfirmPickupLocationActivity : BaseActivity(), View.OnClickListener,
     OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
-    GoogleApiClient.OnConnectionFailedListener, LocationListener {
+    GoogleApiClient.OnConnectionFailedListener, LocationListener ,ISendRideRequest{
 
     private lateinit var binding: ActivityConfirmPickupLocationBinding
     private var mContext: Context? = null
@@ -91,7 +94,8 @@ class ConfirmPickupLocationActivity : BaseActivity(), View.OnClickListener,
         binding.txtLableDestination.text = Constant.DEST_TITLE
         binding.txtLableSource.text = Constant.SOURCE_TITLE
         initSaveFuture()
-
+        bookingRideService= BookingRideService()
+        bookingRideService?.BookingRideService(mContext!!)
 
     }
 
@@ -190,6 +194,15 @@ class ConfirmPickupLocationActivity : BaseActivity(), View.OnClickListener,
                     )
             }
             R.id.confirmButton -> {
+                if(hasInternetConnection())
+                {
+                    Log.e("dfwefrwde",""+getRequestParams().toString())
+                //   bookingRideService?.sendRideRequest(this,getRequestParams())
+                }else
+                {
+                    ToastBuilder.build(mContext!!,"No Internet, Please try Again")
+                }
+
 
             }
             R.id.txt_add_Notes_Driver -> {
@@ -201,6 +214,43 @@ class ConfirmPickupLocationActivity : BaseActivity(), View.OnClickListener,
                 binding.txtAddNotesDriver.visibility = View.VISIBLE
             }
         }
+    }
+
+    private fun getRequestParams() :SendRideRequest{
+            val SendRideRequest= SendRideRequest(
+                s_latitude=Constant.SOURCE_LAT ,
+                s_longitude=Constant.SOURCE_LNG,
+                d_latitude=Constant.DEST_LAT,
+                d_longitude=Constant.DEST_LNG,
+                service_type=Constant.SERVICE_TYPE,
+                schedule_date="",
+                schedule_time="",
+                use_wallet=Constant.IS_SELECTED_WALLET,
+                payment_mode=Constant.PAYMENT_MODE,
+                s_title= Constant.SOURCE_TITLE,
+                s_address=Constant.SOURCE_ADDRESS,
+                    d_title=Constant.DEST_TITLE,
+                    d_address=Constant.DEST_ADDRESS,
+                    card_id="",
+                    receiver_name="",
+                    receiver_mobile="",
+                    pickup_instruction="",
+                    delivery_instruction="",
+                    package_details="",
+                    package_type="",
+                    estimated_fare=Constant.ESTIMATED_FARE.toString(),
+                    distance=Constant.DISTANCE.toString(),
+                    distance_price=Constant.DISTANCE_PRICE,
+                    time=Constant.TIME,
+                    time_price=Constant.TIME_PRICE,
+                    tax_price=Constant.TAX_PRICE,
+                    base_price=Constant.BASE_PRICE,
+                    wallet_balance=Constant.WALLET_BAL,
+                    discount=Constant.DISCOUNT.toString(),
+                    pickup_note=binding.txtSelectedPickupnote.text.toString()
+            )
+
+        return SendRideRequest
     }
 
     private fun getMyLocation() {
@@ -379,6 +429,10 @@ class ConfirmPickupLocationActivity : BaseActivity(), View.OnClickListener,
                             )
                             binding.editAddress.setText(strAdd)
                             binding.txtLableSource.text = strAdd
+                            Constant.SOURCE_LAT= currentLatitude
+                            Constant.SOURCE_LNG= currentLongitude
+                            Constant.SOURCE_ADDRESS= strAdd
+                            Constant.SOURCE_TITLE= strAdd
                         } catch (e: JSONException) {
                             e.printStackTrace()
                         }
@@ -505,6 +559,11 @@ class ConfirmPickupLocationActivity : BaseActivity(), View.OnClickListener,
                 LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {}
             }
         }
+    }
+
+    override fun onsendRideResponse(sendRideResponse: SendRideResponse) {
+
+
     }
 
 }
