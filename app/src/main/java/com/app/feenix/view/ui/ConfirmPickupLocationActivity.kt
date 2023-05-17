@@ -30,6 +30,7 @@ import com.app.feenix.app.AppController
 import com.app.feenix.app.Constant
 import com.app.feenix.app.MyPreference
 import com.app.feenix.databinding.ActivityConfirmPickupLocationBinding
+import com.app.feenix.eventbus.CancelRequestModel
 import com.app.feenix.model.request.SendRideRequest
 import com.app.feenix.model.response.SendRideResponse
 import com.app.feenix.utils.CustomDriverSearchingDialog
@@ -49,6 +50,9 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -574,6 +578,23 @@ class ConfirmPickupLocationActivity : BaseActivity(), View.OnClickListener,
             myPreference.TripSearchingStatus="false"
             CustomDriverSearchingDialog.getInstance(mContext!!).showNotificationDialog(mContext!!,sendRideResponse.message!!)
         }
+
+
+    }
+
+
+    override fun onStart() {
+        super.onStart()
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this)
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: CancelRequestModel) {
 
 
     }

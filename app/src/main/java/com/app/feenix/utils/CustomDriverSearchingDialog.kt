@@ -99,9 +99,7 @@ open class CustomDriverSearchingDialog(context: Context) {
         submitButton.setOnClickListener {
             if (!TripCancelreason.isEmpty()) {
                 try {
-                    EventBus.getDefault().postSticky(CancelRequestModel(false))
-
-                    // cancelRequests(TripCancelreason, dialog, "1")
+                    EventBus.getDefault().postSticky(CancelRequestModel(true,TripCancelreason,dialog))
                 } catch (e: JSONException) {
                     e.printStackTrace()
                 }
