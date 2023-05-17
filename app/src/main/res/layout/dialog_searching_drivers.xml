@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp">
+
+
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:elevation="10dp"
+            android:src="@drawable/driver_searching_dialog" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="45dp"
+            android:layout_marginRight="20dp"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="5dp"
+            app:cardUseCompatPadding="false">
+
+
+            <TextView
+                fontPath="fonts/Graphik-Regular.ttf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="45dp"
+                android:layout_marginBottom="20dp"
+                android:gravity="center_horizontal|left"
+                android:text="@string/search_driver"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                tools:ignore="MissingPrefix" />
+
+
+        </androidx.cardview.widget.CardView>
+
+
+    </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <Button
+        android:id="@+id/cancelButton"
+        fontPath="fonts/CircularStd-Medium.ttf"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="25dp"
+        android:background="@drawable/bg_rect_primary"
+        android:text="@string/cancel"
+        android:textAllCaps="false"
+        android:textColor="@color/black"
+        android:textSize="@dimen/primary_txt1"
+        tools:ignore="MissingPrefix" />
+
+</LinearLayout>

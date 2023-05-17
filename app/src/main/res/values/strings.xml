@@ -161,4 +161,11 @@
     <string name="drag_map_or_edit_your_address_to_set_your_pickup_spot">Drag map or edit your address to set your pickup spot</string>
     <string name="home">Home</string>
     <string name="work">Work</string>
+    <string name="ordered_by">Booked by Mistake</string>
+    <string name="hailed_another">Hailed another Cab</string>
+    <string name="no_drivers">No Drivers Available</string>
+
+    <string name="general_network_error">An unknown error has occurred. Please try again.</string>
+    <string name="push_notification_error">An unknown error has occurred while connecting to notification services. Please try again</string>
+
 </resources>

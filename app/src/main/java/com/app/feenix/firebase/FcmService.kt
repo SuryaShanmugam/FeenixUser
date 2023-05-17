@@ -12,8 +12,9 @@ class FcmService : FirebaseMessagingService() {
         myPreference = MyPreference(this)
         myPreference?.fcmToken = token
         Log.error("FCMTOken", token)
-
     }
+
+
 
 
 }

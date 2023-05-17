@@ -48,6 +48,7 @@ import com.app.feenix.model.request.AddPromocode
 import com.app.feenix.model.request.GetPriceEstimationRequest
 import com.app.feenix.model.request.GetServiceEstimationRequest
 import com.app.feenix.model.response.*
+import com.app.feenix.utils.CustomDriverSearchingDialog
 import com.app.feenix.utils.Utils
 import com.app.feenix.utils.customcomponents.CustomAutoCompleteListView
 import com.app.feenix.utils.customcomponents.PlacePredictions
@@ -1143,12 +1144,23 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
                             activity?.onBackPressed()
                         }
                     }
-
-
                 }
             })
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        if(myPreference.TripSearchingStatus.equals("true"))
+        {
+            CustomDriverSearchingDialog.getInstance(mContext!!).showDialog(mContext)
+        }
+        else
+        {
+            CustomDriverSearchingDialog.getInstance(mContext!!).hideDialog()
+        }
+    }
+
+    // Trip Accept Layout
 
 }

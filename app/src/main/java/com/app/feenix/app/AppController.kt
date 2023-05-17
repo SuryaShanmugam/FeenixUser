@@ -13,6 +13,8 @@ import com.app.feenix.feature.internet.LocationConnectivityManager
 import com.app.feenix.feature.internet.LocationStateManager
 import com.app.feenix.notification.NotificationSystemManager
 import com.app.feenix.utils.LocaleContextWrapper
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import io.github.inflationx.calligraphy3.CalligraphyConfig
 import io.github.inflationx.calligraphy3.CalligraphyInterceptor
 import io.github.inflationx.viewpump.ViewPump
@@ -54,6 +56,18 @@ class AppController : Application() {
         )
 
         updateAppLocaleContext()
+        FirebaseMessaging.getInstance().token
+            .addOnCompleteListener(OnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    return@OnCompleteListener
+                }
+                // Get new Instance ID token
+                val token = task.result
+                if (token != null) {
+                    val MyPreference = MyPreference(this)
+                    MyPreference.fcmToken = token
+                }
+            })
     }
 
     fun updateAppLocaleContext() {

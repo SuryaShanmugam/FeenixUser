@@ -46,6 +46,7 @@ class SplashActivity : BaseActivity(), IGetProfileData {
         setContentView(binding.root)
         initObject()
 
+
         startAppForegroundService()
     }
 
@@ -55,11 +56,6 @@ class SplashActivity : BaseActivity(), IGetProfileData {
         authService = SignInService()
         authService!!.SignInService(this@SplashActivity)
         locationStateManager = AppController.applicationInstance.locationStateManager()
-
-        myPreference?.fcmToken =
-            "fPaQiC4NhHw:APA91bFsGrKGYNQTcI_RvAu-rRPS4TDtBJuDFlzh7hBy5Q5R1plbhcysP7MUqUYXbuQtAuhZb9gbulKMuEWaEwH3m500CNUSNCk6cG7rf_V7xYe53J0J3QDBx8hCKxiMmdo-BVN4QVKd"
-
-
         handler.postDelayed({
             if (myPreference?.token!!.isNotEmpty()) {
 

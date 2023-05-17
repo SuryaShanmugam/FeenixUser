@@ -22,6 +22,7 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import cbs.com.bmr.Utilities.MyActivity
 import cbs.com.bmr.Utilities.ToastBuilder
 import com.android.volley.toolbox.JsonObjectRequest
 import com.app.feenix.R
@@ -31,6 +32,7 @@ import com.app.feenix.app.MyPreference
 import com.app.feenix.databinding.ActivityConfirmPickupLocationBinding
 import com.app.feenix.model.request.SendRideRequest
 import com.app.feenix.model.response.SendRideResponse
+import com.app.feenix.utils.CustomDriverSearchingDialog
 import com.app.feenix.view.ui.base.BaseActivity
 import com.app.feenix.viewmodel.ICallback
 import com.app.feenix.viewmodel.ISendRideRequest
@@ -197,7 +199,7 @@ class ConfirmPickupLocationActivity : BaseActivity(), View.OnClickListener,
                 if(hasInternetConnection())
                 {
                     Log.e("dfwefrwde",""+getRequestParams().toString())
-                //   bookingRideService?.sendRideRequest(this,getRequestParams())
+                   bookingRideService?.sendRideRequest(this,getRequestParams())
                 }else
                 {
                     ToastBuilder.build(mContext!!,"No Internet, Please try Again")
@@ -562,6 +564,16 @@ class ConfirmPickupLocationActivity : BaseActivity(), View.OnClickListener,
     }
 
     override fun onsendRideResponse(sendRideResponse: SendRideResponse) {
+        if(sendRideResponse.success!=null && sendRideResponse.success)
+        {
+            myPreference.TripSearchingStatus="true"
+            MyActivity.launchClearStack(mContext!!,HomeActivity::class.java)
+        }
+        else if(sendRideResponse.error!=null &&sendRideResponse.error )
+        {
+            myPreference.TripSearchingStatus="false"
+            CustomDriverSearchingDialog.getInstance(mContext!!).showNotificationDialog(mContext!!,sendRideResponse.message!!)
+        }
 
 
     }

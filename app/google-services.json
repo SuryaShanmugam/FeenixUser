@@ -1,34 +1,122 @@
 {
   "project_info": {
-    "project_number": "763267471144",
-    "project_id": "feenix-test-user",
-    "storage_bucket": "feenix-test-user.appspot.com"
+    "project_number": "468501719921",
+    "firebase_url": "https://feenix-1ac73.firebaseio.com",
+    "project_id": "feenix-1ac73",
+    "storage_bucket": "feenix-1ac73.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:763267471144:android:250c0e5c0ba963d59aa21d",
+        "mobilesdk_app_id": "1:468501719921:android:1c6c1dcfa39ab5fd",
         "android_client_info": {
           "package_name": "com.app.feenix"
         }
       },
       "oauth_client": [
         {
-          "client_id": "763267471144-m62scfn4kba43e26ucfrlm4bbb97s9h1.apps.googleusercontent.com",
+          "client_id": "468501719921-2e15hrj19eo1ah0s73mgci6a40pjvam8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.feenix",
+            "certificate_hash": "5be5bb732b0f0d9112e3e9b5f74c1da1ff48dec7"
+          }
+        },
+        {
+          "client_id": "468501719921-3e6sseug4qkar3grljgo5bfjqo09ns6p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.feenix",
+            "certificate_hash": "f072fb53e0757055240544a89aca8d99cb93c4b7"
+          }
+        },
+        {
+          "client_id": "468501719921-6dp14omuo9a4mc4p4sk27nsltiiunbe6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.feenix",
+            "certificate_hash": "b390c6346f1df16b70bc01726b416dddc4d40d23"
+          }
+        },
+        {
+          "client_id": "468501719921-camvthn35thc47d1uvej9g01aice127u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.feenix",
+            "certificate_hash": "d078b5d3a599c1aacd95985cc3a67e9e10d9daef"
+          }
+        },
+        {
+          "client_id": "468501719921-llu6eiahcln0dek9esk11ccqo78h3g7h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.feenix",
+            "certificate_hash": "8842081500fe919c962a998f6151257b045b97e9"
+          }
+        },
+        {
+          "client_id": "468501719921-m6ck2o33aaiuoh6to3hk3qj2khapqqoc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.feenix",
+            "certificate_hash": "7df528fb0b433f2354c6921c75a247b9839edc69"
+          }
+        },
+        {
+          "client_id": "468501719921-nf3ddn0lq3bnjf2ibn8qnvh4s1bd3p0v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.feenix",
+            "certificate_hash": "888992871bf96f80d73107ad85665930b0e2367a"
+          }
+        },
+        {
+          "client_id": "468501719921-prg8l487sbclrvec7nnd36jirrg98m1a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.feenix",
+            "certificate_hash": "2de1fe802c81ede4d95e12abf7a5db0267aae34e"
+          }
+        },
+        {
+          "client_id": "468501719921-qo6s78tgsinfksgut3gq4lcpbcglt4vt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.feenix",
+            "certificate_hash": "83501008afb4743f76f0d1cff60002a450187aa7"
+          }
+        },
+        {
+          "client_id": "468501719921-r2rfr24oout7caggrhjka6c5ssnpur5e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.feenix",
+            "certificate_hash": "41f4a1897ff3da2ed3d4947086e80863cc346ce2"
+          }
+        },
+        {
+          "client_id": "468501719921-mm3urmonp47esptjbf2dm9ps7ukqtm3n.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCOU5MBhXgR789zMSnxvNlgycRaQEZ36HY"
+          "current_key": "AIzaSyClZPgIBwL8DLElIki8iewb5GaMbrKnM2E"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "763267471144-m62scfn4kba43e26ucfrlm4bbb97s9h1.apps.googleusercontent.com",
+              "client_id": "468501719921-mm3urmonp47esptjbf2dm9ps7ukqtm3n.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "468501719921-jnqfnqdq6ri544lu6k628peujvsu0p7i.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.app.fennix"
+              }
             }
           ]
         }

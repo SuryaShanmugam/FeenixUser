@@ -110,6 +110,10 @@ class MyPreference(context: Context) {
         get() = mPreferencesUser.getString(encode(CURRENT_REQUEST_ID), null)
         set(CurrentRequestId) = mPreferencesUser.edit()
             .putString(encode(CURRENT_REQUEST_ID), CurrentRequestId).apply()
+    var TripSearchingStatus: String?
+        get() = mPreferencesUser.getString(encode(TRIP_SEARCHING_STATUS), null)
+        set(CurrentRequestId) = mPreferencesUser.edit()
+            .putString(encode(TRIP_SEARCHING_STATUS), CurrentRequestId).apply()
 
     fun clearUser() {
 
@@ -146,5 +150,6 @@ class MyPreference(context: Context) {
         private const val LAST_BOOKING_DATE = "LastBooking_date"
         private const val LAST_BOOKING_STATUS = "LastBooking_status"
         private const val CURRENT_REQUEST_ID = "current_requestId"
+        private const val TRIP_SEARCHING_STATUS = "trip_searching_status"
     }
 }

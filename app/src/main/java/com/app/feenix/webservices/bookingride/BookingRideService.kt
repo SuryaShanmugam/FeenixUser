@@ -12,6 +12,7 @@ import com.app.feenix.model.response.GetLocationResponse
 import com.app.feenix.model.response.GetPriceEstimationResponse
 import com.app.feenix.model.response.GetServiceEstimationResponse
 import com.app.feenix.model.response.SendRideResponse
+import com.app.feenix.utils.CustomDriverSearchingDialog
 import com.app.feenix.utils.CustomProgressBar
 import com.app.feenix.viewmodel.IBookingRides
 import com.app.feenix.viewmodel.ISendRideRequest
@@ -36,6 +37,7 @@ class BookingRideService {
         mContext = context
         myPreference = MyPreference(mContext!!)
         CustomeProgressDialog = CustomProgressBar(mContext!!)
+        customDriverSearchingDialog = CustomDriverSearchingDialog(mContext!!)
     }
 
     // GetLocations
@@ -206,13 +208,14 @@ class BookingRideService {
 
     private var sendRideResponse:SendRideResponse? = null
     private var mSendRideRequest:ISendRideRequest? = null
+    private var customDriverSearchingDialog: CustomDriverSearchingDialog? = null
 
     fun sendRideRequest(
         iSendRideRequest: ISendRideRequest,
         sendRideRequest: SendRideRequest
     ) {
+        customDriverSearchingDialog?.showDialog(mContext)
         mSendRideRequest = iSendRideRequest
-        CustomeProgressDialog!!.showDialog(mContext)
         val authService: BookingRideInterface =
             ApiClient.clientportal.create(BookingRideInterface::class.java)
 
@@ -234,15 +237,14 @@ class BookingRideService {
                 }
 
                 override fun onError(e: Throwable) {
-                    CustomeProgressDialog!!.hideDialog()
+                    customDriverSearchingDialog?.hideDialog()
                     Log.e("gete4", "" + e.toString())
                     ErrorHandler.handle(e.toString())
                 }
 
                 override fun onComplete() {
-                    CustomeProgressDialog!!.hideDialog()
+                    customDriverSearchingDialog?.hideDialog()
                     sendRideResponse?.let { mSendRideRequest?.onsendRideResponse(it) }
-
                 }
             })
     }
