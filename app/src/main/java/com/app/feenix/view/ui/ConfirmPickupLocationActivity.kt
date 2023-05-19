@@ -31,7 +31,10 @@ import com.app.feenix.app.Constant
 import com.app.feenix.app.MyPreference
 import com.app.feenix.databinding.ActivityConfirmPickupLocationBinding
 import com.app.feenix.eventbus.CancelRequestModel
+import com.app.feenix.eventbus.NoDriversFoundModel
+import com.app.feenix.model.request.CancelRideRequest
 import com.app.feenix.model.request.SendRideRequest
+import com.app.feenix.model.response.CancelRideResponse
 import com.app.feenix.model.response.SendRideResponse
 import com.app.feenix.utils.CustomDriverSearchingDialog
 import com.app.feenix.view.ui.base.BaseActivity
@@ -571,14 +574,26 @@ class ConfirmPickupLocationActivity : BaseActivity(), View.OnClickListener,
         if(sendRideResponse.success!=null && sendRideResponse.success)
         {
             myPreference.TripSearchingStatus="true"
+            myPreference.CurrentRequestId=sendRideResponse.request_id
             MyActivity.launchClearStack(mContext!!,HomeActivity::class.java)
         }
         else if(sendRideResponse.error!=null &&sendRideResponse.error )
         {
             myPreference.TripSearchingStatus="false"
-            CustomDriverSearchingDialog.getInstance(mContext!!).showNotificationDialog(mContext!!,sendRideResponse.message!!)
+            myPreference.CurrentRequestId=""
+            CustomDriverSearchingDialog.getInstance(mContext!!).showNotificationDialog(mContext!!,
+                "No Driver", sendRideResponse.message!!)
         }
 
+
+    }
+
+    override fun onCancelRideResponse(cancelRideResponse: CancelRideResponse) {
+        if(cancelRideResponse.success!!)
+        {
+            ToastBuilder.build(mContext!!,cancelRideResponse.message)
+            MyActivity.launchClearTop(mContext!!,HomeActivity::class.java)
+        }
 
     }
 
@@ -595,8 +610,20 @@ class ConfirmPickupLocationActivity : BaseActivity(), View.OnClickListener,
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: CancelRequestModel) {
-
+        bookingRideService?.CancelRideRequest(this, CancelRideRequest(myPreference.CancelledRequest,
+        event.reason))
+        event.dialog.dismiss()
+        EventBus.getDefault().removeStickyEvent(CancelRequestModel::class.java)
+    }
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: NoDriversFoundModel) {
+        if (event.type.equals("No Driver", ignoreCase = true)) {
+            CustomDriverSearchingDialog.getInstance(mContext!!).showNotificationDialog(mContext!!,
+                event.type,event.message)
+            myPreference.CurrentRequestId=""
+        }
+        EventBus.getDefault().removeStickyEvent(NoDriversFoundModel::class.java)
 
     }
-
 }
+

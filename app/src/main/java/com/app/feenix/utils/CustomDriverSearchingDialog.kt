@@ -16,7 +16,6 @@ import com.app.feenix.eventbus.MenuIconDisableModel
 import com.app.feenix.view.ui.HomeActivity
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import org.greenrobot.eventbus.EventBus
-import org.json.JSONException
 
 open class CustomDriverSearchingDialog(context: Context) {
     private var dialog: Dialog? = null
@@ -98,11 +97,7 @@ open class CustomDriverSearchingDialog(context: Context) {
         }
         submitButton.setOnClickListener {
             if (!TripCancelreason.isEmpty()) {
-                try {
-                    EventBus.getDefault().postSticky(CancelRequestModel(true,TripCancelreason,dialog))
-                } catch (e: JSONException) {
-                    e.printStackTrace()
-                }
+                EventBus.getDefault().postSticky(CancelRequestModel(true,TripCancelreason,dialog))
             } else {
                 ToastBuilder.build(context,"Please select any reason to cancel the trip")
             }
@@ -110,7 +105,7 @@ open class CustomDriverSearchingDialog(context: Context) {
 
     }
 
-     fun showNotificationDialog(context: Context?,Message:String) {
+     fun showNotificationDialog(context: Context?,title:String,Message:String) {
 
         val dialog: Dialog = Dialog(context!!)
         dialog.setCancelable(true)
@@ -134,7 +129,7 @@ open class CustomDriverSearchingDialog(context: Context) {
 
         noti_icons.setImageDrawable(context.resources.getDrawable(R.drawable.ic_driver_not_found))
 
-         titleText.text = context.resources.getString(R.string.no_drivers)
+         titleText.text = title
         dismissButton.text = "OK"
 
         dismissButton.setOnClickListener {

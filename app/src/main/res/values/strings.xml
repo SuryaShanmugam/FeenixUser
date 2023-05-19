@@ -164,8 +164,17 @@
     <string name="ordered_by">Booked by Mistake</string>
     <string name="hailed_another">Hailed another Cab</string>
     <string name="no_drivers">No Drivers Available</string>
+    <string name="enable_label">Enable</string>
 
     <string name="general_network_error">An unknown error has occurred. Please try again.</string>
     <string name="push_notification_error">An unknown error has occurred while connecting to notification services. Please try again</string>
+
+<!--AcceptModuld-->
+
+    <string name="dirver_accepeted_request">Driver has accepted the request</string>
+    <string name="driver_on_the_way">Driver on the way</string>
+    <string name="driver_arrived">Driver arrived to your place</string>
+    <string name="picked_up">Ride has started</string>
+    <string name="dropped">Ride has been completed</string>
 
 </resources>

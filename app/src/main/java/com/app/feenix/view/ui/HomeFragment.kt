@@ -22,6 +22,7 @@ import android.view.View.OnFocusChangeListener
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
+import android.widget.RelativeLayout
 import androidx.activity.OnBackPressedCallback
 import androidx.cardview.widget.CardView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -31,20 +32,19 @@ import cbs.com.bmr.Utilities.MyActivity
 import cbs.com.bmr.Utilities.ToastBuilder
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
+import com.app.biu.model.RequestModel.ResponseModel.RideStatusCheckResponse
+import com.app.biu.model.RequestModel.ResponseModel.RideStatusCheckResponseData
 import com.app.biu.model.ResponseModel.AddPromocodeResponse
 import com.app.biu.model.ResponseModel.PromotionResponse
 import com.app.feenix.R
 import com.app.feenix.app.AppController
 import com.app.feenix.app.Constant
 import com.app.feenix.app.MyPreference
-import com.app.feenix.databinding.FragmentHomeBinding
-import com.app.feenix.databinding.LayoutHomeBottomBinding
-import com.app.feenix.databinding.LayoutHomePriceEstimationRideBinding
-import com.app.feenix.databinding.LayoutHomeServiceTypeBinding
-import com.app.feenix.eventbus.MenuIconDisableModel
-import com.app.feenix.eventbus.OnHomeLocationEnableModel
+import com.app.feenix.databinding.*
+import com.app.feenix.eventbus.*
 import com.app.feenix.model.PaymentTypeModel
 import com.app.feenix.model.request.AddPromocode
+import com.app.feenix.model.request.CancelRideRequest
 import com.app.feenix.model.request.GetPriceEstimationRequest
 import com.app.feenix.model.request.GetServiceEstimationRequest
 import com.app.feenix.model.response.*
@@ -59,8 +59,11 @@ import com.app.feenix.view.adapter.ServiceTypeOptionAdapter
 import com.app.feenix.view.ui.base.BaseFragment
 import com.app.feenix.viewmodel.IBookingRides
 import com.app.feenix.viewmodel.IPromotionData
+import com.app.feenix.viewmodel.IRideStatusCheck
+import com.app.feenix.viewmodel.ISendRideRequest
 import com.app.feenix.webservices.bookingride.BookingRideService
 import com.app.feenix.webservices.promotionsAndReferals.PromotionService
+import com.bumptech.glide.Glide
 import com.directions.route.*
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.maps.*
@@ -78,13 +81,16 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.json.JSONObject
+import java.math.RoundingMode
+import java.text.DecimalFormat
 import java.util.*
 import kotlin.math.roundToInt
 
 
 class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, IBookingRides,
     RecentDestLocationAdapter.RecentDestItemClickCallback, RoutingListener,
-    ServiceTypeOptionAdapter.ServiceTypeItemClickCallback, IPromotionData,
+    ServiceTypeOptionAdapter.ServiceTypeItemClickCallback, IPromotionData,IRideStatusCheck,
+    ISendRideRequest,
     PaymentTypeAdapter.PaymentTypeClickCallback {
     private var mContext: Context? = null
     private lateinit var binding: FragmentHomeBinding
@@ -99,6 +105,8 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
     lateinit var sourceLayout: LayoutHomeBottomBinding
     lateinit var servicetypeLayout: LayoutHomeServiceTypeBinding
     lateinit var priceestimationLayout: LayoutHomePriceEstimationRideBinding
+    lateinit var rideAccpetLayout: RelativeLayout
+    lateinit var rideAccpetLayoucard: LayoutHomerideRequestCardBinding
     lateinit var promotionService: PromotionService
 
     var current_lat: Double? = null
@@ -123,7 +131,9 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
         mContext = activity
         myPreference = MyPreference(mContext!!)
         sourceLayout = binding.sourceLayout
+        rideAccpetLayout = binding.serviceAcceptedLayout
         servicetypeLayout = binding.servicetypeLayout
+        rideAccpetLayoucard = binding.layoutHomerideRequestCard
         priceestimationLayout = binding.priceestimationLayout
         mylocationButton = sourceLayout.cardviewMylocationHome
         Places.initialize(mContext!!, myPreference.dynamicMapkey!!)
@@ -1159,8 +1169,106 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
         {
             CustomDriverSearchingDialog.getInstance(mContext!!).hideDialog()
         }
+
     }
 
-    // Trip Accept Layout
+
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: CancelRequestModel) {
+        bookingRideService= BookingRideService()
+        bookingRideService?.BookingRideService(mContext!!)
+        bookingRideService?.CancelRideRequest(this, CancelRideRequest(
+            myPreference.CancelledRequest,
+            event.reason)
+        )
+        event.dialog.dismiss()
+        EventBus.getDefault().removeStickyEvent(CancelRequestModel::class.java)
+    }
+
+    override fun onsendRideResponse(sendRideResponse: SendRideResponse) {
+
+
+    }
+
+    override fun onCancelRideResponse(cancelRideResponse: CancelRideResponse) {
+        if(cancelRideResponse.success!!)
+        {
+            ToastBuilder.build(mContext!!,cancelRideResponse.message)
+
+        }
+    }
+
+        // Ride Status Check Details
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: RedirectFragmentModel) {
+        if (event.message.data.get("type").equals("Accepted", ignoreCase = true)) {
+            Log.e("ridefesss","vfrgerere")
+            bookingRideService= BookingRideService()
+            bookingRideService?.BookingRideService(mContext!!)
+            bookingRideService?.getRideStatusCheck(this)
+        }
+        EventBus.getDefault().removeStickyEvent(RedirectFragmentModel::class.java)
+
+    }
+    override fun onRideStatusCheck(rideStatusCheckResponse: RideStatusCheckResponse) {
+        if(rideStatusCheckResponse.success!=null && rideStatusCheckResponse.success)
+        {
+            sourceLayout.coordinatorLayoutHome.visibility= View.GONE
+            rideAccpetLayout.visibility= View.VISIBLE
+            rideAccpetLayoucard.layoutRootRequestCard.visibility= View.VISIBLE
+            binding.layoutSos.visibility= View.VISIBLE
+            initCardData(rideStatusCheckResponse.data)
+
+        }
+
+
+    }
+
+    private fun initCardData(data: MutableList<RideStatusCheckResponseData>) {
+        for( ridestatuscheckdata in data)
+        {
+            rideAccpetLayoucard.lblConfirmCode.text="Ride Code"+ridestatuscheckdata.confirmation_code
+
+            Glide.with(mContext!!).load(ridestatuscheckdata.provider?.avatar).placeholder(R.drawable.img_placeholder_profile)
+                    .into(rideAccpetLayoucard.userImageIncoming)
+
+            rideAccpetLayoucard.userNameOnGoing.text= ridestatuscheckdata.provider?.first_name
+            val df = DecimalFormat("#.##")
+            df.roundingMode = RoundingMode.CEILING
+            rideAccpetLayoucard.ratingText.text= df.format(ridestatuscheckdata.provider?.rating).toString()
+            RideCurrentStatusLayout(ridestatuscheckdata.status)
+        }
+
+    }
+
+    fun RideCurrentStatusLayout(status: String?)
+    {
+        when(status)
+        {
+            "ACCEPTED"-> {
+                rideAccpetLayoucard.statusText.text= resources.getString(R.string.dirver_accepeted_request)
+                rideAccpetLayoucard.txtEstimatedtime.visibility= View.VISIBLE
+                binding.cancelButton.visibility= View.VISIBLE }
+            "STARTED"-> {
+                rideAccpetLayoucard.statusText.text= resources.getString(R.string.driver_on_the_way)
+                rideAccpetLayoucard.txtEstimatedtime.visibility= View.VISIBLE
+                binding.cancelButton.visibility= View.VISIBLE }
+            "ARRIVED"-> {
+                rideAccpetLayoucard.statusText.text= resources.getString(R.string.driver_arrived)
+                rideAccpetLayoucard.txtEstimatedtime.visibility= View.VISIBLE
+                binding.cancelButton.visibility= View.VISIBLE }
+            "PICKEDUP"-> {
+                rideAccpetLayoucard.statusText.text= resources.getString(R.string.picked_up)
+                rideAccpetLayoucard.txtEstimatedtime.visibility= View.GONE
+                binding.cancelButton.visibility= View.GONE }
+            "DROPPED"-> {
+                rideAccpetLayoucard.statusText.text= resources.getString(R.string.dropped)
+                rideAccpetLayoucard.txtEstimatedtime.visibility= View.GONE
+                binding.cancelButton.visibility= View.GONE }
+
+        }
+    }
 
 }

@@ -27,10 +27,14 @@ import com.app.feenix.app.MyPreference
 import com.app.feenix.databinding.ActivityHomeBinding
 import com.app.feenix.eventbus.MenuIconDisableModel
 import com.app.feenix.eventbus.OnHomeLocationEnableModel
+import com.app.feenix.eventbus.RedirectFragmentModel
+import com.app.feenix.eventbus.RideAcceptModel
 import com.app.feenix.feature.internet.LocationConnectivityCallback
 import com.app.feenix.feature.internet.LocationConnectivityManager
 import com.app.feenix.feature.internet.LocationStateManager
 import com.app.feenix.handler.AlertDialogHandler
+import com.app.feenix.model.response.*
+import com.app.feenix.utils.CustomDriverSearchingDialog
 import com.app.feenix.utils.Log
 import com.app.feenix.utils.PermissionHandler
 import com.app.feenix.view.ui.Walkthrough.WalkthroughActivity
@@ -262,10 +266,6 @@ class HomeActivity : BaseActivity(), View.OnClickListener, LocationConnectivityC
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        Intercom.client().handlePushMessage()
-    }
 
 
 
@@ -449,4 +449,20 @@ class HomeActivity : BaseActivity(), View.OnClickListener, LocationConnectivityC
         }
 
     }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: RideAcceptModel) {
+        EventBus.getDefault().postSticky(RedirectFragmentModel(event.message))
+        CustomDriverSearchingDialog.getInstance(mContext!!).hideDialog()
+        EventBus.getDefault().removeStickyEvent(RideAcceptModel::class.java)
+
+    }
+    override fun onResume() {
+        super.onResume()
+        Intercom.client().handlePushMessage()
+
+    }
+
+
+
 }

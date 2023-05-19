@@ -1,11 +1,9 @@
 package com.app.feenix.webservices.bookingride
 
 
+import com.app.biu.model.RequestModel.ResponseModel.RideStatusCheckResponse
 import com.app.feenix.model.request.*
-import com.app.feenix.model.response.GetLocationResponse
-import com.app.feenix.model.response.GetPriceEstimationResponse
-import com.app.feenix.model.response.GetServiceEstimationResponse
-import com.app.feenix.model.response.SendRideResponse
+import com.app.feenix.model.response.*
 import io.reactivex.Observable
 import retrofit2.http.*
 
@@ -49,5 +47,22 @@ interface BookingRideInterface {
         @Header("Authorization") strToken: String?,
         @Body sendRideRequest: SendRideRequest
     ): Observable<SendRideResponse>
+
+
+    // Cancel Ride Request
+    @POST("cancel/request")
+    fun CancelRideRequest(
+        @Header("X-Requested-With") xmlRequest: String,
+        @Header("Authorization") strToken: String?,
+        @Body cancelRideRequest: CancelRideRequest
+    ): Observable<CancelRideResponse>
+
+// Get Ride Status Check
+    @GET("locations")
+    fun getRideStatus(
+        @Header("X-Requested-With") xmlRequest: String,
+        @Header("Authorization") strToken: String?
+    ): Observable<RideStatusCheckResponse>
+
 
 }

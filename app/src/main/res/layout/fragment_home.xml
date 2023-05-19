@@ -85,6 +85,120 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone" />
+
+
+        <RelativeLayout
+            android:id="@+id/serviceAcceptedLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+            <include
+                android:id="@+id/layout_homeride_request_card"
+                layout="@layout/layout_homeride_request_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/bottom_request_card" />
+
+            <LinearLayout
+                android:id="@+id/bottom_request_card"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/bg_rectangle_white"
+                android:weightSum="3">
+
+                <LinearLayout
+                    android:id="@+id/cancelButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        fontPath="fonts/Graphik-Regular.ttf"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableTop="@drawable/ic_home_requestcard_cancel"
+                        android:drawablePadding="@dimen/primary"
+                        android:gravity="center"
+                        android:text="Cancel Ride"
+                        android:textAllCaps="false"
+                        android:textColor="@color/in_text_color"
+                        android:textSize="@dimen/small_txt"
+                        tools:ignore="HardcodedText,MissingPrefix,UseCompatTextViewDrawableXml" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/providerCall"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        fontPath="fonts/Graphik-Regular.ttf"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableTop="@drawable/ic_requestcard_call"
+                        android:drawablePadding="@dimen/primary"
+                        android:gravity="center"
+                        android:text="Call Driver"
+                        android:textColor="@color/in_text_color"
+                        android:textSize="@dimen/small_txt11"
+                        tools:ignore="HardcodedText,MissingPrefix,UseCompatTextViewDrawableXml" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/providerMessage"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/unreadIcon"
+                            android:layout_width="10dp"
+                            android:layout_height="10dp"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="@dimen/primary"
+                            android:src="@color/acceptRed"
+                            android:visibility="gone" />
+
+                        <TextView
+                            fontPath="fonts/Graphik-Regular.ttf"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:drawableTop="@drawable/ic_requestcard_message"
+                            android:drawablePadding="@dimen/primary"
+                            android:gravity="center"
+                            android:text="Message Driver"
+                            android:textColor="@color/in_text_color"
+                            android:textSize="@dimen/small_txt11"
+                            tools:ignore="HardcodedText,MissingPrefix" />
+
+                    </FrameLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
     </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
