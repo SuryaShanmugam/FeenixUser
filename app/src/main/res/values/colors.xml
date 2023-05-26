@@ -35,6 +35,8 @@
     <color name="trip_cancelled">#FA376B</color>
 
     <color name="error">#D93025</color>
-
+    <color name="sos_txt">#292000</color>
+    <color name="sos_red">#FF0000</color>
+    <color name="sos_alert_txt">#592222</color>
 
 </resources>

@@ -169,7 +169,7 @@
     <string name="general_network_error">An unknown error has occurred. Please try again.</string>
     <string name="push_notification_error">An unknown error has occurred while connecting to notification services. Please try again</string>
 
-<!--AcceptModuld-->
+    <!--AcceptModuld-->
 
     <string name="dirver_accepeted_request">Driver has accepted the request</string>
     <string name="driver_on_the_way">Driver on the way</string>
@@ -180,5 +180,10 @@
     <string name="change_payment">Change</string>
     <string name="enter_comments">Enter Comments</string>
     <string name="minimum_fare">Minimum Fare</string>
+
+
+    <string name="emergency_assistance">Emergency Assistance</string>
+    <string name="share_ride_details">Share Ride Details</string>
+    <string name="sharing_ride_details">Sharing Ride Details</string>
 
 </resources>

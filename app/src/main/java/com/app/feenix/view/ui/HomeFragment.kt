@@ -258,11 +258,15 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
         priceestimationLayout.btnPriceConfirm.setOnClickListener(this)
         binding.providerCall.setOnClickListener(this)
         binding.cancelButton.setOnClickListener(this)
+        binding.layoutSos.setOnClickListener(this)
     }
 
     override fun onClick(p0: View?) {
         val id = p0?.id
         when (id) {
+            R.id.layout_sos -> {
+                MyActivity.launch(mContext!!,SosLayoutActivity::class.java)
+            }
             R.id.providerCall -> {
               if(checkCallRequestPermissions())
               {

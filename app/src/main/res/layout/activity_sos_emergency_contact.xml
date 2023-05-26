@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.ui.SosEmergencyContactActivity">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+
+        <LinearLayout
+            android:id="@+id/layout_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/primary"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/layout_add_contact"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginEnd="@dimen/secondary"
+                android:layout_marginStart="@dimen/secondary"
+                android:layout_marginTop="@dimen/secondary"
+                android:background="@drawable/bg_sos_yellow_editext"
+                android:gravity="center">
+
+                <TextView
+                    fontPath="fonts/CircularStd-Medium.ttf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:drawablePadding="@dimen/primary"
+                    android:text="Add Contacts"
+                    android:textAllCaps="false"
+                    android:textColor="@color/sos_txt"
+                    android:textSize="@dimen/primary_txt1"
+                    app:drawableStartCompat="@drawable/ic_add_sos_contact"
+                    tools:ignore="HardcodedText,MissingPrefix" />
+
+            </LinearLayout>
+
+            <TextView
+                fontPath="fonts/Graphik-Regular.ttf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/primary"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:lineSpacingExtra="@dimen/lite"
+                android:text="You can add up to 5 contacts"
+                android:textColor="@color/slide_text_color"
+                android:textSize="@dimen/default_txt1"
+                tools:ignore="HardcodedText,MissingPrefix" />
+
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/layout_bottom"
+            android:layout_below="@+id/toolbar"
+            android:background="@color/white">
+
+            <Button
+                android:id="@+id/btn_ShareDetails"
+                fontPath="fonts/CircularStd-Medium.ttf"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_below="@+id/recyclerview_notifications"
+                android:layout_margin="@dimen/secondary"
+                android:background="@drawable/bg_rect_primary"
+                android:text="@string/share_ride_details"
+                android:textAllCaps="false"
+                android:textColor="@color/black"
+                android:textSize="@dimen/primary_txt1"
+                android:visibility="gone"
+                tools:ignore="MissingPrefix" />
+
+            <LinearLayout
+                android:id="@+id/empty_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_sos_logo" />
+
+                <TextView
+                    fontPath="fonts/CircularStd-Bold.ttf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/primary"
+                    android:text="No Contacts Found"
+                    android:textColor="@color/invoice_text_color"
+                    android:textSize="18sp"
+                    tools:ignore="HardcodedText,MissingPrefix" />
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerview_notifications"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </RelativeLayout>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardElevation="0dp">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/lite">
+
+                    <ImageView
+                        android:id="@+id/navigation_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:padding="10dp"
+                        app:srcCompat="@drawable/ic_black_backarrow"
+                        tools:ignore="ContentDescription" />
+
+
+                    <TextView
+                        fontPath="fonts/CircularStd-Bold.ttf"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="start"
+                        android:text="Emergency Contacts"
+                        android:textAllCaps="false"
+                        android:textColor="@color/slide_text_color"
+                        android:textSize="@dimen/primary_txt"
+                        tools:ignore="HardcodedText,MissingPrefix" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+        </androidx.cardview.widget.CardView>
+
+
+    </RelativeLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
