@@ -4,10 +4,7 @@ import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import androidx.core.content.ContextCompat
 import com.app.feenix.R
 
@@ -85,6 +82,32 @@ class TextChangedListener {
             })
         }
 
+        fun onCheckboxChangedListner(checkBox: CheckBox,editothercommends:EditText,
+                                     checkBox1: CheckBox,
+                                     checkBox2: CheckBox,
+                                     checkBox3: CheckBox,
+                                     checkBox4: CheckBox,
+                                     checkBox5: CheckBox):String
+        {
+            var textratingcomments:String=""
+            checkBox.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
+                editothercommends.visibility = View.GONE
+                if (isChecked) {
+                    checkBox1.isChecked = false
+                    checkBox2.isChecked = false
+                    checkBox3.isChecked = false
+                    checkBox4.isChecked = false
+                    checkBox5.isChecked = false
+                    textratingcomments= checkBox.text.toString()
 
+                } else {
+                    textratingcomments = ""
+                }
+            })
+            return textratingcomments
+        }
     }
+
+
+
 }

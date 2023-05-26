@@ -214,7 +214,8 @@ data class RideTripPayment(
     val driver_earnings: String?,
     val money_to_wallet: String?,
     val donation: String?,
-    val amount_to_collect: String?
+    val amount_to_collect: String?,
+    val minimum_fare: String?,
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),
@@ -222,6 +223,7 @@ data class RideTripPayment(
         parcel.readString(),
         parcel.readString(),
         parcel.readDouble(),
+        parcel.readString(),
         parcel.readString(),
         parcel.readString(),
         parcel.readString(),
@@ -266,6 +268,7 @@ data class RideTripPayment(
         parcel.writeString(money_to_wallet)
         parcel.writeString(donation)
         parcel.writeString(amount_to_collect)
+        parcel.writeString(minimum_fare)
     }
 
     override fun describeContents(): Int {

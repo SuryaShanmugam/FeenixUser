@@ -36,7 +36,7 @@ import com.app.feenix.model.request.CancelRideRequest
 import com.app.feenix.model.request.SendRideRequest
 import com.app.feenix.model.response.CancelRideResponse
 import com.app.feenix.model.response.SendRideResponse
-import com.app.feenix.utils.CustomDriverSearchingDialog
+import com.app.feenix.utils.CustomRideDialog
 import com.app.feenix.view.ui.base.BaseActivity
 import com.app.feenix.viewmodel.ICallback
 import com.app.feenix.viewmodel.ISendRideRequest
@@ -581,8 +581,8 @@ class ConfirmPickupLocationActivity : BaseActivity(), View.OnClickListener,
         {
             myPreference.TripSearchingStatus="false"
             myPreference.CurrentRequestId=""
-            CustomDriverSearchingDialog.getInstance(mContext!!).showNotificationDialog(mContext!!,
-                "No Driver", sendRideResponse.message!!)
+            CustomRideDialog.getInstance(mContext!!).showNotificationDialog(mContext!!,
+                "No Driver", sendRideResponse.message!!,false)
         }
 
 
@@ -618,8 +618,8 @@ class ConfirmPickupLocationActivity : BaseActivity(), View.OnClickListener,
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: NoDriversFoundModel) {
         if (event.type.equals("No Driver", ignoreCase = true)) {
-            CustomDriverSearchingDialog.getInstance(mContext!!).showNotificationDialog(mContext!!,
-                event.type,event.message)
+            CustomRideDialog.getInstance(mContext!!).showNotificationDialog(mContext!!,
+                event.type,event.message,false)
             myPreference.CurrentRequestId=""
         }
         EventBus.getDefault().removeStickyEvent(NoDriversFoundModel::class.java)

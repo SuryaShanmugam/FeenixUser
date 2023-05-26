@@ -123,6 +123,9 @@ dependencies {
     // Volley
 //    implementation 'com.mcxiaoke.volley:library:1.0.19'
 
+    // Rating Bar
+    implementation 'com.github.whinc:ratingbar:1.1.1'
+
 }
 apply plugin: 'com.google.gms.google-services'
 

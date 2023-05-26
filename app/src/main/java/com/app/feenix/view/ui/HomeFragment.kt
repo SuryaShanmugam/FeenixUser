@@ -16,12 +16,12 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.DisplayMetrics
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
+import android.view.*
 import android.view.View.OnFocusChangeListener
-import android.view.ViewGroup
+import android.view.View.VISIBLE
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
+import android.widget.CompoundButton
 import android.widget.RelativeLayout
 import androidx.activity.OnBackPressedCallback
 import androidx.cardview.widget.CardView
@@ -43,13 +43,11 @@ import com.app.feenix.app.MyPreference
 import com.app.feenix.databinding.*
 import com.app.feenix.eventbus.*
 import com.app.feenix.model.PaymentTypeModel
-import com.app.feenix.model.request.AddPromocode
-import com.app.feenix.model.request.CancelRideRequest
-import com.app.feenix.model.request.GetPriceEstimationRequest
-import com.app.feenix.model.request.GetServiceEstimationRequest
+import com.app.feenix.model.request.*
 import com.app.feenix.model.response.*
-import com.app.feenix.utils.CustomDriverSearchingDialog
+import com.app.feenix.utils.CustomRideDialog
 import com.app.feenix.utils.Utils
+import com.app.feenix.utils.Utils.getstartTime
 import com.app.feenix.utils.customcomponents.CustomAutoCompleteListView
 import com.app.feenix.utils.customcomponents.PlacePredictions
 import com.app.feenix.view.adapter.AutoCompleteAdapter
@@ -76,6 +74,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.google.gson.Gson
 import com.hellotirupathur.utils.TextChangedListener
+import com.whinc.widget.ratingbar.RatingBar.OnRatingChangeListener
 import io.intercom.android.sdk.utilities.KeyboardUtils
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -89,7 +88,7 @@ import kotlin.math.roundToInt
 
 class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, IBookingRides,
     RecentDestLocationAdapter.RecentDestItemClickCallback, RoutingListener,
-    ServiceTypeOptionAdapter.ServiceTypeItemClickCallback, IPromotionData,IRideStatusCheck,
+    ServiceTypeOptionAdapter.ServiceTypeItemClickCallback, IPromotionData, IRideStatusCheck,
     ISendRideRequest,
     PaymentTypeAdapter.PaymentTypeClickCallback {
     private var mContext: Context? = null
@@ -107,6 +106,8 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
     lateinit var priceestimationLayout: LayoutHomePriceEstimationRideBinding
     lateinit var rideAccpetLayout: RelativeLayout
     lateinit var rideAccpetLayoucard: LayoutHomerideRequestCardBinding
+    lateinit var invoiceLayoutBinding: LayoutRideInvoiceBinding
+    lateinit var ratingTripBinding: DialogRatingTripBinding
     lateinit var promotionService: PromotionService
 
     var current_lat: Double? = null
@@ -136,6 +137,8 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
         rideAccpetLayoucard = binding.layoutHomerideRequestCard
         priceestimationLayout = binding.priceestimationLayout
         mylocationButton = sourceLayout.cardviewMylocationHome
+        invoiceLayoutBinding = binding.layoutInvoice
+        ratingTripBinding = binding.layoutRating
         Places.initialize(mContext!!, myPreference.dynamicMapkey!!)
         placesClient = Places.createClient(mContext!!)
         bookingRideService = BookingRideService()
@@ -262,7 +265,7 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
                 bottom_sheet_homebehavior?.state = BottomSheetBehavior.STATE_EXPANDED
                 sourceLayout.layoutHomeDefault.visibility = View.GONE
                 sourceLayout.cardviewMylocationHome.visibility = View.GONE
-                sourceLayout.layoutHomeExpanded.visibility = View.VISIBLE
+                sourceLayout.layoutHomeExpanded.visibility = VISIBLE
             }
             R.id.bottom_homeaddress_layout -> {
 
@@ -331,10 +334,10 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
                 }
             }
             R.id.img_servicetypeback -> {
-                if (servicetypeLayout.layoutRootServicetype.visibility == View.VISIBLE) {
+                if (servicetypeLayout.layoutRootServicetype.visibility == VISIBLE) {
                     mMap?.clear()
                     servicetypeLayout.layoutRootServicetype.visibility = View.GONE
-                    sourceLayout.coordinatorLayoutHome.visibility = View.VISIBLE
+                    sourceLayout.coordinatorLayoutHome.visibility = VISIBLE
                     mapCollapsed()
                     EventBus.getDefault().postSticky(MenuIconDisableModel(false))
                     if (bottom_sheet_homebehavior != null) {
@@ -362,7 +365,7 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
             }
             R.id.btn_servicetype_confirm -> {
                 if (hasInternetConnection()) {
-                    Constant.SERVICE_TYPE=  SelectedServiceType?.id!!
+                    Constant.SERVICE_TYPE = SelectedServiceType?.id!!
                     bookingRideService?.getPriceEstimationRide(
                         this,
                         GetPriceEstimationRequest(
@@ -379,9 +382,9 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
 
             }
             R.id.priceEstimationBack -> {
-                if (priceestimationLayout.layoutRootPriceestimation.visibility == View.VISIBLE) {
+                if (priceestimationLayout.layoutRootPriceestimation.visibility == VISIBLE) {
                     priceestimationLayout.layoutRootPriceestimation.visibility = View.GONE
-                    servicetypeLayout.layoutRootServicetype.visibility = View.VISIBLE
+                    servicetypeLayout.layoutRootServicetype.visibility = VISIBLE
                     EventBus.getDefault().postSticky(MenuIconDisableModel(true))
                 }
             }
@@ -453,7 +456,7 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
                     bottom_sheet_homenew.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
                     sourceLayout.layoutHomeDefault.visibility = View.GONE
                     sourceLayout.cardviewMylocationHome.visibility = View.GONE
-                    sourceLayout.layoutHomeExpanded.visibility = View.VISIBLE
+                    sourceLayout.layoutHomeExpanded.visibility = VISIBLE
 
                     sourceLayout.layoutHomeAddress.editSourceAddress.setText("")
                     sourceLayout.layoutHomeAddress.editDestAddress.setText("")
@@ -466,14 +469,14 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
                     )
                     EventBus.getDefault().postSticky(MenuIconDisableModel(true))
                 } else if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                    sourceLayout.layoutHomeDefault.visibility = View.VISIBLE
-                    sourceLayout.cardviewMylocationHome.visibility = View.VISIBLE
+                    sourceLayout.layoutHomeDefault.visibility = VISIBLE
+                    sourceLayout.cardviewMylocationHome.visibility = VISIBLE
                     sourceLayout.layoutHomeExpanded.visibility = View.GONE
                     EventBus.getDefault().postSticky(MenuIconDisableModel(false))
                 } else if (newState == BottomSheetBehavior.STATE_DRAGGING) {
                     sourceLayout.layoutHomeDefault.visibility = View.GONE
                     sourceLayout.cardviewMylocationHome.visibility = View.GONE
-                    sourceLayout.layoutHomeExpanded.visibility = View.VISIBLE
+                    sourceLayout.layoutHomeExpanded.visibility = VISIBLE
                     EventBus.getDefault().postSticky(
                         MenuIconDisableModel(
                             true
@@ -512,14 +515,14 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
                     SearcyTypeSourceorDest = 0
                     searchPlaces(sValue.toString())
                     sourceLayout.layoutHomeAddress.listviewAutocompeleteHome.visibility =
-                        View.VISIBLE
+                        VISIBLE
                     sourceLayout.layoutHomeAddress.searchResultView.visibility = View.GONE
-                    sourceLayout.layoutHomeAddress.txtSetonmap.visibility = View.VISIBLE
+                    sourceLayout.layoutHomeAddress.txtSetonmap.visibility = VISIBLE
                     sourceLayout.layoutHomeAddress.suggestions.text = "Suggestions"
                     sourceLayout.layoutHomeAddress.editSourceAddress.setSelection(sValue.toString().length)
                 } else {
                     sourceLayout.layoutHomeAddress.listviewAutocompeleteHome.visibility = View.GONE
-                    sourceLayout.layoutHomeAddress.searchResultView.visibility = View.VISIBLE
+                    sourceLayout.layoutHomeAddress.searchResultView.visibility = VISIBLE
                     sourceLayout.layoutHomeAddress.suggestions.text = "Recent Locations"
                 }
             }
@@ -537,14 +540,14 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
                     SearcyTypeSourceorDest = 1
                     searchPlaces(sValue.toString())
                     sourceLayout.layoutHomeAddress.listviewAutocompeleteHome.visibility =
-                        View.VISIBLE
+                        VISIBLE
                     sourceLayout.layoutHomeAddress.searchResultView.visibility = View.GONE
-                    sourceLayout.layoutHomeAddress.txtSetonmap.visibility = View.VISIBLE
+                    sourceLayout.layoutHomeAddress.txtSetonmap.visibility = VISIBLE
                     sourceLayout.layoutHomeAddress.suggestions.text = "Suggestions"
                     sourceLayout.layoutHomeAddress.editDestAddress.setSelection(sValue.toString().length)
                 } else {
                     sourceLayout.layoutHomeAddress.listviewAutocompeleteHome.visibility = View.GONE
-                    sourceLayout.layoutHomeAddress.searchResultView.visibility = View.VISIBLE
+                    sourceLayout.layoutHomeAddress.searchResultView.visibility = VISIBLE
                     sourceLayout.layoutHomeAddress.suggestions.text = "Recent Locations"
                 }
             }
@@ -590,8 +593,11 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
                     }
                 }
             }
+        if (myPreference.CurrentRequestId.isNullOrEmpty()) {
+            bookingRideService?.getSavedLocations(this)
+        }
 
-        bookingRideService?.getSavedLocations(this)
+
     }
 
     // AutoComplete Adapter
@@ -609,7 +615,7 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
                     predictions = gson.fromJson(response.toString(), PlacePredictions::class.java)
                     if (mAutoCompleteAdapter == null) {
                         sourceLayout.layoutHomeAddress.listviewAutocompeleteHome.visibility =
-                            View.VISIBLE
+                            VISIBLE
                         mAutoCompleteAdapter = AutoCompleteAdapter(
                             mContext!!,
                             predictions.getPlaces()!!
@@ -619,7 +625,7 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
                         mAutoCompleteAdapter?.notifyDataSetChanged()
                     } else {
                         sourceLayout.layoutHomeAddress.listviewAutocompeleteHome.visibility =
-                            View.VISIBLE
+                            VISIBLE
                         mAutoCompleteAdapter = AutoCompleteAdapter(
                             mContext!!,
                             predictions.getPlaces()!!
@@ -672,7 +678,7 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
 
     private fun initRecentDestionLocationList(recentDestination: MutableList<RecentDestLocationData>?) {
         if (recentDestination!!.size > 0) {
-            sourceLayout.layoutHomeAddress.searchResultView.visibility = View.VISIBLE
+            sourceLayout.layoutHomeAddress.searchResultView.visibility = VISIBLE
             sourceLayout.layoutHomeAddress.txtEmptyLocationsFound.visibility = View.GONE
             locationrecentDestList = mutableListOf()
             locationrecentDestList = recentDestination.take(5).toMutableList()
@@ -687,7 +693,7 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
 
         } else {
             sourceLayout.layoutHomeAddress.searchResultView.visibility = View.GONE
-            sourceLayout.layoutHomeAddress.txtEmptyLocationsFound.visibility = View.VISIBLE
+            sourceLayout.layoutHomeAddress.txtEmptyLocationsFound.visibility = VISIBLE
         }
 
     }
@@ -734,7 +740,7 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
     private fun getServiceTypeView() {
         sourceLayout.coordinatorLayoutHome.visibility = View.GONE
         sourceLayout.cardviewMylocationHome.visibility = View.GONE
-        servicetypeLayout.layoutRootServicetype.visibility = View.VISIBLE
+        servicetypeLayout.layoutRootServicetype.visibility = VISIBLE
         servicetypeLayout.txtLableDestination.text = Constant.DEST_TITLE
         EventBus.getDefault().postSticky(MenuIconDisableModel(true))
         Log.e("SourceLat", "" + Constant.SOURCE_LAT)
@@ -998,20 +1004,20 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
     override fun onGetPriceEstimation(getPriceEstimationResponse: GetPriceEstimationResponse) {
         if (getPriceEstimationResponse.success) {
             priceEstimationResponse = getPriceEstimationResponse
-            priceestimationLayout.layoutRootPriceestimation.visibility = View.VISIBLE
+            priceestimationLayout.layoutRootPriceestimation.visibility = VISIBLE
             servicetypeLayout.layoutRootServicetype.visibility = View.GONE
             EventBus.getDefault().postSticky(MenuIconDisableModel(true))
             TextChangedListener.onTextPriceEstimationPromocodeChanged(
                 priceestimationLayout.editEnterpromoCode,
                 priceestimationLayout.btnPromocodeapply
             )
-            Constant.TIME= getPriceEstimationResponse.time
-            Constant.DISTANCE_PRICE= getPriceEstimationResponse.distance_price.toString()
-            Constant.TIME_PRICE= getPriceEstimationResponse.time_price.toString()
-            Constant.TAX_PRICE= getPriceEstimationResponse.tax_price.toString()
-            Constant.BASE_PRICE= getPriceEstimationResponse.base_price.toString()
-            Constant.WALLET_BAL= getPriceEstimationResponse.wallet_balance.toString()
-            Constant.DISTANCE= getPriceEstimationResponse.distance.toString()
+            Constant.TIME = getPriceEstimationResponse.time
+            Constant.DISTANCE_PRICE = getPriceEstimationResponse.distance_price.toString()
+            Constant.TIME_PRICE = getPriceEstimationResponse.time_price.toString()
+            Constant.TAX_PRICE = getPriceEstimationResponse.tax_price.toString()
+            Constant.BASE_PRICE = getPriceEstimationResponse.base_price.toString()
+            Constant.WALLET_BAL = getPriceEstimationResponse.wallet_balance.toString()
+            Constant.DISTANCE = getPriceEstimationResponse.distance.toString()
             priceestimationLayout.serviceTypeNameText.text = SelectedServiceType?.name
             priceestimationLayout.estimatedTime.text = getPriceEstimationResponse.time
 
@@ -1047,21 +1053,23 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
     @SuppressLint("SetTextI18n")
     fun initPriceEstimationLayout(estimatedFare: Double, discount: Double, ispromocalled: Boolean) {
         if (discount > 0.0) {
-            priceestimationLayout.couponcodeLayout.visibility = View.VISIBLE
-            priceestimationLayout.couponEstimatedOldPrice.visibility = View.VISIBLE
+            priceestimationLayout.couponcodeLayout.visibility = VISIBLE
+            priceestimationLayout.couponEstimatedOldPrice.visibility = VISIBLE
             val EstimatedFareOld = estimatedFare.plus(discount).roundToInt()
-            priceestimationLayout.couponcodeAmount.text = resources.getString(R.string.money_symbols) + discount.roundToInt()
-            priceestimationLayout.couponEstimatedOldPrice.text = resources.getString(R.string.money_symbols) + EstimatedFareOld
+            priceestimationLayout.couponcodeAmount.text =
+                resources.getString(R.string.money_symbols) + discount.roundToInt()
+            priceestimationLayout.couponEstimatedOldPrice.text =
+                resources.getString(R.string.money_symbols) + EstimatedFareOld
             if (ispromocalled) {
                 val EstimatedFare = estimatedFare.minus(discount).roundToInt()
                 priceestimationLayout.estimatedPrice.text =
                     resources.getString(R.string.money_symbols) + EstimatedFare
-                Constant.ESTIMATED_FARE= EstimatedFare.toDouble()
+                Constant.ESTIMATED_FARE = EstimatedFare.toDouble()
 
             } else {
                 priceestimationLayout.estimatedPrice.text =
                     resources.getString(R.string.money_symbols) + estimatedFare.roundToInt()
-                Constant.ESTIMATED_FARE= estimatedFare
+                Constant.ESTIMATED_FARE = estimatedFare
             }
 
         } else {
@@ -1076,15 +1084,15 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
                 estimatedFarefinal = estimatedFare.plus(2)
                 priceestimationLayout.estimatedPrice.text =
                     mContext!!.resources.getString(R.string.money_symbols) + estimatedFarefinal.roundToInt()
-                Constant.ESTIMATED_FARE= estimatedFarefinal
+                Constant.ESTIMATED_FARE = estimatedFarefinal
             } else {
                 val estimatedFarefinalminus = estimatedFarefinal.minus(2)
                 priceestimationLayout.estimatedPrice.text =
                     mContext!!.resources.getString(R.string.money_symbols) + estimatedFarefinalminus.roundToInt()
-                Constant.ESTIMATED_FARE= estimatedFarefinalminus
+                Constant.ESTIMATED_FARE = estimatedFarefinalminus
             }
         }
-        Constant.DISCOUNT= discount
+        Constant.DISCOUNT = discount
         // Payment Types
 
         paymentTypeList.clear()
@@ -1111,7 +1119,7 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
     }
 
     private fun onGoingLayout() {
-        sourceLayout.layoutHomeDefault.visibility = View.VISIBLE
+        sourceLayout.layoutHomeDefault.visibility = VISIBLE
         if (bottom_sheet_homebehavior != null) {
             bottom_sheet_homebehavior!!.state = BottomSheetBehavior.STATE_COLLAPSED
         }
@@ -1123,21 +1131,21 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    if (servicetypeLayout.layoutRootServicetype.visibility == View.VISIBLE) {
+                    if (servicetypeLayout.layoutRootServicetype.visibility == VISIBLE) {
                         mMap?.clear()
                         servicetypeLayout.layoutRootServicetype.visibility = View.GONE
-                        sourceLayout.coordinatorLayoutHome.visibility = View.VISIBLE
+                        sourceLayout.coordinatorLayoutHome.visibility = VISIBLE
                         mapCollapsed()
                         EventBus.getDefault().postSticky(MenuIconDisableModel(false))
 
                     }
 
-                    if (priceestimationLayout.layoutRootPriceestimation.visibility == View.VISIBLE) {
+                    if (priceestimationLayout.layoutRootPriceestimation.visibility == VISIBLE) {
                         priceestimationLayout.layoutRootPriceestimation.visibility = View.GONE
-                        servicetypeLayout.layoutRootServicetype.visibility = View.VISIBLE
+                        servicetypeLayout.layoutRootServicetype.visibility = VISIBLE
                         EventBus.getDefault().postSticky(MenuIconDisableModel(true))
                     }
-                    if (sourceLayout.coordinatorLayoutHome.visibility == View.VISIBLE) {
+                    if (sourceLayout.coordinatorLayoutHome.visibility == VISIBLE) {
                         EventBus.getDefault().postSticky(MenuIconDisableModel(false))
                         mapCollapsed()
                     }
@@ -1161,26 +1169,36 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
 
     override fun onResume() {
         super.onResume()
-        if(myPreference.TripSearchingStatus.equals("true"))
-        {
-            CustomDriverSearchingDialog.getInstance(mContext!!).showDialog(mContext)
+        if (myPreference.TripSearchingStatus.equals("true")) {
+            CustomRideDialog.getInstance(mContext!!).showDialog(mContext)
+        } else {
+            CustomRideDialog.getInstance(mContext!!).hideDialog()
         }
-        else
-        {
-            CustomDriverSearchingDialog.getInstance(mContext!!).hideDialog()
+        myPreference.TripSearchingStatus = "false"
+
+        Log.e("sfewsw", "" + myPreference.CurrentRequestId)
+
+        if (!myPreference.CurrentRequestId.isNullOrEmpty()) {
+            bookingRideService?.getRideStatusCheck(this)
+        } else {
+            sourceLayout.coordinatorLayoutHome.visibility = VISIBLE
+            rideAccpetLayout.visibility = View.GONE
+            rideAccpetLayoucard.layoutRootRequestCard.visibility = View.GONE
+            EventBus.getDefault().postSticky(MenuIconDisableModel(false))
         }
+
 
     }
 
 
-
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: CancelRequestModel) {
-        bookingRideService= BookingRideService()
-        bookingRideService?.BookingRideService(mContext!!)
-        bookingRideService?.CancelRideRequest(this, CancelRideRequest(
-            myPreference.CancelledRequest,
-            event.reason)
+        Log.e("CancelRequestModel", "" + event.toString())
+        bookingRideService?.CancelRideRequest(
+            this, CancelRideRequest(
+                myPreference.CancelledRequest,
+                event.reason
+            )
         )
         event.dialog.dismiss()
         EventBus.getDefault().removeStickyEvent(CancelRequestModel::class.java)
@@ -1192,83 +1210,355 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
     }
 
     override fun onCancelRideResponse(cancelRideResponse: CancelRideResponse) {
-        if(cancelRideResponse.success!!)
-        {
-            ToastBuilder.build(mContext!!,cancelRideResponse.message)
+        if (cancelRideResponse.success!!) {
+            ToastBuilder.build(mContext!!, cancelRideResponse.message)
 
         }
     }
 
-        // Ride Status Check Details
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: GetMyLocationModel) {
+        myPreference.TripSearchingStatus = "false"
+        val latLng = LatLng(mMap?.myLocation?.latitude!!, mMap?.myLocation?.longitude!!)
+        animateCamera(latLng)
+        EventBus.getDefault().removeStickyEvent(GetMyLocationModel::class.java)
+
+    }
+
+    // Ride Status Check Details
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: RedirectFragmentModel) {
+        myPreference.TripSearchingStatus = "false"
         if (event.message.data.get("type").equals("Accepted", ignoreCase = true)) {
-            Log.e("ridefesss","vfrgerere")
-            bookingRideService= BookingRideService()
-            bookingRideService?.BookingRideService(mContext!!)
             bookingRideService?.getRideStatusCheck(this)
+        } else if (event.message.data.get("type").equals("Started", ignoreCase = true) ||
+            event.message.data.get("type").equals("Picked", ignoreCase = true) ||
+            event.message.data.get("type").equals("Arrived", ignoreCase = true) ||
+            event.message.data.get("type").equals("Payment", ignoreCase = true)
+        ) {
+            if (event.message.data.get("type")!!.equals("Picked")) {
+                RideCurrentStatusLayout("PICKEDUP", event.message.data.get("title")!!)
+            } else {
+                RideCurrentStatusLayout(
+                    event.message.data.get("type")?.uppercase(),
+                    event.message.data.get("title")!!
+                )
+            }
+            Log.e("message", "" + event.message.data.get("type"))
         }
         EventBus.getDefault().removeStickyEvent(RedirectFragmentModel::class.java)
 
     }
-    override fun onRideStatusCheck(rideStatusCheckResponse: RideStatusCheckResponse) {
-        if(rideStatusCheckResponse.success!=null && rideStatusCheckResponse.success)
-        {
-            sourceLayout.coordinatorLayoutHome.visibility= View.GONE
-            rideAccpetLayout.visibility= View.VISIBLE
-            rideAccpetLayoucard.layoutRootRequestCard.visibility= View.VISIBLE
-            binding.layoutSos.visibility= View.VISIBLE
-            initCardData(rideStatusCheckResponse.data)
 
+    override fun onRideStatusCheck(rideStatusCheckResponse: RideStatusCheckResponse) {
+
+        if (rideStatusCheckResponse.success != null && rideStatusCheckResponse.success && rideStatusCheckResponse.data != null) {
+            Log.e("riestatyscheck", "" + rideStatusCheckResponse.data.toString())
+            for (data in rideStatusCheckResponse.data) {
+//                if (data.status.equals("COMPLETED") && data.user_rated == 0) {
+//                    if (data.paid == 1) {
+//                        ShowRatingDialog(data)
+//                    } else {
+//                        ShowInvoiceLayout(data)
+//                    }
+//                } else {
+                    initCardData(data)
+  //              }
+            }
+        } else {
+            sourceLayout.coordinatorLayoutHome.visibility = VISIBLE
+            rideAccpetLayout.visibility = View.GONE
+            rideAccpetLayoucard.layoutRootRequestCard.visibility = View.GONE
+            binding.layoutSos.visibility = View.GONE
+            EventBus.getDefault().postSticky(MenuIconDisableModel(false))
         }
 
 
     }
 
-    private fun initCardData(data: MutableList<RideStatusCheckResponseData>) {
-        for( ridestatuscheckdata in data)
-        {
-            rideAccpetLayoucard.lblConfirmCode.text="Ride Code"+ridestatuscheckdata.confirmation_code
 
-            Glide.with(mContext!!).load(ridestatuscheckdata.provider?.avatar).placeholder(R.drawable.img_placeholder_profile)
-                    .into(rideAccpetLayoucard.userImageIncoming)
+    // Service Accept Layouts
+    private fun initCardData(ridestatuscheckdata: RideStatusCheckResponseData) {
+        sourceLayout.coordinatorLayoutHome.visibility = View.GONE
+        rideAccpetLayout.visibility = VISIBLE
+        rideAccpetLayoucard.layoutRootRequestCard.visibility = VISIBLE
+        EventBus.getDefault().postSticky(MenuIconDisableModel(false))
+        binding.layoutSos.visibility = VISIBLE
+        val bottomSheet: View = rideAccpetLayoucard.layoutRootRequestCard.findViewById<View>(R.id.bottom_sheet)
+        bottomSheet.visibility = VISIBLE
+        val behavior = BottomSheetBehavior.from<View>(bottomSheet)
+        behavior.peekHeight = 600
+        rideAccpetLayoucard.lblOtpRider.text = "Ride Code :" + ridestatuscheckdata.confirmation_code
+            Glide.with(mContext!!).load(ridestatuscheckdata.provider?.avatar)
+                .placeholder(R.drawable.img_placeholder_profile)
+                .into(rideAccpetLayoucard.userImageIncoming)
+            rideAccpetLayoucard.userNameOnGoing.text = ridestatuscheckdata.provider?.first_name
+            rideAccpetLayoucard.userpickupaddressOnGoing.text = ridestatuscheckdata.s_address
+            rideAccpetLayoucard.userDestAddressOnGoing.text = ridestatuscheckdata.d_address
 
-            rideAccpetLayoucard.userNameOnGoing.text= ridestatuscheckdata.provider?.first_name
+            if (ridestatuscheckdata.eta != null && ridestatuscheckdata.eta > 0) {
+                rideAccpetLayoucard.txtEstimatedtime.text =
+                    "ETA: " + ridestatuscheckdata.eta + " mins away"
+            } else {
+                rideAccpetLayoucard.txtEstimatedtime.text = "ETA: 1 mins away"
+            }
+
+
             val df = DecimalFormat("#.##")
             df.roundingMode = RoundingMode.CEILING
-            rideAccpetLayoucard.ratingText.text= df.format(ridestatuscheckdata.provider?.rating).toString()
-            RideCurrentStatusLayout(ridestatuscheckdata.status)
+            rideAccpetLayoucard.ratingText.text =
+                df.format(ridestatuscheckdata.provider?.rating).toString()
+            RideCurrentStatusLayout(ridestatuscheckdata.status, "")
+    }
+
+    fun RideCurrentStatusLayout(status: String?, title: String?) {
+        when (status) {
+            "ACCEPTED" -> {
+                rideAccpetLayoucard.statusText.text =
+                    resources.getString(R.string.dirver_accepeted_request)
+                rideAccpetLayoucard.txtEstimatedtime.visibility = VISIBLE
+                binding.cancelButton.visibility = VISIBLE
+                binding.providerMessage.visibility = View.GONE
+            }
+            "STARTED" -> {
+                rideAccpetLayoucard.statusText.text =
+                    resources.getString(R.string.driver_on_the_way)
+                rideAccpetLayoucard.txtEstimatedtime.visibility = VISIBLE
+                binding.cancelButton.visibility = VISIBLE
+                binding.providerMessage.visibility = View.GONE
+            }
+            "ARRIVED" -> {
+                rideAccpetLayoucard.statusText.text = resources.getString(R.string.driver_arrived)
+                rideAccpetLayoucard.txtEstimatedtime.visibility = VISIBLE
+                binding.cancelButton.visibility = VISIBLE
+                binding.providerMessage.visibility = View.GONE
+            }
+            "PICKEDUP" -> {
+                rideAccpetLayoucard.statusText.text = resources.getString(R.string.picked_up)
+                rideAccpetLayoucard.txtEstimatedtime.visibility = View.GONE
+                binding.cancelButton.visibility = View.GONE
+                binding.bottomRequestCard.visibility = View.GONE
+                binding.providerMessage.visibility = View.GONE
+            }
+
+            "DROPPED" -> {
+                rideAccpetLayoucard.statusText.text = resources.getString(R.string.dropped)
+                rideAccpetLayoucard.txtEstimatedtime.visibility = View.GONE
+                binding.cancelButton.visibility = View.GONE
+                binding.providerMessage.visibility = View.GONE
+                binding.bottomRequestCard.visibility = View.GONE
+                // bookingRideService?.getRideStatusCheck(this)
+            }
+            "PAYMENT" -> {
+                rideAccpetLayoucard.statusText.text = resources.getString(R.string.dropped)
+                rideAccpetLayoucard.txtEstimatedtime.visibility = View.GONE
+                binding.cancelButton.visibility = View.GONE
+                binding.providerMessage.visibility = View.GONE
+                binding.bottomRequestCard.visibility = View.GONE
+                bookingRideService?.getRideStatusCheck(this)
+
+            }
+
+        }
+    }
+
+    // Invoice Layout Handling
+    private fun ShowInvoiceLayout(data: RideStatusCheckResponseData) {
+
+        rideAccpetLayout.visibility = View.GONE
+        binding.layoutSos.visibility = View.GONE
+        rideAccpetLayoucard.layoutRootRequestCard.visibility = View.GONE
+        invoiceLayoutBinding.rootLayoutInvoice.visibility = VISIBLE
+        EventBus.getDefault().postSticky(MenuIconDisableModel(false))
+
+        Glide.with(mContext!!)
+            .load(data.provider?.avatar)
+            .placeholder(R.drawable.img_placeholder_profile)
+            .into(invoiceLayoutBinding.driverImage)
+        invoiceLayoutBinding.drivername.text = data.provider?.first_name!!
+        invoiceLayoutBinding.sourceAddress.text = data.s_address
+        invoiceLayoutBinding.destinationAddress.text = data.d_address
+        invoiceLayoutBinding.txtBookingId.text = data.booking_id
+        if (data.discount != null && data.discount != "0") {
+            invoiceLayoutBinding.layoutDiscount.visibility = VISIBLE
+            invoiceLayoutBinding.lbldiscount.text =
+                resources.getString(R.string.money_symbols) + data.discount
+        } else {
+            invoiceLayoutBinding.layoutDiscount.visibility = View.GONE
+        }
+        invoiceLayoutBinding.startTime.text = getstartTime(data.started_at)
+        invoiceLayoutBinding.endTime.text = getstartTime(data.finished_at)
+        invoiceLayoutBinding.carnumber.text = data.provider_profiles?.car_registration!!
+        val df = DecimalFormat("#.##")
+        df.roundingMode = RoundingMode.CEILING
+        invoiceLayoutBinding.ratingText.text = df.format(data.provider.rating).toString()
+        if (data.payment != null) {
+            val priceamount: Float = data.payment.amount_to_collect!!.toFloat()
+            val trip_fare: Float = data.payment.trip_fare!!.toFloat()
+            val wallet: Float = data.payment.wallet!!.toFloat()
+            invoiceLayoutBinding.totalAmountInvoice.text =
+                resources.getString(R.string.money_symbols) + priceamount
+            invoiceLayoutBinding.Tripfare.text =
+                resources.getString(R.string.money_symbols) + trip_fare
+            invoiceLayoutBinding.txtWalletAmount.text =
+                resources.getString(R.string.money_symbols) + wallet
+
+            if (priceamount > 0) {
+                invoiceLayoutBinding.walletAmountUsedLayout.visibility = View.GONE
+                invoiceLayoutBinding.changePaymentLayout.visibility = VISIBLE
+            } else {
+                invoiceLayoutBinding.payNow.visibility = View.GONE
+                invoiceLayoutBinding.walletAmountUsedLayout.visibility = VISIBLE
+                invoiceLayoutBinding.changePaymentLayout.visibility = VISIBLE
+            }
+            if (priceamount > 0 || data.payment_mode.equals(
+                    "CASH",
+                    ignoreCase = true
+                ) || data.payment_mode.equals("WALLET", ignoreCase = true)
+            ) {
+                invoiceLayoutBinding.payNow.visibility = View.GONE
+            } else {
+                invoiceLayoutBinding.payNow.visibility = VISIBLE
+            }
+        }
+        invoiceLayoutBinding.lblTripfare.setOnClickListener(View.OnClickListener {
+            CustomRideDialog.getInstance(mContext!!).invoiceDetailDialog(
+                mContext!!,
+                data.payment?.fixed, data.payment?.distance_price,
+                data.payment?.time_price,
+                data.payment?.distance, data.payment?.time_taken,
+                data.payment?.minimum_fare
+            )
+        })
+        if (data.payment_mode.equals("CASH", ignoreCase = true)) {
+            invoiceLayoutBinding.paymentType.text = data.payment_mode
+            invoiceLayoutBinding.paymentTypeImage.setImageResource(R.drawable.ic_payment_cash)
+            invoiceLayoutBinding.payNow.visibility = View.GONE
+            invoiceLayoutBinding.layoutInappPayment.visibility = View.GONE
         }
 
     }
 
-    fun RideCurrentStatusLayout(status: String?)
-    {
-        when(status)
-        {
-            "ACCEPTED"-> {
-                rideAccpetLayoucard.statusText.text= resources.getString(R.string.dirver_accepeted_request)
-                rideAccpetLayoucard.txtEstimatedtime.visibility= View.VISIBLE
-                binding.cancelButton.visibility= View.VISIBLE }
-            "STARTED"-> {
-                rideAccpetLayoucard.statusText.text= resources.getString(R.string.driver_on_the_way)
-                rideAccpetLayoucard.txtEstimatedtime.visibility= View.VISIBLE
-                binding.cancelButton.visibility= View.VISIBLE }
-            "ARRIVED"-> {
-                rideAccpetLayoucard.statusText.text= resources.getString(R.string.driver_arrived)
-                rideAccpetLayoucard.txtEstimatedtime.visibility= View.VISIBLE
-                binding.cancelButton.visibility= View.VISIBLE }
-            "PICKEDUP"-> {
-                rideAccpetLayoucard.statusText.text= resources.getString(R.string.picked_up)
-                rideAccpetLayoucard.txtEstimatedtime.visibility= View.GONE
-                binding.cancelButton.visibility= View.GONE }
-            "DROPPED"-> {
-                rideAccpetLayoucard.statusText.text= resources.getString(R.string.dropped)
-                rideAccpetLayoucard.txtEstimatedtime.visibility= View.GONE
-                binding.cancelButton.visibility= View.GONE }
+    // Rating Ride
+    var textratingcomments: String? = null
+    private fun ShowRatingDialog(data: RideStatusCheckResponseData) {
+        rideAccpetLayout.visibility = View.GONE
+        binding.layoutSos.visibility = View.GONE
+        rideAccpetLayoucard.layoutRootRequestCard.visibility = View.GONE
+        invoiceLayoutBinding.rootLayoutInvoice.visibility = View.GONE
+        ratingTripBinding.rootLayoutRating.visibility = VISIBLE
+        EventBus.getDefault().postSticky(MenuIconDisableModel(false))
+        Glide.with(mContext!!).load(data.provider?.avatar)
+            .placeholder(R.drawable.img_placeholder_profile).into(ratingTripBinding.bookingImage)
+        ratingTripBinding.providerNameRating.text =
+            "How was your trip with " + data.provider?.first_name + "?"
 
+        ratingTripBinding.dateTimeTrip.text = Utils.tripsDateformat(
+            "yyyy-MM-dd HH:mm:ss",
+            "EEE, MMM dd , hh:mm aaa",
+            data.finished_at
+        )
+        ratingTripBinding.carWasCleanDriver.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
+            ratingTripBinding.editOthercommentsGood.visibility = View.GONE
+            if (isChecked) {
+                textratingcomments = ratingTripBinding.carWasCleanDriver.text.toString()
+                ratingTripBinding.wifiCar.isChecked = false
+                ratingTripBinding.driverOntime.isChecked = false
+                ratingTripBinding.goodCarCondition.isChecked = false
+                ratingTripBinding.greatDriver.isChecked = false
+                ratingTripBinding.otherReasonGood.isChecked = false
+            } else {
+                textratingcomments = ""
+            }
+        })
+        val carWasCleanDriver = TextChangedListener.onCheckboxChangedListner(
+            ratingTripBinding.carWasCleanDriver,
+            ratingTripBinding.editOthercommentsGood,
+            ratingTripBinding.wifiCar,
+            ratingTripBinding.driverOntime,
+            ratingTripBinding.goodCarCondition,
+            ratingTripBinding.greatDriver,
+            ratingTripBinding.otherReasonGood
+        )
+        val wificar = TextChangedListener.onCheckboxChangedListner(
+            ratingTripBinding.wifiCar,
+            ratingTripBinding.editOthercommentsGood,
+            ratingTripBinding.carWasCleanDriver,
+            ratingTripBinding.driverOntime,
+            ratingTripBinding.goodCarCondition,
+            ratingTripBinding.greatDriver,
+            ratingTripBinding.otherReasonGood
+        )
+        val driverontime = TextChangedListener.onCheckboxChangedListner(
+            ratingTripBinding.driverOntime,
+            ratingTripBinding.editOthercommentsGood,
+            ratingTripBinding.carWasCleanDriver,
+            ratingTripBinding.wifiCar,
+            ratingTripBinding.goodCarCondition,
+            ratingTripBinding.greatDriver,
+            ratingTripBinding.otherReasonGood
+        )
+        val goodcarcondition = TextChangedListener.onCheckboxChangedListner(
+            ratingTripBinding.goodCarCondition,
+            ratingTripBinding.editOthercommentsGood,
+            ratingTripBinding.carWasCleanDriver,
+            ratingTripBinding.wifiCar,
+            ratingTripBinding.driverOntime,
+            ratingTripBinding.greatDriver,
+            ratingTripBinding.otherReasonGood
+        )
+
+        val greatDriver = TextChangedListener.onCheckboxChangedListner(
+            ratingTripBinding.greatDriver,
+            ratingTripBinding.editOthercommentsGood,
+            ratingTripBinding.carWasCleanDriver,
+            ratingTripBinding.wifiCar,
+            ratingTripBinding.driverOntime,
+            ratingTripBinding.goodCarCondition,
+            ratingTripBinding.otherReasonGood
+        )
+        val otherReason = TextChangedListener.onCheckboxChangedListner(
+            ratingTripBinding.otherReasonGood,
+            ratingTripBinding.editOthercommentsGood,
+            ratingTripBinding.carWasCleanDriver,
+            ratingTripBinding.wifiCar,
+            ratingTripBinding.driverOntime,
+            ratingTripBinding.goodCarCondition,
+            ratingTripBinding.greatDriver
+        )
+
+        ratingTripBinding.smileyRating.setOnRatingChangeListener(OnRatingChangeListener { ratingBar, i, i1 ->
+            if (ratingBar.count <= 3) {
+                ratingTripBinding.WrongReasonLayout.visibility = VISIBLE
+                ratingTripBinding.goodReasonLayout.visibility = View.GONE
+            } else {
+                ratingTripBinding.WrongReasonLayout.visibility = View.GONE
+                ratingTripBinding.goodReasonLayout.visibility = VISIBLE
+            }
+        })
+        ratingTripBinding.submitRating.setOnClickListener {
+            bookingRideService?.getProviderRating(
+                this, RateProviderRequest(
+                    ratingTripBinding.smileyRating.count.toString(),
+                    "valid",
+                    myPreference.CurrentRequestId
+                )
+            )
         }
+    }
+
+    override fun onRatingResponse(rideStatusCheckResponse: RideStatusCheckResponse) {
+        mMap?.clear()
+        ratingTripBinding.rootLayoutRating.visibility = View.GONE
+        sourceLayout.coordinatorLayoutHome.visibility = VISIBLE
+        sourceLayout.cardviewMylocationHome.visibility = VISIBLE
+        CustomRideDialog.getInstance(mContext!!).ShowThanksDialog(
+            mContext!!,
+            myPreference.ReferralCode!!, sourceLayout.coordinatorLayoutHome,
+            sourceLayout.cardviewMylocationHome
+        )
     }
 
 }

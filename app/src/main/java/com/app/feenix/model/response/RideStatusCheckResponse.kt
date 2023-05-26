@@ -3,7 +3,8 @@ package com.app.biu.model.RequestModel.ResponseModel
 
 data class RideStatusCheckResponse(
     val success: Boolean?,
-    val data: MutableList<RideStatusCheckResponseData>
+    val message: String?,
+    val data: MutableList<RideStatusCheckResponseData>?
 )
 
 data class RideStatusCheckResponseData(
@@ -18,11 +19,11 @@ data class RideStatusCheckResponseData(
     val after_image: String?,
     val after_comment: String?,
     val status: String?,
-    val eta: String?,
+    val eta: Int?,
     val cancelled_by: String?,
     val cancelled_reason: String?,
     val payment_mode: String?,
-    val paid: String?,
+    val paid: Int?,
     val driver_payout: String?,
     val driver_payment_id: String?,
     val owner_payout: String?,
@@ -78,7 +79,7 @@ data class RideStatusCheckResponseData(
     val delivery_add_flat: String?,
     val delivery_add_area: String?,
     val delivery_add_landmark: String?,
-    val rating: String?,
+    val rating: RideTripRating?,
     val payment: RideTripPayment?,
     val payment_image: String?,
     val change: ArrayList<String>,
@@ -86,5 +87,15 @@ data class RideStatusCheckResponseData(
     val user: RideTripUser?,
     val provider: RideTripProvider?,
     val provider_profiles: RideTripProviderProfiles?
+)
+data class RideTripRating(
+    val id: Int?,
+    val request_id: String?,
+    val user_id: String?,
+    val provider_id: String?,
+    val user_rating: Double?,
+    val provider_rating: Double?,
+    val user_comment: String?,
+    val provider_comment: String?,
 )
 

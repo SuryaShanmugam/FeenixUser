@@ -58,11 +58,18 @@ interface BookingRideInterface {
     ): Observable<CancelRideResponse>
 
 // Get Ride Status Check
-    @GET("locations")
+    @GET("request/check")
     fun getRideStatus(
         @Header("X-Requested-With") xmlRequest: String,
         @Header("Authorization") strToken: String?
     ): Observable<RideStatusCheckResponse>
 
+    // Rate Provider
+    @POST("rate/provider")
+    fun RateProvider(
+        @Header("X-Requested-With") xmlRequest: String,
+        @Header("Authorization") strToken: String?,
+        @Body rateProviderRequest: RateProviderRequest
+    ): Observable<RideStatusCheckResponse>
 
 }

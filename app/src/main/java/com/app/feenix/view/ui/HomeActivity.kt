@@ -34,7 +34,7 @@ import com.app.feenix.feature.internet.LocationConnectivityManager
 import com.app.feenix.feature.internet.LocationStateManager
 import com.app.feenix.handler.AlertDialogHandler
 import com.app.feenix.model.response.*
-import com.app.feenix.utils.CustomDriverSearchingDialog
+import com.app.feenix.utils.CustomRideDialog
 import com.app.feenix.utils.Log
 import com.app.feenix.utils.PermissionHandler
 import com.app.feenix.view.ui.Walkthrough.WalkthroughActivity
@@ -155,7 +155,7 @@ class HomeActivity : BaseActivity(), View.OnClickListener, LocationConnectivityC
 
         sendCustomDetails()
         locationStateManager = AppController.applicationInstance.locationStateManager()
-        Log.d("LocPer", "" + myPreference?.token)
+        Log.d("com/app/feenix/view/ui/HomeFragment.kt", "" + myPreference?.token)
         launchFragment(HomeFragment(), false)
     }
 
@@ -452,9 +452,23 @@ class HomeActivity : BaseActivity(), View.OnClickListener, LocationConnectivityC
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: RideAcceptModel) {
-        EventBus.getDefault().postSticky(RedirectFragmentModel(event.message))
-        CustomDriverSearchingDialog.getInstance(mContext!!).hideDialog()
-        EventBus.getDefault().removeStickyEvent(RideAcceptModel::class.java)
+        if (event.message.data.get("type").equals("No Driver", ignoreCase = true)
+            || event.message.data.get("type").equals("Driver Cancel", ignoreCase = true)) {
+            CustomRideDialog.getInstance(mContext!!).showNotificationDialog(mContext!!,
+                event.message.data.get("type")!!,event.message.data.get("message")!!,true)
+            myPreference?.CurrentRequestId=""
+
+            CustomRideDialog.getInstance(mContext!!).hideDialog()
+            EventBus.getDefault().removeStickyEvent(RideAcceptModel::class.java)
+        }
+        else{
+            EventBus.getDefault().postSticky(RedirectFragmentModel(event.message))
+
+            CustomRideDialog.getInstance(mContext!!).hideDialog()
+            EventBus.getDefault().removeStickyEvent(RideAcceptModel::class.java)
+
+        }
+
 
     }
     override fun onResume() {

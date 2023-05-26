@@ -60,4 +60,10 @@
 
     </style>
 
+    <style name="MyRatingBar" parent="@android:style/Widget.RatingBar">
+        <item name="colorControlNormal">#595960</item>
+        <item name="colorControlActivated">@color/primary</item>
+    </style>
+
+
 </resources>

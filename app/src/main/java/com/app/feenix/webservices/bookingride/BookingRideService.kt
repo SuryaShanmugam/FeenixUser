@@ -7,8 +7,8 @@ import com.app.biu.model.RequestModel.ResponseModel.RideStatusCheckResponse
 import com.app.feenix.app.MyPreference
 import com.app.feenix.model.request.*
 import com.app.feenix.model.response.*
-import com.app.feenix.utils.CustomDriverSearchingDialog
 import com.app.feenix.utils.CustomProgressBar
+import com.app.feenix.utils.CustomRideDialog
 import com.app.feenix.viewmodel.IBookingRides
 import com.app.feenix.viewmodel.IRideStatusCheck
 import com.app.feenix.viewmodel.ISendRideRequest
@@ -33,7 +33,7 @@ class BookingRideService {
         mContext = context
         myPreference = MyPreference(mContext!!)
         CustomeProgressDialog = CustomProgressBar(mContext!!)
-        customDriverSearchingDialog = CustomDriverSearchingDialog(mContext!!)
+        customRideDialog = CustomRideDialog(mContext!!)
     }
 
     // GetLocations
@@ -204,13 +204,13 @@ class BookingRideService {
 
     private var sendRideResponse:SendRideResponse? = null
     private var mSendRideRequest:ISendRideRequest? = null
-    private var customDriverSearchingDialog: CustomDriverSearchingDialog? = null
+    private var customRideDialog: CustomRideDialog? = null
 
     fun sendRideRequest(
         iSendRideRequest: ISendRideRequest,
         sendRideRequest: SendRideRequest
     ) {
-        customDriverSearchingDialog?.showDialog(mContext)
+        customRideDialog?.showDialog(mContext)
         mSendRideRequest = iSendRideRequest
         val authService: BookingRideInterface =
             ApiClient.clientportal.create(BookingRideInterface::class.java)
@@ -233,13 +233,13 @@ class BookingRideService {
                 }
 
                 override fun onError(e: Throwable) {
-                    customDriverSearchingDialog?.hideDialog()
+                    customRideDialog?.hideDialog()
                     Log.e("gete4", "" + e.toString())
                     ErrorHandler.handle(e.toString())
                 }
 
                 override fun onComplete() {
-                    customDriverSearchingDialog?.hideDialog()
+                    customRideDialog?.hideDialog()
                     sendRideResponse?.let { mSendRideRequest?.onsendRideResponse(it) }
                 }
             })
@@ -252,7 +252,7 @@ class BookingRideService {
         iSendRideRequest: ISendRideRequest,
         cancelRideRequest: CancelRideRequest
     ) {
-        customDriverSearchingDialog?.showDialog(mContext)
+        customRideDialog?.showDialog(mContext)
         mSendRideRequest = iSendRideRequest
         val authService: BookingRideInterface =
             ApiClient.clientportal.create(BookingRideInterface::class.java)
@@ -275,13 +275,13 @@ class BookingRideService {
                 }
 
                 override fun onError(e: Throwable) {
-                    customDriverSearchingDialog?.hideDialog()
+                    customRideDialog?.hideDialog()
                     Log.e("gete4", "" + e.toString())
                     ErrorHandler.handle(e.toString())
                 }
 
                 override fun onComplete() {
-                    customDriverSearchingDialog?.hideDialog()
+                    customRideDialog?.hideDialog()
                     cancelRideResponse?.let { mSendRideRequest?.onCancelRideResponse(it) }
                 }
             })
@@ -308,7 +308,7 @@ class BookingRideService {
                 }
 
                 override fun onNext(loginresponse: RideStatusCheckResponse) {
-
+                    CustomeProgressDialog!!.hideDialog()
                     rideStatusCheckResponse = loginresponse
 
                 }
@@ -328,4 +328,40 @@ class BookingRideService {
     }
 
 
+    // Submit Rating
+    fun getProviderRating(iRideStatusCheck: IRideStatusCheck,rateProviderRequest: RateProviderRequest) {
+        IRideStatusCheck = iRideStatusCheck
+        CustomeProgressDialog!!.showDialog(mContext)
+        val authService: BookingRideInterface =
+            ApiClient.clientportal.create(BookingRideInterface::class.java)
+
+        val testObservable1 = authService.RateProvider(
+            "XMLHttpRequest",
+            myPreference?.userToken!!,rateProviderRequest
+        )
+
+        testObservable1.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Observer<RideStatusCheckResponse> {
+                override fun onSubscribe(d: Disposable) {
+                }
+
+                override fun onNext(loginresponse: RideStatusCheckResponse) {
+                    CustomeProgressDialog!!.hideDialog()
+                    rideStatusCheckResponse = loginresponse
+
+                }
+
+                override fun onError(e: Throwable) {
+                    CustomeProgressDialog!!.hideDialog()
+                    Log.e("gete4", "" + e.toString())
+                    ErrorHandler.handle(e.toString())
+                }
+
+                override fun onComplete() {
+                    CustomeProgressDialog!!.hideDialog()
+                    rideStatusCheckResponse?.let { IRideStatusCheck?.onRideStatusCheck(it) }
+
+                }
+            })
+    }
 }

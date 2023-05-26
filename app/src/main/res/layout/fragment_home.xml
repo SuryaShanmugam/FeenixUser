@@ -87,6 +87,18 @@
             android:visibility="gone" />
 
 
+        <include
+            android:id="@+id/layout_invoice"
+            layout="@layout/layout_ride_invoice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
+        <include
+            android:id="@+id/layout_rating"
+            layout="@layout/dialog_rating_trip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
         <RelativeLayout
             android:id="@+id/serviceAcceptedLayout"
             android:layout_width="match_parent"

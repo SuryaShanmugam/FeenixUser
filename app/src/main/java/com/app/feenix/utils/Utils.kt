@@ -64,5 +64,24 @@ object Utils {
         valueAnimator.duration = 3000
         return valueAnimator
     }
+    fun getstartTime(createdOn: String?): String? {
+        if (createdOn != null) {
+            val dateFormat: DateFormat = SimpleDateFormat(
+                "yyyy-MM-dd HH:mm:ss",
+                Locale.getDefault()
+            )
+            try {
+                val date = dateFormat.parse(createdOn)
+                val simpleDateFormat = SimpleDateFormat(
+                    "hh:mm a",
+                    Locale.getDefault()
+                )
+                return simpleDateFormat.format(date)
+            } catch (e: ParseException) {
+                e.printStackTrace()
+            }
+        }
+        return createdOn
+    }
 
 }
