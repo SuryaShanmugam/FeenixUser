@@ -51,6 +51,17 @@
 
 
     </FrameLayout>
+    <com.skyfishjy.library.RippleBackground
+        android:id="@+id/rippleBackground"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        app:rb_color="@color/primary"
+        app:rb_duration="4000"
+        app:rb_radius="32dp"
+        app:rb_rippleAmount="5">
+
+    </com.skyfishjy.library.RippleBackground>
+
 
     <View
         android:layout_width="match_parent"

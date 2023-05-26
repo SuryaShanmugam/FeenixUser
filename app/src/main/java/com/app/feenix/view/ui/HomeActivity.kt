@@ -283,12 +283,10 @@ class HomeActivity : BaseActivity(), View.OnClickListener, LocationConnectivityC
 
             if (supportFragmentManager.backStackEntryCount > 0) {
                 supportFragmentManager.popBackStack()
-                android.util.Log.e("dwewer2","backdere")
             } else {
-                android.util.Log.e("sdwerew","backdere")
                 super.onBackPressed()
+                Log.d("dedewe","fdefreewew")
             }
-
         }
 
 
@@ -461,8 +459,7 @@ class HomeActivity : BaseActivity(), View.OnClickListener, LocationConnectivityC
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: RideAcceptModel) {
-        if (event.message.data.get("type").equals("No Driver", ignoreCase = true)
-           ) {
+        if (event.message.data.get("type").equals("No Driver", ignoreCase = true)) {
             CustomRideDialog.getInstance(mContext!!).showNotificationDialog(mContext!!,
                 event.message.data.get("type")!!,event.message.data.get("message")!!,true)
             myPreference?.CurrentRequestId=""

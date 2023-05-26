@@ -20,6 +20,7 @@ import com.app.feenix.eventbus.MenuIconDisableModel
 import com.app.feenix.view.ui.HomeActivity
 import com.app.feenix.view.ui.referAndearn.ReferAndEarnActivity
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.skyfishjy.library.RippleBackground
 import org.greenrobot.eventbus.EventBus
 
 open class CustomRideDialog(context: Context) {
@@ -54,6 +55,8 @@ open class CustomRideDialog(context: Context) {
             window.setGravity(Gravity.CENTER)
 
             val cancelButton: Button = dialog!!.findViewById<Button>(R.id.cancelButton)
+            val rippleBackground: RippleBackground = dialog!!.findViewById<RippleBackground>(R.id.rippleBackground)
+            rippleBackground.startRippleAnimation()
             cancelButton.setOnClickListener {
                 showCancelled(context)
                 hideDialog()
@@ -63,10 +66,11 @@ open class CustomRideDialog(context: Context) {
         }
     }
     fun hideDialog() {
+
         dialog?.dismiss()
     }
     var TripCancelreason = ""
-    private fun showCancelled(context: Context?) {
+    fun showCancelled(context: Context?) {
 
         val dialog: Dialog = BottomSheetDialog(context!!)
         dialog.setCancelable(true)
@@ -141,10 +145,11 @@ open class CustomRideDialog(context: Context) {
             if(isconfirmpickupactivity)
             {
                 EventBus.getDefault().postSticky(GetMyLocationModel(true))
+                EventBus.getDefault().postSticky(MenuIconDisableModel(false))
                 dialog.dismiss()
             }
             else{
-                MyActivity.launchClearStack(context,HomeActivity::class.java)
+                MyActivity.launchClearTop(context,HomeActivity::class.java)
                 EventBus.getDefault().postSticky(MenuIconDisableModel(false))
                 dialog.dismiss()
             }

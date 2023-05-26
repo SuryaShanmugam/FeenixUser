@@ -1,9 +1,10 @@
 package com.app.feenix.view.ui
 
-import android.Manifest
+import android.Manifest.permission
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -11,6 +12,7 @@ import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.location.Location
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -24,9 +26,11 @@ import android.widget.AdapterView
 import android.widget.CompoundButton
 import android.widget.RelativeLayout
 import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import cbs.com.bmr.Utilities.MyActivity
 import cbs.com.bmr.Utilities.ToastBuilder
@@ -176,10 +180,10 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
         Log.e("setupMap", "called")
         if (ActivityCompat.checkSelfPermission(
                 mContext!!,
-                Manifest.permission.ACCESS_FINE_LOCATION
+                permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
                 mContext!!,
-                Manifest.permission.ACCESS_COARSE_LOCATION
+                permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             return
@@ -252,11 +256,22 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
         priceestimationLayout.priceEstimationBack.setOnClickListener(this)
         priceestimationLayout.btnPromocodeapply.setOnClickListener(this)
         priceestimationLayout.btnPriceConfirm.setOnClickListener(this)
+        binding.providerCall.setOnClickListener(this)
+        binding.cancelButton.setOnClickListener(this)
     }
 
     override fun onClick(p0: View?) {
         val id = p0?.id
         when (id) {
+            R.id.providerCall -> {
+              if(checkCallRequestPermissions())
+              {
+                  callNumber()
+              }
+            }
+            R.id.cancelButton -> {
+                    CustomRideDialog.getInstance(mContext!!).showCancelled(mContext!!)
+            }
             R.id.cardview_mylocation_home -> {
                 val latLng = LatLng(mMap?.myLocation?.latitude!!, mMap?.myLocation?.longitude!!)
                 animateCamera(latLng)
@@ -406,7 +421,89 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
 
         }
     }
+    // Call Permission
+      fun checkCallRequestPermissions(): Boolean {
+        val CallPhone = ContextCompat.checkSelfPermission(requireContext(), permission.CALL_PHONE)
+        val listPermissionsNeeded = ArrayList<String>()
+        if (CallPhone != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(permission.CALL_PHONE)
+        }
+        if (!listPermissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                listPermissionsNeeded.toTypedArray<String>(),
+                REQUEST_ID_MULTIPLE_PERMISSIONS
+            )
+            return false
+        }
+        return true
+    }
+    val REQUEST_ID_MULTIPLE_PERMISSIONS = 103
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when(requestCode)
+        {
+            REQUEST_ID_MULTIPLE_PERMISSIONS->
+            {
+                val perms = HashMap<String, Int>()
+                perms[permission.CALL_PHONE] = PackageManager.PERMISSION_GRANTED
+                if (grantResults != null && grantResults.size > 0) {
+                    for (i in permissions.indices) perms[permissions[i]] = grantResults[i]
+                    if (perms[permission.CALL_PHONE] == PackageManager.PERMISSION_GRANTED) {
+                        callNumber()
+                    } else {
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), permission.CALL_PHONE)
+                        ) {
+                            showDialogOK("Call Permission required for this app",
+                                DialogInterface.OnClickListener { dialog, which ->
+                                    when (which) {
+                                        DialogInterface.BUTTON_POSITIVE -> checkCallRequestPermissions()
+                                        DialogInterface.BUTTON_NEGATIVE -> {}
+                                    }
+                                })
+                        } else {
+
+                        }
+                    }
+            }
+
+            }
+        }
+
+    }
+    var providerMobileVal: String? = null
+    private fun callNumber() {
+        val intent = Intent(Intent.ACTION_CALL)
+        if (providerMobileVal != null) {
+            intent.data = Uri.parse("tel:$providerMobileVal")
+            if (ActivityCompat.checkSelfPermission(
+                    mContext!!,
+                    permission.CALL_PHONE
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    requireActivity(), arrayOf<String>(permission.CALL_PHONE),
+                    10
+                )
+                return
+            }
+            startActivity(intent)
+        } else {
+            ToastBuilder.build(mContext, "Driver Number Not Updated")
+        }
+    }
+     fun showDialogOK(message: String, okListener: DialogInterface.OnClickListener) {
+        AlertDialog.Builder(mContext!!)
+            .setMessage(message)
+            .setPositiveButton("OK", okListener)
+            .create()
+            .show()
+    }
     private fun MoveSetLocation(i: Int, type: String) {
 
         val bundle = Bundle()
@@ -1171,8 +1268,10 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
         super.onResume()
         if (myPreference.TripSearchingStatus.equals("true")) {
             CustomRideDialog.getInstance(mContext!!).showDialog(mContext)
+            sourceLayout.coordinatorLayoutHome.visibility= View.GONE
         } else {
             CustomRideDialog.getInstance(mContext!!).hideDialog()
+            sourceLayout.coordinatorLayoutHome.visibility= VISIBLE
         }
         myPreference.TripSearchingStatus = "false"
 
@@ -1210,10 +1309,15 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
     }
 
     override fun onCancelRideResponse(cancelRideResponse: CancelRideResponse) {
-        if (cancelRideResponse.success!!) {
-            ToastBuilder.build(mContext!!, cancelRideResponse.message)
 
-        }
+        ToastBuilder.build(mContext!!, cancelRideResponse.message)
+        Log.e("cancelRideResponse", "" + cancelRideResponse.toString())
+        sourceLayout.coordinatorLayoutHome.visibility = VISIBLE
+        rideAccpetLayout.visibility = View.GONE
+        rideAccpetLayoucard.layoutRootRequestCard.visibility = View.GONE
+        EventBus.getDefault().postSticky(MenuIconDisableModel(false))
+        bookingRideService?.getSavedLocations(this)
+
     }
 
 
@@ -1223,7 +1327,8 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
         val latLng = LatLng(mMap?.myLocation?.latitude!!, mMap?.myLocation?.longitude!!)
         animateCamera(latLng)
         EventBus.getDefault().removeStickyEvent(GetMyLocationModel::class.java)
-
+        bookingRideService?.getSavedLocations(this)
+        sourceLayout.coordinatorLayoutHome.visibility= VISIBLE
     }
 
     // Ride Status Check Details
@@ -1236,26 +1341,35 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
         } else if (event.message.data.get("type").equals("Started", ignoreCase = true) ||
             event.message.data.get("type").equals("Picked", ignoreCase = true) ||
             event.message.data.get("type").equals("Arrived", ignoreCase = true) ||
-            event.message.data.get("type").equals("Payment", ignoreCase = true)
-        ) {
+            event.message.data.get("type").equals("Payment", ignoreCase = true)) {
             if (event.message.data.get("type")!!.equals("Picked")) {
-                RideCurrentStatusLayout("PICKEDUP", event.message.data.get("title")!!)
-            } else {
+                RideCurrentStatusLayout("PICKEDUP") }
+            else if (event.message.data.get("type")!!.equals("Payment")) {
+                RideCurrentStatusLayout("DROPPED") }
+            else {
                 RideCurrentStatusLayout(
-                    event.message.data.get("type")?.uppercase(),
-                    event.message.data.get("title")!!
+                    event.message.data.get("type")?.uppercase()
                 )
             }
-            Log.e("message", "" + event.message.data.get("type"))
         }
         else if( event.message.data.get("type").equals("Driver Cancel", ignoreCase = true))
         {
+            CustomRideDialog.getInstance(mContext!!).showNotificationDialog(mContext!!,
+                event.message.data.get("type")!!,event.message.data.get("message")!!,true)
+            myPreference.CurrentRequestId=""
             sourceLayout.coordinatorLayoutHome.visibility = VISIBLE
             rideAccpetLayout.visibility = View.GONE
             rideAccpetLayoucard.layoutRootRequestCard.visibility = View.GONE
             binding.layoutSos.visibility = View.GONE
-            EventBus.getDefault().postSticky(MenuIconDisableModel(false))
+            bookingRideService?.getSavedLocations(this)
+            if(mMap!=null)
+            {
+                val latLng = LatLng(mMap?.myLocation?.latitude!!, mMap?.myLocation?.longitude!!)
+                animateCamera(latLng)
+            }
+
         }
+        Log.e("wfdferefd", "" + event.message.data.get("type"))
         EventBus.getDefault().removeStickyEvent(RedirectFragmentModel::class.java)
 
     }
@@ -1265,15 +1379,21 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
         if (rideStatusCheckResponse.success != null && rideStatusCheckResponse.success && rideStatusCheckResponse.data != null) {
             Log.e("riestatyscheck", "" + rideStatusCheckResponse.data.toString())
             for (data in rideStatusCheckResponse.data) {
-//                if (data.status.equals("COMPLETED") && data.user_rated == 0) {
-//                    if (data.paid == 1) {
-//                        ShowRatingDialog(data)
-//                    } else {
-//                        ShowInvoiceLayout(data)
-//                    }
-//                } else {
+                if (data.status.equals("COMPLETED") && data.user_rated == 0) {
+                    if (data.paid == 1) {
+                        ShowRatingDialog(data)
+                    } else {
+                        ShowInvoiceLayout(data)
+                    }
+                } else {
+                if(data.status.equals("ACCEPTED")||data.status.equals("STARTED")
+                    ||data.status.equals("ARRIVED")
+                    ||data.status.equals("PICKEDUP"))
+                {
                     initCardData(data)
-  //              }
+                }
+
+                }
             }
         } else {
             sourceLayout.coordinatorLayoutHome.visibility = VISIBLE
@@ -1288,17 +1408,21 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
 
 
     // Service Accept Layouts
+    @SuppressLint("SuspiciousIndentation")
     private fun initCardData(ridestatuscheckdata: RideStatusCheckResponseData) {
         sourceLayout.coordinatorLayoutHome.visibility = View.GONE
         rideAccpetLayout.visibility = VISIBLE
         rideAccpetLayoucard.layoutRootRequestCard.visibility = VISIBLE
+        ratingTripBinding.rootLayoutRating.visibility = View.GONE
+        invoiceLayoutBinding.rootLayoutInvoice.visibility = View.GONE
         EventBus.getDefault().postSticky(MenuIconDisableModel(false))
         binding.layoutSos.visibility = VISIBLE
-        val bottomSheet: View = rideAccpetLayoucard.layoutRootRequestCard.findViewById<View>(R.id.bottom_sheet)
+        val bottomSheet: View = rideAccpetLayoucard.layoutRootRequestCard.findViewById<View>(R.id.bottom_sheet_requestcard)
         bottomSheet.visibility = VISIBLE
         val behavior = BottomSheetBehavior.from<View>(bottomSheet)
         behavior.peekHeight = 600
         rideAccpetLayoucard.lblOtpRider.text = "Ride Code :" + ridestatuscheckdata.confirmation_code
+
             Glide.with(mContext!!).load(ridestatuscheckdata.provider?.avatar)
                 .placeholder(R.drawable.img_placeholder_profile)
                 .into(rideAccpetLayoucard.userImageIncoming)
@@ -1314,25 +1438,32 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
             }
 
 
+        providerMobileVal= ridestatuscheckdata.provider?.country_code+ridestatuscheckdata.provider?.mobile
             val df = DecimalFormat("#.##")
             df.roundingMode = RoundingMode.CEILING
             rideAccpetLayoucard.ratingText.text =
                 df.format(ridestatuscheckdata.provider?.rating).toString()
-            RideCurrentStatusLayout(ridestatuscheckdata.status, "")
+            RideCurrentStatusLayout(ridestatuscheckdata.status)
+           Constant.SOURCE_LAT=ridestatuscheckdata.s_latitude!!
+           Constant.SOURCE_LNG=ridestatuscheckdata.s_longitude!!
+           Constant.DEST_LAT=ridestatuscheckdata.d_latitude!!
+             Constant.DEST_LNG=ridestatuscheckdata.d_longitude!!
+              val latLng = LatLng(Constant.SOURCE_LAT, Constant.SOURCE_LNG)
+          animateCamera(latLng)
+
+
     }
 
-    fun RideCurrentStatusLayout(status: String?, title: String?) {
+    fun RideCurrentStatusLayout(status: String?) {
         when (status) {
             "ACCEPTED" -> {
-                rideAccpetLayoucard.statusText.text =
-                    resources.getString(R.string.dirver_accepeted_request)
+                rideAccpetLayoucard.statusText.text = resources.getString(R.string.dirver_accepeted_request)
                 rideAccpetLayoucard.txtEstimatedtime.visibility = VISIBLE
                 binding.cancelButton.visibility = VISIBLE
                 binding.providerMessage.visibility = View.GONE
             }
             "STARTED" -> {
-                rideAccpetLayoucard.statusText.text =
-                    resources.getString(R.string.driver_on_the_way)
+                rideAccpetLayoucard.statusText.text = resources.getString(R.string.driver_on_the_way)
                 rideAccpetLayoucard.txtEstimatedtime.visibility = VISIBLE
                 binding.cancelButton.visibility = VISIBLE
                 binding.providerMessage.visibility = View.GONE
@@ -1347,26 +1478,15 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
                 rideAccpetLayoucard.statusText.text = resources.getString(R.string.picked_up)
                 rideAccpetLayoucard.txtEstimatedtime.visibility = View.GONE
                 binding.cancelButton.visibility = View.GONE
-                binding.bottomRequestCard.visibility = View.GONE
                 binding.providerMessage.visibility = View.GONE
+                generateRoute()
             }
-
             "DROPPED" -> {
                 rideAccpetLayoucard.statusText.text = resources.getString(R.string.dropped)
                 rideAccpetLayoucard.txtEstimatedtime.visibility = View.GONE
                 binding.cancelButton.visibility = View.GONE
                 binding.providerMessage.visibility = View.GONE
-                binding.bottomRequestCard.visibility = View.GONE
-                // bookingRideService?.getRideStatusCheck(this)
-            }
-            "PAYMENT" -> {
-                rideAccpetLayoucard.statusText.text = resources.getString(R.string.dropped)
-                rideAccpetLayoucard.txtEstimatedtime.visibility = View.GONE
-                binding.cancelButton.visibility = View.GONE
-                binding.providerMessage.visibility = View.GONE
-                binding.bottomRequestCard.visibility = View.GONE
                 bookingRideService?.getRideStatusCheck(this)
-
             }
 
         }
@@ -1558,15 +1678,22 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
     }
 
     override fun onRatingResponse(rideStatusCheckResponse: RideStatusCheckResponse) {
+        Log.e("ceweee",""+rideStatusCheckResponse.message)
         mMap?.clear()
         ratingTripBinding.rootLayoutRating.visibility = View.GONE
         sourceLayout.coordinatorLayoutHome.visibility = VISIBLE
         sourceLayout.cardviewMylocationHome.visibility = VISIBLE
+        bookingRideService?.getSavedLocations(this)
+        if(mMap!=null)
+        {
+            val latLng = LatLng(mMap?.myLocation?.latitude!!, mMap?.myLocation?.longitude!!)
+            animateCamera(latLng)
+        }
         CustomRideDialog.getInstance(mContext!!).ShowThanksDialog(
             mContext!!,
             myPreference.ReferralCode!!, sourceLayout.coordinatorLayoutHome,
             sourceLayout.cardviewMylocationHome
         )
+        mapExpand()
     }
-
 }

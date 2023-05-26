@@ -359,7 +359,7 @@ class BookingRideService {
 
                 override fun onComplete() {
                     CustomeProgressDialog!!.hideDialog()
-                    rideStatusCheckResponse?.let { IRideStatusCheck?.onRideStatusCheck(it) }
+                    rideStatusCheckResponse?.let { IRideStatusCheck?.onRatingResponse(it) }
 
                 }
             })

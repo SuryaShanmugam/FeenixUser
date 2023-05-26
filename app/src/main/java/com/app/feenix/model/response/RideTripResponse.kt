@@ -467,7 +467,9 @@ data class RideTripProvider(
     val wallet_balance: String?,
     val rating_count: String?,
     val referal: String?,
-    val rating: Double
+    val rating: Double,
+    val mobile: String?,
+    val country_code: String?,
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),
@@ -480,7 +482,9 @@ data class RideTripProvider(
         parcel.readString(),
         parcel.readString(),
         parcel.readString(),
-        parcel.readDouble()
+        parcel.readDouble(),
+        parcel.readString(),
+        parcel.readString()
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -495,6 +499,8 @@ data class RideTripProvider(
         parcel.writeString(rating_count)
         parcel.writeString(referal)
         parcel.writeDouble(rating)
+        parcel.writeString(mobile)
+        parcel.writeString(country_code)
     }
 
     override fun describeContents(): Int {
