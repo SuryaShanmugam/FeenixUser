@@ -155,7 +155,7 @@ class HomeActivity : BaseActivity(), View.OnClickListener, LocationConnectivityC
 
         sendCustomDetails()
         locationStateManager = AppController.applicationInstance.locationStateManager()
-        Log.d("com/app/feenix/view/ui/HomeFragment.kt", "" + myPreference?.token)
+        Log.d("Tokemce", "" + myPreference?.token)
         launchFragment(HomeFragment(), false)
     }
 
@@ -280,8 +280,17 @@ class HomeActivity : BaseActivity(), View.OnClickListener, LocationConnectivityC
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START)
         } else {
-            super.onBackPressed()
+
+            if (supportFragmentManager.backStackEntryCount > 0) {
+                supportFragmentManager.popBackStack()
+                android.util.Log.e("dwewer2","backdere")
+            } else {
+                android.util.Log.e("sdwerew","backdere")
+                super.onBackPressed()
+            }
+
         }
+
 
     }
 
@@ -453,7 +462,7 @@ class HomeActivity : BaseActivity(), View.OnClickListener, LocationConnectivityC
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: RideAcceptModel) {
         if (event.message.data.get("type").equals("No Driver", ignoreCase = true)
-            || event.message.data.get("type").equals("Driver Cancel", ignoreCase = true)) {
+           ) {
             CustomRideDialog.getInstance(mContext!!).showNotificationDialog(mContext!!,
                 event.message.data.get("type")!!,event.message.data.get("message")!!,true)
             myPreference?.CurrentRequestId=""

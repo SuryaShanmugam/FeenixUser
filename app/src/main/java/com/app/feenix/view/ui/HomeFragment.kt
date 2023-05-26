@@ -1159,7 +1159,7 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
                         if (parentFragmentManager.backStackEntryCount > 0) {
                             parentFragmentManager.popBackStack()
                         } else {
-                            activity?.onBackPressed()
+
                         }
                     }
                 }
@@ -1247,6 +1247,14 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback, View.OnClickListener, I
                 )
             }
             Log.e("message", "" + event.message.data.get("type"))
+        }
+        else if( event.message.data.get("type").equals("Driver Cancel", ignoreCase = true))
+        {
+            sourceLayout.coordinatorLayoutHome.visibility = VISIBLE
+            rideAccpetLayout.visibility = View.GONE
+            rideAccpetLayoucard.layoutRootRequestCard.visibility = View.GONE
+            binding.layoutSos.visibility = View.GONE
+            EventBus.getDefault().postSticky(MenuIconDisableModel(false))
         }
         EventBus.getDefault().removeStickyEvent(RedirectFragmentModel::class.java)
 

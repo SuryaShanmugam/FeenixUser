@@ -572,7 +572,7 @@ class ConfirmPickupLocationActivity : BaseActivity(), View.OnClickListener,
 
     override fun onsendRideResponse(sendRideResponse: SendRideResponse) {
         if(sendRideResponse.success!=null && sendRideResponse.success)
-        {
+        {  Log.e("request_id", "" + sendRideResponse.request_id)
             myPreference.TripSearchingStatus="true"
             myPreference.CurrentRequestId=sendRideResponse.request_id
             MyActivity.launchClearStack(mContext!!,HomeActivity::class.java)
