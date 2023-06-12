@@ -22,7 +22,7 @@ class SosEmergencyContactActivity : BaseActivity(), View.OnClickListener {
         initObjects()
         initCallbacks()
         initRecyclerView()
-        getContactList()
+    //    getContactList()
     }
 
     private fun initCallbacks() {
@@ -42,7 +42,7 @@ class SosEmergencyContactActivity : BaseActivity(), View.OnClickListener {
         binding.recyclerviewNotifications.layoutManager = mLayoutManager
         binding.recyclerviewNotifications.isNestedScrollingEnabled = false
         binding.recyclerviewNotifications.setHasFixedSize(true)
-        binding.recyclerviewNotifications.adapter = mAdapter
+    //    binding.recyclerviewNotifications.adapter = mAdapter
     }
 
     override fun onClick(p0: View?) {
