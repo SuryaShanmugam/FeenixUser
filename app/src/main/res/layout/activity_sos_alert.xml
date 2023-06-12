@@ -19,33 +19,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <LinearLayout
-                android:id="@+id/layout_sos_initial_alert"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/normal"
-                android:orientation="vertical"
-                android:visibility="visible">
+
 
                 <include
+                    android:id="@+id/layout_sos_initial_alert"
                     layout="@layout/layout_sos_initial_alert"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"/>
 
-            <LinearLayout
-                android:id="@+id/layout_sos_after_alert"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/normal"
-                android:orientation="vertical"
-                android:visibility="gone">
 
                 <include
+                    android:id="@+id/layout_sos_after_alert"
                     layout="@layout/layout_sos_after_alert"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"/>
         </RelativeLayout>
 
 
